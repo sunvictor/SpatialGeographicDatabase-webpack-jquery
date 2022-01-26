@@ -1,0 +1,39 @@
+.panelDiv {
+    background-color: rgba(57, 57, 57, 0.8);
+    position: absolute;
+}
+
+.panel-title {
+    height: 50px;
+    border-bottom: 5px solid rgba(34, 34, 34);
+    position: relative;
+}
+
+.panel-title-h3 {
+    display: inline-block;
+    letter-spacing: 2px;
+    font-size: 20px;
+    padding-left: 15px;
+    line-height: 50px;
+}
+
+.panel-title-img-a {
+    cursor: pointer;
+    display: inline-block;
+    position: absolute;
+    top: 15px;
+    right: 20px;
+}
+
+.panel-arrow {
+    width: 25px;
+}
+
+.panel-content {
+    overflow-y: auto;
+    overflow-x: auto;
+}
+
+.panelDiv-close {
+    height: 50px !important;
+}

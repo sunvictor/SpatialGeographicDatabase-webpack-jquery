@@ -6,12 +6,13 @@ import 'bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import "cesium/Widgets/widgets.css";
 import "./css/index.css"
-import {indexHtml} from "./js/html";
-import {startUpEarth, startUpCesium} from "./js/initMap";
+import "./css/panel.css"
+import {initMainHtml} from "./js/html/mainHtml";
+import {startUpEarth, startUpCesium} from "./js/cesium/initMap";
 // require('cesium/Widgets/widgets.css');
 if (typeof XE !== 'undefined') {
     XE.ready().then(startUpEarth)
 } else {
     startUpCesium();
 }
-indexHtml();
+initMainHtml();
