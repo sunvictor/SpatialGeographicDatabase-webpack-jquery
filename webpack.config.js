@@ -100,7 +100,7 @@ module.exports = {
                 // { from: path.join(cesiumSource, 'Assets'), to: 'Assets' },
                 // { from: path.join(cesiumSource, 'Widgets'), to: 'Widgets' },
                 {
-                    from: './node_modules/cesium/Build/Cesium', // 调试时，将Cesium换成CesiumUnminified
+                    from: './node_modules/cesium/Build/CesiumUnminified', // 调试时，将Cesium换成CesiumUnminified
                     to: 'js/Cesium',
                     toType: 'dir'
                 },
