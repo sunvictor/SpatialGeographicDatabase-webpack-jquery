@@ -57,14 +57,14 @@ function initScene(viewer) {
         height: 470,
         content: `<h1>Hello</h1>`
     })
-    let layerPanel2 = new gykjPanel({
-        title: "图层管理2",
-        show: true,
-        width: 400,
-        height: 470,
-        left: 500,
-        content: `<h1>Hello</h1>`
-    })
+    // let layerPanel2 = new gykjPanel({
+    //     title: "图层管理2",
+    //     show: true,
+    //     width: 400,
+    //     height: 470,
+    //     left: 500,
+    //     content: `<h1>Hello</h1>`
+    // })
 }
 
 function defaultCOnfig(viewer) {

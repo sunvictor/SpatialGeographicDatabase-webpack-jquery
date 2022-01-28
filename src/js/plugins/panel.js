@@ -1,16 +1,34 @@
-const $  = require("jQuery")
+const $ = require("jQuery")
 const gykjPanel = (function () {
-    let zIndex = 1;
-    let top = 15;
-    let left = 30;
-    let width = 200;
-    let height = 300;
-    let currentRotate = 0;
-    let unShow = "none";
     class gykjPanel {
         constructor(options) {
-            this.panelDom = this.initPanel(options);
+            const _this = this;
+            this.zIndex = 1;
+            this.top = 15;
+            this.left = 30;
+            this.width = 200;
+            this.height = 300;
+            this.currentRotate = 0;
+            this.unShow = "none";
+            this.initPanel(options);
+            const defineObj = new Object(); // 定义一个临时对象
+            // Object.defineProperties(gykjPanel.prototype, {
+            Object.defineProperties(this, {
+                show: {
+                    // value: options.show, // 设置默认值
+                    configurable: true,//设置可设置性
+                    set: function (value) {
+                        defineObj.show = value;
+                        this.panelDom.style.display = value ? "block" : "none";
+                    },
+                    get: function () {
+                        return defineObj.show; // 将属性返回给gykjPanel
+                    }
+                }
+            })
+            this.show = options.show;
         }
+
         /**
          *
          * @param {*} options zIndex,top,left,width,title,content
@@ -18,20 +36,21 @@ const gykjPanel = (function () {
          */
         initPanel(options) {
             let _this = this;
-            const panelDiv = document.createElement('div');
+            let panelDiv = document.createElement('div');
+            _this.panelDom = panelDiv;
             const mapDiv = document.querySelector('.B');
             mapDiv.appendChild(panelDiv);
             if (options == null) {
                 options = {};
             }
             panelDiv.classList.add('panelDiv');
-            panelDiv.style.zIndex = options.zIndex ? options.zIndex : zIndex;
+            panelDiv.style.zIndex = options.zIndex ? options.zIndex : _this.zIndex;
             // panelDiv.style.position = 'absolute';
-            panelDiv.style.top = (options.top ? options.top : top) + 'px';
-            panelDiv.style.left = (options.left ? options.left : left) + 'px';
-            panelDiv.style.width = (options.width ? options.width : width) + 'px';
-            panelDiv.style.height = (options.height ? options.height : height) + 'px';
-            panelDiv.style.display = options.show? "block": unShow;
+            panelDiv.style.top = (options.top ? options.top : _this.top) + 'px';
+            panelDiv.style.left = (options.left ? options.left : _this.left) + 'px';
+            panelDiv.style.width = (options.width ? options.width : _this.width) + 'px';
+            panelDiv.style.height = (options.height ? options.height : _this.height) + 'px';
+            panelDiv.style.display = options.show ? "block" : _this.unShow;
             // panelDiv.style.backgroundColor = "rgba(57, 57, 57, 0.8)";
             const title = document.createElement('div');
             panelDiv.appendChild(title);
@@ -42,14 +61,23 @@ const gykjPanel = (function () {
             title.appendChild(titleH3);
             const titleDiv2 = document.createElement('div');
             title.appendChild(titleDiv2);
-            const titleImgA = document.createElement('a');
-            titleDiv2.appendChild(titleImgA);
-            titleImgA.classList.add('panel-title-img-a');
-            titleImgA.onclick = _this.togglePanel;
-            const arrow = document.createElement('img');
+            const titleArrowA = document.createElement('a');
+            titleDiv2.appendChild(titleArrowA);
+            titleArrowA.classList.add('panel-title-img-a');
+            titleArrowA.onclick = _this.togglePanel;
+            const titleCloseA = document.createElement('a');
+            titleDiv2.appendChild(titleCloseA);
+            titleCloseA.classList.add('panel-title-img-a');
+            console.log(titleCloseA)
+            titleCloseA.onclick = function () {
+                _this.hidePanel();
+            }
+            const arrow = document.createElement('i');
             arrow.classList.add('panel-arrow')
-            arrow.src = "./img/navImg/jianjian.png";
-            titleImgA.appendChild(arrow);
+            titleArrowA.appendChild(arrow);
+            const close = document.createElement('i');
+            close.classList.add('panel-close')
+            titleCloseA.appendChild(close);
             const content = document.createElement('div');
             content.style.height = (options.height ? options.height - 50 : height - 50) + 'px';
             content.classList.add('panel-content');
@@ -58,13 +86,14 @@ const gykjPanel = (function () {
 
             _this.move(title);
             // _this.resize(document.querySelector('.panel-div-map i.bar'));
-            return panelDiv;
+            return this;
         }
 
         closePanel(domPanel) {
             let _this = this;
             this.panelDom.remove();
         }
+
         resize(obj) {
             let _this = this;
             // 是否开启尺寸修改
@@ -81,21 +110,23 @@ const gykjPanel = (function () {
             // 鼠标按下时的位置，使用n、s、w、e表示
             let direc = '';
             let isMoving = false;
+
             // 鼠标松开时结束尺寸修改
             function up() {
                 resizeable = false
             }
+
             // 鼠标松开事件
             document.body.addEventListener('mouseup', up)
-            document.body.addEventListener('mouseleave', function(){
+            document.body.addEventListener('mouseleave', function () {
                 isMoving = false;
                 // 预防短暂的移出页面导致事件终止
-                setTimeout(function(){
+                setTimeout(function () {
                     if (isMoving) {
                         return;
                     }
                     resizeable = false;
-                },1200)
+                }, 1200)
             })
             // 鼠标按下事件
             obj.addEventListener('mousedown', function (e) {
@@ -140,9 +171,9 @@ const gykjPanel = (function () {
                     // if (direc.indexOf('e') !== -1) {
                     let width = Math.max(minW, _this.panelDom.offsetWidth + (e.clientX - clientX));
                     if (windowWidth - offleft < width) {
-                        _this.panelDom.style.width = windowWidth - offleft  + 'px';
+                        _this.panelDom.style.width = windowWidth - offleft + 'px';
                     } else {
-                        _this.panelDom.style.width = width  + 'px';
+                        _this.panelDom.style.width = width + 'px';
                     }
                     clientX = e.clientX
                     // }
@@ -150,11 +181,11 @@ const gykjPanel = (function () {
                     // if (direc.indexOf('s') !== -1) {
                     let height = Math.max(minH, _this.panelDom.offsetHeight + (e.clientY - clientY));
                     if (windowHeight - offtop - navHeight < height) {
-                        _this.panelDom.style.height = windowHeight - offtop - navHeight  + 'px';
-                        _this.panelDom.querySelector('.panel-content').style.height = windowHeight - offtop - navHeight - 50  + 'px'; // 50是标题栏的高度
+                        _this.panelDom.style.height = windowHeight - offtop - navHeight + 'px';
+                        _this.panelDom.querySelector('.panel-content').style.height = windowHeight - offtop - navHeight - 50 + 'px'; // 50是标题栏的高度
                     } else {
-                        _this.panelDom.style.height = height  + 'px';
-                        _this.panelDom.querySelector('.panel-content').style.height = height - 50  + 'px'; // 50是标题栏的高度
+                        _this.panelDom.style.height = height + 'px';
+                        _this.panelDom.querySelector('.panel-content').style.height = height - 50 + 'px'; // 50是标题栏的高度
                     }
                     clientY = e.clientY
                 }
@@ -162,6 +193,7 @@ const gykjPanel = (function () {
                 // }
             })
         }
+
         /*封装移动函数*/
         move(obj) {
             let _this = this;
@@ -218,27 +250,42 @@ const gykjPanel = (function () {
 
             };
         };
+
+        hidePanel() {
+            let _this = this;
+            console.log(this)
+            _this.show = !_this.show;
+        }
+
         togglePanel() {
-            currentRotate = (currentRotate + 180) % 360;
+            let currentRotate = $(this).data('currentRotate');
+            if (!currentRotate || currentRotate == 360) {
+                $(this).parent().parent().parent().addClass('panelDiv-close');
+                currentRotate = 0;
+            } else {
+                $(this).parent().parent().parent().removeClass('panelDiv-close');
+            }
+            $(this).data('currentRotate', (currentRotate + 180) % 360)
             $(this).parent().parent().next().toggle();
             $(this).children('.panel-arrow').css({
-                "transform": "rotate(" + currentRotate + "deg)",
-                "-ms-transform": "rotate(" + currentRotate + "deg)",
+                "transform": "rotate(" + this.currentRotate + "deg)",
+                "-ms-transform": "rotate(" + this.currentRotate + "deg)",
                 /* IE 9 */
-                "-moz-transform": "rotate(" + currentRotate + "deg)",
+                "-moz-transform": "rotate(" + this.currentRotate + "deg)",
                 /* Firefox */
-                "-webkit-transform": "rotate(" + currentRotate + "deg)",
+                "-webkit-transform": "rotate(" + this.currentRotate + "deg)",
                 /* Safari 和 Chrome */
-                "-o-transform": "rotate(" + currentRotate + "deg)",
+                "-o-transform": "rotate(" + this.currentRotate + "deg)",
                 /* Opera */
             })
-            if (currentRotate == 180) {
-                $(this).parent().parent().parent().addClass('panelDiv-close');
-            }else{
-                $(this).parent().parent().parent().removeClass('panelDiv-close');
+            if (this.currentRotate == 180) {
+
+            } else {
+
             }
         }
     }
+
     return gykjPanel
 
     // return {
