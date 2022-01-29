@@ -1,3 +1,4 @@
+require("./clickEvents")
 const $ = require("jQuery");
 export function initMainHtml() {
     $(".nav li").data("checked", "0"); //0代表所有得标签

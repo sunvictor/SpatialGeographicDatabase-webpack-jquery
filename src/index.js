@@ -11,7 +11,9 @@ import {initMainHtml} from "./js/html/mainHtml";
 import {startUpEarth, startUpCesium} from "./js/cesium/initMap";
 // require('cesium/Widgets/widgets.css');
 if (typeof XE !== 'undefined') {
-    XE.ready().then(startUpEarth)
+    XE.ready().then(function(){
+        startUpEarth();
+    })
 } else {
     startUpCesium();
 }

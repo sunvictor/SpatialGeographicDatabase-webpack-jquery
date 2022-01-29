@@ -68,7 +68,6 @@ const gykjPanel = (function () {
             const titleCloseA = document.createElement('a');
             titleDiv2.appendChild(titleCloseA);
             titleCloseA.classList.add('panel-title-img-a');
-            console.log(titleCloseA)
             titleCloseA.onclick = function () {
                 _this.hidePanel();
             }
@@ -253,7 +252,6 @@ const gykjPanel = (function () {
 
         hidePanel() {
             let _this = this;
-            console.log(this)
             _this.show = !_this.show;
         }
 
@@ -265,24 +263,20 @@ const gykjPanel = (function () {
             } else {
                 $(this).parent().parent().parent().removeClass('panelDiv-close');
             }
-            $(this).data('currentRotate', (currentRotate + 180) % 360)
+            currentRotate = (currentRotate + 180) % 360
+            $(this).data('currentRotate', currentRotate);
             $(this).parent().parent().next().toggle();
             $(this).children('.panel-arrow').css({
-                "transform": "rotate(" + this.currentRotate + "deg)",
-                "-ms-transform": "rotate(" + this.currentRotate + "deg)",
+                "transform": "rotate(" + currentRotate + "deg)",
+                "-ms-transform": "rotate(" + currentRotate + "deg)",
                 /* IE 9 */
-                "-moz-transform": "rotate(" + this.currentRotate + "deg)",
+                "-moz-transform": "rotate(" + currentRotate + "deg)",
                 /* Firefox */
-                "-webkit-transform": "rotate(" + this.currentRotate + "deg)",
+                "-webkit-transform": "rotate(" + currentRotate + "deg)",
                 /* Safari 和 Chrome */
-                "-o-transform": "rotate(" + this.currentRotate + "deg)",
+                "-o-transform": "rotate(" + currentRotate + "deg)",
                 /* Opera */
             })
-            if (this.currentRotate == 180) {
-
-            } else {
-
-            }
         }
     }
 

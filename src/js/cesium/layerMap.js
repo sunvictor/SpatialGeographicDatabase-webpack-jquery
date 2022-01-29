@@ -7,7 +7,6 @@ const LayerMap = (function () {
         GCJ02: "GCJ02",
         GSC2000: "GCS_China_Geodetic_Coordinate_System_2000"
     }
-
     class LayerMap {
         constructor(viewer) {
             this.viewer = viewer;
