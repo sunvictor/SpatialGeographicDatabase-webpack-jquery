@@ -12,7 +12,8 @@ module.exports = {
         path: path.join(__dirname, 'dist'),
         filename: 'bundle.js',
         //需要编译Cesium中的多行字符串
-        sourcePrefix: ''
+        sourcePrefix: '',
+        // publicPath: './'
     },
     amd: {
         //允许Cesium兼容 webpack的require方式
@@ -25,7 +26,8 @@ module.exports = {
     resolve: {
         alias: {
             // Cesium模块名称
-            cesium: path.resolve(__dirname, cesiumSource)
+            cesium: path.resolve(__dirname, cesiumSource),
+            '@': path.resolve('src')
         },
         // mainFiles: ['index', 'Cesium']
     },
@@ -61,10 +63,20 @@ module.exports = {
             {
                 test: /\.css$/,
                 use: ['style-loader', 'css-loader']
-            }, {
+            },
+            // {
+            //     test: /\.(png|gif|jpg|jpeg|svg|xml|json)$/,
+            //     use: [{
+            //         loader: 'url-loader',
+            //         options: {
+            //             limit: 50
+            //         }
+            //     }]
+            // },
+            {
                 test: /\.(png|gif|jpg|jpeg|svg|xml|json)$/,
-                use: ['url-loader']
-            }, {
+                type: 'asset/resource' // webpack5中使用Asset Modules！！！不使用url-loader和file-loader了！！！
+            },{
                 test: /\.(scss)$/,
                 use: [{
                     loader: 'style-loader', // inject CSS to page

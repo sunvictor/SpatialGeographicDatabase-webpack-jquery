@@ -5,7 +5,10 @@ import * as Cesium from 'cesium/Cesium'; // 模块化引用Cesium
 import 'bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import "cesium/Widgets/widgets.css";
-import 'ztree/css/zTreeStyle/zTreeStyle.css'
+import $ from "jquery"
+import 'ztree'
+// import 'ztree/css/zTreeStyle/zTreeStyle.css'
+import "./css/ztree/css/bootstrapztree.css"
 import "./css/index.css"
 import "./css/panel.css"
 import {initMainHtml} from "./js/html/mainHtml";
@@ -21,3 +24,17 @@ if (typeof XE !== 'undefined') {
     startUpCesium();
 }
 initMainHtml();
+
+// const { app, BrowserWindow } = require('electron')
+//
+// function createWindow () {
+//     const win = new BrowserWindow({
+//         width: 800,
+//         height: 600
+//     })
+//
+//     win.loadFile('src/index.html')
+// }
+// app.whenReady().then(() => {
+//     createWindow()
+// })
