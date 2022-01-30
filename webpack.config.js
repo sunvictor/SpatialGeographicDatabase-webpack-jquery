@@ -40,22 +40,31 @@ module.exports = {
             //     include: path.join(__dirname, "src"),
             //     exclude: /node_modules/
             // },
+            // {
+            //     test: require.resolve('jquery'), //require.resolve 用来获取模块的绝对路径
+            //     use: [{
+            //         loader: 'expose-loader',
+            //         options: 'jQuery'
+            //     }, {
+            //         loader: 'expose-loader',
+            //         options: '$'
+            //     }
+            //     ]
+            // },
             {
-                test: require.resolve('jquery'), //require.resolve 用来获取模块的绝对路径
-                use: [{
-                    loader: 'expose-loader',
-                    options: 'jQuery'
-                }, {
-                    loader: 'expose-loader',
-                    options: '$'
-                }]
-            }, {
+                test: require.resolve("jquery"),
+                loader: "expose-loader",
+                options: {
+                    exposes: ["$", "jQuery"],
+                },
+            },
+            {
                 test: /\.css$/,
                 use: ['style-loader', 'css-loader']
             }, {
                 test: /\.(png|gif|jpg|jpeg|svg|xml|json)$/,
                 use: ['url-loader']
-            },{
+            }, {
                 test: /\.(scss)$/,
                 use: [{
                     loader: 'style-loader', // inject CSS to page
@@ -77,6 +86,11 @@ module.exports = {
         ]
     },
     plugins: [
+        // new webpack.ProvidePlugin({
+        //     $: "jquery",
+        //     jQuery: "jquery",
+        //     // "window.jQuery": "jquery"
+        // }),
         new HtmlWebpackPlugin({
             template: path.join(__dirname, "src", "index.html"),
             filename: "index.html"
@@ -104,14 +118,15 @@ module.exports = {
                     to: 'js/Cesium',
                     toType: 'dir'
                 },
-                {from: './node_modules/earthsdk/dist/XbsjCesium',to: 'js/earthsdk/XbsjCesium',toType: 'dir'},
-                {from: './node_modules/earthsdk/dist/XbsjEarth',to: 'js/earthsdk/XbsjEarth',toType: 'dir'},
+                {from: './node_modules/earthsdk/dist/XbsjCesium', to: 'js/earthsdk/XbsjCesium', toType: 'dir'},
+                {from: './node_modules/earthsdk/dist/XbsjEarth', to: 'js/earthsdk/XbsjEarth', toType: 'dir'},
             ]
         }),
         new webpack.DefinePlugin({
             // Define relative base path in cesium for loading assets
             CESIUM_BASE_URL: JSON.stringify('')
         })
+
     ],
     devServer: {
         // port: 8000,

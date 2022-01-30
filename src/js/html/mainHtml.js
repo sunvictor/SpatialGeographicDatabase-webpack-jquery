@@ -1,5 +1,6 @@
 require("./clickEvents")
-const $ = require("jQuery");
+// const $ = require("jQuery");
+import $ from "jquery";
 export function initMainHtml() {
     $(".nav li").data("checked", "0"); //0代表所有得标签
     $(".nav li:eq(0)").data("checked", "1"); //1代表当前选中标签

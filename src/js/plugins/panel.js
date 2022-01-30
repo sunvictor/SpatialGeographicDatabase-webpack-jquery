@@ -1,4 +1,9 @@
-const $ = require("jQuery")
+// const $ = require("jQuery")
+import $ from "jquery";
+// const $ = require("expose?$!jquery")
+// const $ = require("expose-loader?$!jquery");
+// import $ from 'jquery'
+// console.log($)
 const gykjPanel = (function () {
     class gykjPanel {
         constructor(options) {
@@ -80,9 +85,9 @@ const gykjPanel = (function () {
             const content = document.createElement('div');
             content.style.height = (options.height ? options.height - 50 : height - 50) + 'px';
             content.classList.add('panel-content');
-            content.innerHTML = options.content ? options.content : "";
+            // content.innerHTML = options.content ? options.content : "";
+            $(content).append(options.content) // 这里使用了jquery对append()函数，既能添加node节点，也能添加html格式对字符串，原生JS实现方式后面再尝试
             panelDiv.appendChild(content);
-
             _this.move(title);
             // _this.resize(document.querySelector('.panel-div-map i.bar'));
             return this;

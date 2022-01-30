@@ -1,4 +1,5 @@
-const $ = require("jQuery");
+// const $ = require("jQuery");
+import $ from "jquery";
 export function bindBtnImg() {
     this.init.apply(this, arguments);
 }
