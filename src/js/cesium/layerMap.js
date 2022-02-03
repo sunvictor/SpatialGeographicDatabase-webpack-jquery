@@ -1,4 +1,5 @@
 import pm from "../plugins/publicMethod";
+import {go} from "@/js/cesium/globalObject";
 
 const LayerMap = (function () {
     let labCoordTypeDict = {
@@ -7,6 +8,7 @@ const LayerMap = (function () {
         GCJ02: "GCJ02",
         GSC2000: "GCS_China_Geodetic_Coordinate_System_2000"
     }
+
     class LayerMap {
         constructor(viewer) {
             this.viewer = viewer;
@@ -14,7 +16,19 @@ const LayerMap = (function () {
 
         add(options) {
             let map = this.addMap(options);
+            console.log(map)
+            let newNode = {
+                name: map.name,
+                checked: map.show
+                // data: JSON.stringify(map)
+            }
+            go.lc.addNode(-1, newNode, map)
             return map;
+        }
+
+        remove(layer, destroy = true) {
+            let _this = this;
+            return _this.viewer.imageryLayers.remove(layer, destroy);
         }
 
         /**

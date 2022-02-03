@@ -1,0 +1,14 @@
+div#rMenu {
+    position: absolute;
+    visibility: hidden;
+    top: 0;
+    text-align: left;
+    padding: 4px;
+    z-index: 2;
+}
+
+div#rMenu a {
+    padding: 3px 15px 3px 15px;
+    background-color: #cad4e6;
+    vertical-align: middle;
+}

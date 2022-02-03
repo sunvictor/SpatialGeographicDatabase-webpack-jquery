@@ -1,5 +1,6 @@
 import layerMap from "./layerMap";
 import gykjPanel from "../plugins/panel";
+import {go, globals} from "./globalObject"
 
 const mapConfig = {
     baseLayerPicker: false,
@@ -30,8 +31,8 @@ const mapConfig = {
 }
 
 function initScene(viewer) {
-    const lm = new layerMap(viewer);
-    let newSatellite = lm.add({
+    // const lm = new layerMap(viewer);
+    let newSatellite = go.lm.add({
         name: "新卫星图",
         url: "http://183.230.114.154:9010/Satellite/{z}/{x}/{y}.png",
         type: "cesiumlab",
@@ -39,7 +40,7 @@ function initScene(viewer) {
             saturation: 1.7
         }
     })
-    let oldStreet = lm.add({
+    let oldStreet = go.lm.add({
         name: "旧街道图",
         url: "http://222.178.182.14:9010/dataserver?x={x}&y={y}&l={z}&t=cva_c",
         type: "origin",
@@ -87,13 +88,12 @@ function defaultCOnfig(viewer) {
     viewer.scene.fog.density = 0;
 }
 
-import {globals} from "./globalObject"
 
 function commonCofig(viewer) {
     window.viewer = viewer;
+    globals(viewer);
     initScene(viewer);
     defaultCOnfig(viewer);
-    globals(viewer);
 }
 
 export function startUpEarth() {

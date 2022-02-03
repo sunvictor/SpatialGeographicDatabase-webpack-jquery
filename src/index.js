@@ -9,6 +9,7 @@ import $ from "jquery"
 import 'ztree'
 // import 'ztree/css/zTreeStyle/zTreeStyle.css'
 import "./css/ztree/css/bootstrapztree.css"
+import "./css/ztree/css/rightClickStyle.css"
 import "./css/index.css"
 import "./css/panel.css"
 import {initMainHtml} from "./js/html/mainHtml";

@@ -1,5 +1,6 @@
 import {bindBtnImg} from "../html/bindBtnImg";
-import LayerControl from "./layerControl"
+import LayerControl from "./layerControl";
+import LayerMap from "./layerMap"
 let _viewer;
 export const go = {};
 
@@ -11,6 +12,7 @@ export function globals(viewer) {
 function createObjs(viewer) {
     go.bbi = new bindBtnImg(viewer)
     go.lc = new LayerControl(viewer)
+    go.lm = new LayerMap(viewer)
 }
 
 export function getViewer() {
@@ -24,3 +26,22 @@ export function getViewer() {
         }
     })
 }
+
+
+Array.prototype.indexOf = function (val) {
+    for (var i = 0; i < this.length; i++) {
+        if (this[i] == val) return i;
+    }
+    return -1;
+};
+Array.prototype.remove = function (val) {
+    var index = this.indexOf(val);
+    if (index > -1) {
+        this.splice(index, 1);
+    }
+};
+Array.prototype.removeByIndex = function (index) {
+    if (index > -1) {
+        this.splice(index, 1);
+    }
+};

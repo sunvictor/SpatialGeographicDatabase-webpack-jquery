@@ -74,7 +74,11 @@ const gykjPanel = (function () {
             titleDiv2.appendChild(titleCloseA);
             titleCloseA.classList.add('panel-title-img-a');
             titleCloseA.onclick = function () {
-                _this.hidePanel();
+                let callBk = function () {};
+                if (options.callback && options.callback.hidePanel) {
+                    callBk = options.callback.hidePanel
+                }
+                _this.hidePanel(callBk);
             }
             const arrow = document.createElement('i');
             arrow.classList.add('panel-arrow')
@@ -255,9 +259,10 @@ const gykjPanel = (function () {
             };
         };
 
-        hidePanel() {
+        hidePanel(callback) {
             let _this = this;
-            _this.show = !_this.show;
+            // _this.show = !_this.show;
+            callback();
         }
 
         togglePanel() {
