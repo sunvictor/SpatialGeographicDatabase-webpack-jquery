@@ -31,6 +31,16 @@ const LayerMap = (function () {
             return _this.viewer.imageryLayers.remove(layer, destroy);
         }
 
+        lower(layer){
+            let _this = this;
+            _this.viewer.imageryLayers.lower(layer);
+        }
+
+        raise(layer){
+            let _this = this;
+            _this.viewer.imageryLayers.raise(layer);
+        }
+
         /**
          * 传入的参数是一个json格式的
          * name 图层名称 必填项*

@@ -27,8 +27,9 @@ export default class LayerControl {
         // };
         let setting = {
             view: {
-                // addHoverDom: addHoverDom,
+                addHoverDom: _this.addHoverDom,
                 removeHoverDom: _this.removeHoverDom,
+                // addDiyDom: _this.addDiyDom,
                 selectedMulti: false
             },
             async: {
@@ -47,18 +48,24 @@ export default class LayerControl {
             },
             edit: {
                 enable: true,
-                showRemoveBtn: false
+                // showRemoveBtn: false
             },
             callback: {
                 onRightClick: _this.onRightClick,
-                onCheck: _this.controlLayerShow
+                onCheck: _this.controlLayerShow,
+                onRename: _this.onRename,
+                onRemove: _this.onRemove,
+                onClick: _this.onClick,
+                beforeDrag: _this.beforeDrag,
+                beforeDrop: _this.beforeDrop
             }
         };
 
         _this.treeData.push({
             name: "新建场景",
             open: true,
-            // checked: true
+            checked: true,
+            type: 'dir'
         })
 
         let ul = document.createElement("ul");
@@ -107,15 +114,61 @@ export default class LayerControl {
         zTree.reAsyncChildNodes(nodes[0], type, silent);
     }
 
-    controlLayerShow(event, treeId, treeNode) {
+    beforeDrag(treeId, treeNodes) {
+
+    }
+
+    beforeDrop(treeId, treeNodes, targetNode, moveType, isCopy) {
+        console.log(treeNodes)
+        if (!targetNode.children) {
+            return false;
+        } else {
+            return !(targetNode == null || (moveType != "inner" && !targetNode.parentTId)); // 禁止将节点拖拽成为根节点
+        }
+    }
+
+    onClick(event, treeId, treeNode, clickFlag) {
         console.log(treeNode)
+    }
+
+    onRemove(event, treeId, treeNode) {
+        console.log(treeNode)
+        if (treeNode.children) {
+            for (let i = 0; i < treeNode.children.length; i++) {
+                go.lc.removeLayer(treeNode.children[i])
+            }
+        } else {
+            go.lc.removeLayer(treeNode);
+        }
+    }
+
+    onRename(event, treeId, treeNode) {
+        let layer = go.lc.getNodeData(treeNode.gIndex)
+        if (!layer) {
+            return;
+        }
+        layer.name = treeNode.name
+    }
+
+    controlLayerShow(event, treeId, treeNode) {
         let chkStatus = treeNode.getCheckStatus()
-        console.log(chkStatus)
         let layer = go.lc.getNodeData(treeNode.gIndex)
         if (!layer) {
             return;
         }
         layer.show = chkStatus.checked
+    }
+
+    addDiyDom(treeId, treeNode) {
+        console.log(3)
+        let aObj = $("#" + treeNode.tId + '_span');
+        if (treeNode.editNameFlag || $("#upLayerBtn_" + treeNode.tId).length > 0) return;
+        if (treeNode.editNameFlag || $("#lowerLayerBtn_" + treeNode.tId).length > 0) return;
+        let upLayerStr = `<span class="button add" id="upLayerBtn_${treeNode.tId}"></span>`
+        let lowerLayerStr = `<span class="button edit" id="lowerLayerBtn_${treeNode.tId}"></span>`
+        aObj.after(lowerLayerStr)
+        aObj.after(upLayerStr)
+        console.log(aObj)
     }
 
     /**
@@ -124,26 +177,58 @@ export default class LayerControl {
      * @param treeNode
      */
     addHoverDom(treeId, treeNode) {
-        let _this = this;
         let sObj = $("#" + treeNode.tId + "_span");
-        if (treeNode.editNameFlag || $("#addBtn_" + treeNode.tId).length > 0) return;
-        let addStr = "<span class='button add' id='addBtn_" + treeNode.tId
-            + "' title='add node' onfocus='this.blur();'></span>";
-        sObj.after(addStr);
-        let btn = $("#addBtn_" + treeNode.tId);
-        if (btn) btn.bind("click", function () {
-            let zTree = $.fn.zTree.getZTreeObj("tree");
-            zTree.addNodes(treeNode, {
-                id: (100 + _this.newCount),
-                pId: treeNode.id,
-                name: "new node" + (_this.newCount++)
+        lowerLayerBtn();
+        upLayerBtn();
+
+        function addBtn() {
+            if (treeNode.editNameFlag || $("#addBtn_" + treeNode.tId).length > 0) return;
+            let addStr = "<span class='button add' id='addBtn_" + treeNode.tId
+                + "' title='add node' onfocus='this.blur();'></span>";
+            sObj.after(addStr);
+            let btn = $("#addBtn_" + treeNode.tId);
+            if (btn) btn.bind("click", function () {
+                let zTree = $.fn.zTree.getZTreeObj("tree");
+                zTree.addNodes(treeNode, {
+                    id: (100 + _this.newCount),
+                    pId: treeNode.id,
+                    name: "new node" + (_this.newCount++)
+                });
+                return false;
             });
-            return false;
-        });
+        }
+
+        function upLayerBtn() {
+            if (treeNode.editNameFlag || $("#upLayerBtn_" + treeNode.tId).length > 0) return;
+            let upLayerStr = `<span class="" id="upLayerBtn_${treeNode.tId}">上</span>`
+            sObj.after(upLayerStr)
+            let btn = $("#upLayerBtn_" + treeNode.tId);
+            if (btn) btn.bind("click", function () {
+                const tree = $.fn.zTree.getZTreeObj("tree")
+                let resNode = tree.moveNode(treeNode.getPreNode(), treeNode, 'prev')
+                let layer = go.lc.getNodeData(resNode.gIndex)
+                go.lm.raise(layer)
+            })
+        }
+
+        function lowerLayerBtn() {
+            if (treeNode.editNameFlag || $("#lowerLayerBtn_" + treeNode.tId).length > 0) return;
+            let lowerLayerStr = `<span class="" id="lowerLayerBtn_${treeNode.tId}">下</span>`
+            sObj.after(lowerLayerStr)
+            let btn = $("#lowerLayerBtn_" + treeNode.tId);
+            if (btn) btn.bind("click", function () {
+                const tree = $.fn.zTree.getZTreeObj("tree")
+                let resNode = tree.moveNode(treeNode.getNextNode(), treeNode, 'next')
+                let layer = go.lc.getNodeData(resNode.gIndex)
+                go.lm.lower(layer)
+            })
+        }
     }
 
     removeHoverDom(treeId, treeNode) {
         $("#addBtn_" + treeNode.tId).unbind().remove();
+        $("#upLayerBtn_" + treeNode.tId).unbind().remove();
+        $("#lowerLayerBtn_" + treeNode.tId).unbind().remove();
     }
 
     /**
@@ -163,7 +248,6 @@ export default class LayerControl {
         a.classList.add('list-group-item')
         $(a).text("删除")
         $(a).on('click', function () {
-            console.log("remove")
             _this.removeNode(treeNode)
         })
         $(rMenu).attr("id", "rMenu")
@@ -186,11 +270,10 @@ export default class LayerControl {
 
     //鼠标按下事件
     onBodyMouseDown(event) {
-        let _this = this;
         if (!(event.target.id == "rMenu" || $(event.target).parents("#rMenu").length > 0)) {
             // $("#rMenu").hide();
             // $("#rMenu").css({"visibility": "hidden"});
-            _this.hideRMenu()
+            go.lc.hideRMenu()
         }
     }
 
@@ -241,10 +324,11 @@ export default class LayerControl {
 
     removeLayer(layer) {
         let _this = this;
-        if (typeof layer == "object") {
+        if (typeof layer == "object") { // layer是treeNode对象
             let gIndex = layer.gIndex;
             go.lm.remove(_this.treeData[gIndex])
-            _this.treeData.removeByIndex(gIndex);
+            // _this.treeData.removeByIndex(gIndex);
+            _this.treeData[gIndex] = "hasRemoved"
         } else if (typeof layer == "string") {
             _this.treeData.remove(layer);
         }
