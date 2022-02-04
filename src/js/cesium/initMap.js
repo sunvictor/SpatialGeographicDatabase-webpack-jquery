@@ -50,6 +50,13 @@ function initScene(viewer) {
             format: "image/png",
         }
     })
+    let trafficMap = go.lm.add({
+        name: "腾讯实时路况",
+        url: "https://rtt2b.map.qq.com/rtt/?z={z}&x={x}&y={reverseY}&times=1&time=",
+        type: "cesiumlab",
+        coordType: [go.lm.labCoordTypeDict.GCJ02, go.lm.labCoordTypeDict.WGS84]
+    })
+    trafficMap.alpha = 0.7
 }
 
 function defaultCOnfig(viewer) {

@@ -2,14 +2,13 @@ import pm from "../plugins/publicMethod";
 import {go} from "@/js/cesium/globalObject";
 
 const LayerMap = (function () {
-    let labCoordTypeDict = {
-        BD09: "BD09",
-        WGS84: "WGS84",
-        GCJ02: "GCJ02",
-        GSC2000: "GCS_China_Geodetic_Coordinate_System_2000"
-    }
-
     class LayerMap {
+        labCoordTypeDict = {
+            BD09: "BD09",
+            WGS84: "WGS84",
+            GCJ02: "GCJ02",
+            GSC2000: "GCS_China_Geodetic_Coordinate_System_2000"
+        }
         constructor(viewer) {
             this.viewer = viewer;
         }
@@ -115,20 +114,19 @@ const LayerMap = (function () {
                 return false;
             }
             if (!params.coordType) {
-                params.coordType = [labCoordTypeDict.WGS84, labCoordTypeDict.WGS84]
+                params.coordType = [_this.labCoordTypeDict.WGS84, _this.labCoordTypeDict.WGS84]
             }
             let XbsjImageryProvider = {
                 "url": params.url,
                 "srcCoordType": params.coordType[0],
             }
             // 当加载坐标不为 wgs84 时,才添加"dstCoordType"属性, 因为默认加载坐标就是wgs84
-            if (params.coordType[1] == !labCoordTypeDict.WGS84) {
+            if (params.coordType[1] == !_this.labCoordTypeDict.WGS84) {
                 XbsjImageryProvider["dstCoordType"] = coordType[1];
             }
             let json = {
                 "czmObject": {
                     "xbsjType": "Imagery",
-                    "xbsjGuid": "7d91e26a-3f31-438b-8175-be8b276a63f8",
                     "name": params.name,
                     "xbsjImageryProvider": {
                         "XbsjImageryProvider": XbsjImageryProvider,
@@ -147,7 +145,7 @@ const LayerMap = (function () {
                 console.error("请使用earthSDK加载图层");
                 console.error(e);
             }
-            let map = _this.viewer.imageryLayers._layers[index - 1];
+            let map = _this.viewer.imageryLayers._layers[_this.viewer.imageryLayers._layers.length - 1];
             map.name = params.name;
             pm.setOptions(map, params.options);
             return map;

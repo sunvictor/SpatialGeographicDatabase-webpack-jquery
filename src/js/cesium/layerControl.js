@@ -178,8 +178,18 @@ export default class LayerControl {
      */
     addHoverDom(treeId, treeNode) {
         let sObj = $("#" + treeNode.tId + "_span");
-        lowerLayerBtn();
-        upLayerBtn();
+        if (treeNode.isParent) {
+            return;
+        }
+        window.a = treeNode
+        if (treeNode.getNextNode() == null) {
+            lowerLayerBtn();
+        } else if (treeNode.getPreNode() == null) {
+            upLayerBtn();
+        } else {
+            upLayerBtn();
+            lowerLayerBtn();
+        }
 
         function addBtn() {
             if (treeNode.editNameFlag || $("#addBtn_" + treeNode.tId).length > 0) return;
@@ -200,12 +210,14 @@ export default class LayerControl {
 
         function upLayerBtn() {
             if (treeNode.editNameFlag || $("#upLayerBtn_" + treeNode.tId).length > 0) return;
-            let upLayerStr = `<span class="" id="upLayerBtn_${treeNode.tId}">上</span>`
+            let upLayerStr = `<span class="" id="upLayerBtn_${treeNode.tId}" title="升">升</span>`
             sObj.after(upLayerStr)
             let btn = $("#upLayerBtn_" + treeNode.tId);
             if (btn) btn.bind("click", function () {
                 const tree = $.fn.zTree.getZTreeObj("tree")
-                let resNode = tree.moveNode(treeNode.getPreNode(), treeNode, 'prev')
+                let resNode = tree.moveNode(treeNode.getNextNode(), treeNode, 'next')
+                $("#upLayerBtn_" + treeNode.tId).unbind().remove();
+                go.lc.addHoverDom(treeId, treeNode)
                 let layer = go.lc.getNodeData(resNode.gIndex)
                 go.lm.raise(layer)
             })
@@ -213,12 +225,14 @@ export default class LayerControl {
 
         function lowerLayerBtn() {
             if (treeNode.editNameFlag || $("#lowerLayerBtn_" + treeNode.tId).length > 0) return;
-            let lowerLayerStr = `<span class="" id="lowerLayerBtn_${treeNode.tId}">下</span>`
+            let lowerLayerStr = `<span class="" id="lowerLayerBtn_${treeNode.tId}" title="降">降</span>`
             sObj.after(lowerLayerStr)
             let btn = $("#lowerLayerBtn_" + treeNode.tId);
             if (btn) btn.bind("click", function () {
                 const tree = $.fn.zTree.getZTreeObj("tree")
-                let resNode = tree.moveNode(treeNode.getNextNode(), treeNode, 'next')
+                let resNode = tree.moveNode(treeNode.getPreNode(), treeNode, 'prev')
+                $("#lowerLayerBtn_" + treeNode.tId).unbind().remove();
+                go.lc.addHoverDom(treeId, treeNode)
                 let layer = go.lc.getNodeData(resNode.gIndex)
                 go.lm.lower(layer)
             })
@@ -317,7 +331,7 @@ export default class LayerControl {
             parentNode = tree.getNodes()[0]
         }
         newNode = tree.addNodes(parentNode, newNode);
-        tree.refresh()
+        // tree.refresh()
         // }
         return newNode;
     }
