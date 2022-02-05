@@ -9,6 +9,7 @@ const LayerMap = (function () {
             GCJ02: "GCJ02",
             GSC2000: "GCS_China_Geodetic_Coordinate_System_2000"
         }
+
         constructor(viewer) {
             this.viewer = viewer;
         }
@@ -16,6 +17,11 @@ const LayerMap = (function () {
         add(options) {
             let map = this.addMap(options);
             console.log(map)
+            if (typeof options.show == "undefined") {
+                map.show = true;
+            } else {
+                map.show = options.show;
+            }
             let newNode = {
                 name: map.name,
                 checked: map.show
@@ -30,12 +36,12 @@ const LayerMap = (function () {
             return _this.viewer.imageryLayers.remove(layer, destroy);
         }
 
-        lower(layer){
+        lower(layer) {
             let _this = this;
             _this.viewer.imageryLayers.lower(layer);
         }
 
-        raise(layer){
+        raise(layer) {
             let _this = this;
             _this.viewer.imageryLayers.raise(layer);
         }
@@ -68,6 +74,7 @@ const LayerMap = (function () {
             } else {
                 map = _this.addMapByOriginFunc(params);
             }
+            map.customProp = params;
             return map;
         }
 

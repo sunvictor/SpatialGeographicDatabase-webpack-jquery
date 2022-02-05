@@ -1,6 +1,7 @@
 import layerMap from "./layerMap";
 import gykjPanel from "../plugins/panel";
 import {go, globals} from "./globalObject"
+import CesiumZh from "../plugins/CesiumZh"
 
 const mapConfig = {
     baseLayerPicker: false,
@@ -52,6 +53,7 @@ function initScene(viewer) {
     })
     let trafficMap = go.lm.add({
         name: "腾讯实时路况",
+        show: false,
         url: "https://rtt2b.map.qq.com/rtt/?z={z}&x={x}&y={reverseY}&times=1&time=",
         type: "cesiumlab",
         coordType: [go.lm.labCoordTypeDict.GCJ02, go.lm.labCoordTypeDict.WGS84]
@@ -60,6 +62,7 @@ function initScene(viewer) {
 }
 
 function defaultCOnfig(viewer) {
+    CesiumZh.load(); // 汉化
     // 解决infobox报‘allow-scripts’问题
     if (typeof viewer.infoBox != "undefined") {
         viewer.infoBox.frame.removeAttribute("sandbox");

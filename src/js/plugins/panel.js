@@ -74,7 +74,9 @@ const gykjPanel = (function () {
             titleDiv2.appendChild(titleCloseA);
             titleCloseA.classList.add('panel-title-img-a');
             titleCloseA.onclick = function () {
-                let callBk = function () {};
+                let callBk = function () {
+                    _this.show = !_this.show
+                };
                 if (options.callback && options.callback.hidePanel) {
                     callBk = options.callback.hidePanel
                 }
@@ -259,6 +261,10 @@ const gykjPanel = (function () {
             };
         };
 
+        destroy(){
+            let _this = this;
+            $(_this.panelDom).remove()
+        }
         hidePanel(callback) {
             let _this = this;
             // _this.show = !_this.show;

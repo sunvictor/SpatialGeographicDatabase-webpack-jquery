@@ -10,6 +10,8 @@ import 'ztree'
 // import 'ztree/css/zTreeStyle/zTreeStyle.css'
 import "./css/ztree/css/bootstrapztree.css"
 import "./css/ztree/css/rightClickStyle.css"
+import "./js/plugins/honeySwitch"
+import "./css/plugins/honeySwitch.css"
 import "./css/index.css"
 import "./css/panel.css"
 import {initMainHtml} from "./js/html/mainHtml";

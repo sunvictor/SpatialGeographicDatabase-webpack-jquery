@@ -56,6 +56,7 @@ export default class LayerControl {
                 onRename: _this.onRename,
                 onRemove: _this.onRemove,
                 onClick: _this.onClick,
+                onDblClick: _this.onDblClick,
                 beforeDrag: _this.beforeDrag,
                 beforeDrop: _this.beforeDrop
             }
@@ -127,6 +128,11 @@ export default class LayerControl {
         }
     }
 
+    onDblClick(event, treeId, treeNode){
+        let nodeData = go.lc.getNodeData(treeNode.gIndex);
+        nodeData.show = !nodeData.show;
+    }
+
     onClick(event, treeId, treeNode, clickFlag) {
         console.log(treeNode)
     }
@@ -160,7 +166,6 @@ export default class LayerControl {
     }
 
     addDiyDom(treeId, treeNode) {
-        console.log(3)
         let aObj = $("#" + treeNode.tId + '_span');
         if (treeNode.editNameFlag || $("#upLayerBtn_" + treeNode.tId).length > 0) return;
         if (treeNode.editNameFlag || $("#lowerLayerBtn_" + treeNode.tId).length > 0) return;
@@ -257,13 +262,22 @@ export default class LayerControl {
         let _this = this;
         let rMenu = document.createElement("div")
         document.querySelector(".B").append(rMenu)
-        let a = document.createElement("a")
-        rMenu.append(a)
-        a.classList.add('list-group-item')
-        $(a).text("删除")
-        $(a).on('click', function () {
+
+        let deleteA = document.createElement("a")
+        rMenu.append(deleteA)
+        deleteA.classList.add('list-group-item')
+        $(deleteA).text("删除")
+        $(deleteA).on('click', function () {
             _this.removeNode(treeNode)
         })
+        let attrA = document.createElement("a")
+        rMenu.append(attrA)
+        attrA.classList.add('list-group-item')
+        $(attrA).text("属性")
+        $(attrA).on('click', function () {
+            _this.showNodeAttr(treeNode)
+        })
+
         $(rMenu).attr("id", "rMenu")
         $("#rMenu").css({
             "top": y + "px",
@@ -298,6 +312,31 @@ export default class LayerControl {
         $("body").unbind("mousedown", _this.onBodyMouseDown);
     }
 
+    /**
+     * 显示节点属性
+     * @param treeNode
+     */
+    showNodeAttr(treeNode) {
+        let _this = this;
+        let data = _this.getNodeData(treeNode.gIndex);
+        if (!data.customProp.isAttrPanelOpen) {
+            go.ip.showAttrPanel(treeNode, data)
+            data.customProp.isAttrPanelOpen = true;
+        }
+        _this.hideRMenu();
+    }
+
+    /**
+     * 勾选 或 取消勾选 单个节点 参数含义参建ztree api
+     * @param treeNode
+     * @param checked
+     * @param checkTypeFlag
+     * @param callbackFlag
+     */
+    checkNode(treeNode, checked, checkTypeFlag = true, callbackFlag = false){
+        const tree = $.fn.zTree.getZTreeObj("tree")
+        tree.checkNode(treeNode, checked, checkTypeFlag, callbackFlag)
+    }
     /**
      * 移除节点
      * @param treeNode

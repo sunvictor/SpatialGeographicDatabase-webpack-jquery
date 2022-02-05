@@ -1,6 +1,7 @@
 import {bindBtnImg} from "../html/bindBtnImg";
 import LayerControl from "./layerControl";
 import LayerMap from "./layerMap"
+import imageryProvider from "@/js/cesium/imageryProvider";
 let _viewer;
 export const go = {};
 
@@ -13,6 +14,7 @@ function createObjs(viewer) {
     go.bbi = new bindBtnImg(viewer)
     go.lc = new LayerControl(viewer)
     go.lm = new LayerMap(viewer)
+    go.ip = new imageryProvider(viewer);
 }
 
 export function getViewer() {
