@@ -120,8 +120,7 @@ export default class LayerControl {
     }
 
     beforeDrop(treeId, treeNodes, targetNode, moveType, isCopy) {
-        console.log(treeNodes)
-        if (targetNode.isParent) {
+        if (treeNodes && targetNode.isParent) {
             return false;
         } else {
             return !(targetNode == null || (moveType != "inner" && !targetNode.parentTId)); // 禁止将节点拖拽成为根节点
@@ -129,7 +128,7 @@ export default class LayerControl {
     }
 
     onDblClick(event, treeId, treeNode) {
-        if (treeNode.isParent) {
+        if (treeNode && treeNode.isParent) {
             return;
         }
         let nodeData = go.lc.getNodeData(treeNode.gIndex);
@@ -141,8 +140,7 @@ export default class LayerControl {
     }
 
     onRemove(event, treeId, treeNode) {
-        console.log(treeNode)
-        if (treeNode.isParent) {
+        if (treeNode && treeNode.isParent) {
             for (let i = 0; i < treeNode.children.length; i++) {
                 go.lc.removeLayer(treeNode.children[i])
             }

@@ -97,10 +97,10 @@ export default class imageryProvider {
             imageryLayer.show = false;
             go.lc.checkNode(treeNode, false)
         });
-        $("#show").css({
+        $("#imagery_attr_" + treeNode.gid + "_show").css({
             zoom: '70%'
         })
-        $("#show span").css({
+        $("#imagery_attr_" + treeNode.gid + "_show span").css({
             zoom: '93%'
         })
     }
