@@ -3,7 +3,7 @@ import {go} from "@/js/cesium/globalObject";
 
 const LayerMap = (function () {
     class LayerMap {
-        labCoordTypeDict = {
+        labCoordTypeDict = { // 图层坐标系转换字典
             BD09: "BD09",
             WGS84: "WGS84",
             GCJ02: "GCJ02",
@@ -14,9 +14,13 @@ const LayerMap = (function () {
             this.viewer = viewer;
         }
 
+        /**
+         * 添加图层
+         * @param options 参见addMap注释
+         * @returns {Cesium.ImageryLayer}
+         */
         add(options) {
             let map = this.addMap(options);
-            console.log(map)
             if (typeof options.show == "undefined") {
                 map.show = true;
             } else {
@@ -31,16 +35,30 @@ const LayerMap = (function () {
             return map;
         }
 
+        /**
+         * 移除图层
+         * @param layer 参见viewer.imageryLayers.remove
+         * @param destroy viewer.imageryLayers.remove
+         * @returns {boolean}
+         */
         remove(layer, destroy = true) {
             let _this = this;
             return _this.viewer.imageryLayers.remove(layer, destroy);
         }
 
+        /**
+         * 降低图层层级
+         * @param layer Cesium.ImageryLayer
+         */
         lower(layer) {
             let _this = this;
             _this.viewer.imageryLayers.lower(layer);
         }
 
+        /**
+         * 提高图层层级
+         * @param layer Cesium.ImageryLayer
+         */
         raise(layer) {
             let _this = this;
             _this.viewer.imageryLayers.raise(layer);
@@ -75,6 +93,14 @@ const LayerMap = (function () {
                 map = _this.addMapByOriginFunc(params);
             }
             map.customProp = params;
+            // 定义一个额外的参数，是为了在imageryProvider.js中绑定属性使用
+            // 因为是直接监听的map，所以需要定义一个单独的参数，否则就会重复调用导致堆溢出，所以其实不应该监听map
+            // 通常是监听一个自定义的viewModel对象，通过改变viewModel里的值，在回调函数中再去改变map的值
+            // 监听map是因为会在其他地方调用例如 map.show = true 如果监听viewModel的话，其他地方就需要调用 viewModel.show = true 才能实现
+            // 但这也不合理，所以就直接监听map了
+            map.bindModelSplitDirections = map.splitDirections;
+            map.splitDirections = ["ImagerySplitDirection.NONE","ImagerySplitDirection.LEFT","ImagerySplitDirection.RIGHT"]
+            // =============
             return map;
         }
 
@@ -145,9 +171,8 @@ const LayerMap = (function () {
                     }
                 }
             }
-            var index;
             try {
-                index = window._earth.sceneTree.root.children.push(json);
+                window._earth.sceneTree.root.children.push(json);
             } catch (e) {
                 console.error("请使用earthSDK加载图层");
                 console.error(e);

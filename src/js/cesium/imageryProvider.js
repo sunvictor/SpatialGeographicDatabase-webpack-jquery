@@ -4,8 +4,8 @@ import {honeySwitch} from "@/js/plugins/honeySwitch";
 import {go} from "@/js/cesium/globalObject";
 
 export default class imageryProvider {
-    attrDict = ["show", "alpha", "brightness", "contrast", "hue", "saturation", "gamma", "colorToAlphaThreshold", "splitDirection", "rectangle"]
-    attrModel = {
+    attrDict = ["show", "alpha", "brightness", "contrast", "hue", "saturation", "gamma", "splitDirection"] // 图层属性字典
+    attrModel = { // @Unused
         "show": null,
         "alpha": null,
         "brightness": null,
@@ -23,10 +23,13 @@ export default class imageryProvider {
         _this.viewer = viewer;
     }
 
+    /**
+     * 显示图层属性面板
+     * @param treeNode 节点数据
+     * @param imageryLayer 图层数据
+     */
     showAttrPanel(treeNode, imageryLayer) {
         let _this = this;
-        console.log(treeNode)
-        console.log(imageryLayer)
         let div = document.createElement('div');
         div.setAttribute("id", "imagery_attr_" + treeNode.gid)
         let html = "<table>";
@@ -34,9 +37,21 @@ export default class imageryProvider {
             const element = _this.attrDict[i]
             if (element == "show") {
                 let className = imageryLayer[element] ? "switch-on" : "switch-off"
-                html += `<tr><td>${element}</td><td><span data-bind="value: show" class="${className}" id="show"></span></td></tr>`
+                html += `<tr><td>${element}</td><td><span data-bind="value: show" class="${className}" id="imagery_attr_${treeNode.gid}_show"></span></td></tr>`
+            } else if (element == "alpha") {
+                html += `<tr><td>${element}</td><td>
+                    <input type="range" min="0.0" max="1.0" step="0.05" data-bind="value: alpha, valueUpdate: 'input'">
+                    <input type="text" size="5" data-bind="value: alpha">
+                    </td></tr>`
+            } else if (element == "splitDirection") {
+                html += `<tr><td>${element}</td><td>
+                    <select data-bind="options: splitDirections, value: bindModelSplitDirections"></select>
+                       </td></tr>`
             } else {
-                html += `<tr><td>${element}</td><td>${imageryLayer[element]}</td></tr>`
+                html += `<tr><td>${element}</td><td>
+                    <input type="range" min="0.0" max="10.0" step="0.1" data-bind="value: ${element}, valueUpdate: 'input'">
+                    <input type="text" size="5" data-bind="value: ${element}">
+                    </td></tr>`
             }
             _this.attrModel[element] = imageryLayer[element];
         }
@@ -47,7 +62,7 @@ export default class imageryProvider {
             show: true,
             width: 400,
             height: 470,
-            left: 150,
+            left: 440,
             content: div,
             callback: {
                 hidePanel: function () {
@@ -61,12 +76,21 @@ export default class imageryProvider {
         Cesium.knockout.applyBindings(imageryLayer, toolbar);
         Cesium.knockout.getObservable(imageryLayer, "show")
             .subscribe(function (newValue) {
-                console.log("show:" + newValue)
-                newValue ? honeySwitch.showOn("#show") : honeySwitch.showOff("#show")
+                // 监听到imageryLayer.show变化时 同步更改开关按钮的状态
+                // 如果是在下面的switchEvent中修改开关状态时，也会修改imageryLayer.show，这里也会执行，再一次的修改开关状态，不过没什么问题
+                newValue ? honeySwitch.showOn("#imagery_attr_" + treeNode.gid + "_show") : honeySwitch.showOff("#imagery_attr_" + treeNode.gid + "_show")
+                // 同步修改ztree的checked状态
                 go.lc.checkNode(treeNode, newValue)
             });
-        honeySwitch.init()
-        switchEvent("#show", function () {
+        Cesium.knockout.getObservable(imageryLayer, "bindModelSplitDirections")
+            .subscribe(function (newValue) {
+                // 监听的是在layerMap.js中自定义的参数bindModelSplitDirections
+                // imageryLayer.splitDirection的值例如： Cesium.ImagerySplitDirection.RIGHT
+                imageryLayer.splitDirection = eval("Cesium." + newValue)
+            });
+        honeySwitch.init() // 重新初始化开关按钮
+        switchEvent("#imagery_attr_" + treeNode.gid + "_show", function () { // 切换开关按钮的回调函数
+            // 修改开关状态，同步更改图层状态和ztree的checked状态
             imageryLayer.show = true;
             go.lc.checkNode(treeNode, true)
         }, function () {

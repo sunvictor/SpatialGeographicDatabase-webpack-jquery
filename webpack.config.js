@@ -132,6 +132,7 @@ module.exports = {
                 },
                 {from: './node_modules/earthsdk/dist/XbsjCesium', to: 'js/earthsdk/XbsjCesium', toType: 'dir'},
                 {from: './node_modules/earthsdk/dist/XbsjEarth', to: 'js/earthsdk/XbsjEarth', toType: 'dir'},
+                {from: './node_modules/bootstrap/dist/css', to: 'css/boostrap/dist/css', toType: 'dir'},
             ]
         }),
         new webpack.DefinePlugin({

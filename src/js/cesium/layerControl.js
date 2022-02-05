@@ -121,14 +121,17 @@ export default class LayerControl {
 
     beforeDrop(treeId, treeNodes, targetNode, moveType, isCopy) {
         console.log(treeNodes)
-        if (!targetNode.children) {
+        if (targetNode.isParent) {
             return false;
         } else {
             return !(targetNode == null || (moveType != "inner" && !targetNode.parentTId)); // 禁止将节点拖拽成为根节点
         }
     }
 
-    onDblClick(event, treeId, treeNode){
+    onDblClick(event, treeId, treeNode) {
+        if (treeNode.isParent) {
+            return;
+        }
         let nodeData = go.lc.getNodeData(treeNode.gIndex);
         nodeData.show = !nodeData.show;
     }
@@ -139,7 +142,7 @@ export default class LayerControl {
 
     onRemove(event, treeId, treeNode) {
         console.log(treeNode)
-        if (treeNode.children) {
+        if (treeNode.isParent) {
             for (let i = 0; i < treeNode.children.length; i++) {
                 go.lc.removeLayer(treeNode.children[i])
             }
@@ -333,10 +336,11 @@ export default class LayerControl {
      * @param checkTypeFlag
      * @param callbackFlag
      */
-    checkNode(treeNode, checked, checkTypeFlag = true, callbackFlag = false){
+    checkNode(treeNode, checked, checkTypeFlag = true, callbackFlag = false) {
         const tree = $.fn.zTree.getZTreeObj("tree")
         tree.checkNode(treeNode, checked, checkTypeFlag, callbackFlag)
     }
+
     /**
      * 移除节点
      * @param treeNode
