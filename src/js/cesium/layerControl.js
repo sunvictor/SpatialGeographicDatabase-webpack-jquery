@@ -1,5 +1,6 @@
 import gykjPanel from "../plugins/panel";
 import {go} from "./globalObject";
+import imageryProvider from "@/js/cesium/imageryProvider";
 // import ztree from "@ztree/ztree_v3"
 
 let _btnName = "图层管理";
@@ -321,7 +322,8 @@ export default class LayerControl {
         let _this = this;
         let data = _this.getNodeData(treeNode.gIndex);
         if (!data.customProp.isAttrPanelOpen) {
-            go.ip.showAttrPanel(treeNode, data)
+            new imageryProvider(_this.viewer).showAttrPanel(treeNode, data);
+            // go.ip.showAttrPanel(treeNode, data)
             data.customProp.isAttrPanelOpen = true;
         }
         _this.hideRMenu();

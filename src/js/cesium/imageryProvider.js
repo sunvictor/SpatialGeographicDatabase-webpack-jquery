@@ -78,6 +78,10 @@ export default class imageryProvider {
             .subscribe(function (newValue) {
                 // 监听到imageryLayer.show变化时 同步更改开关按钮的状态
                 // 如果是在下面的switchEvent中修改开关状态时，也会修改imageryLayer.show，这里也会执行，再一次的修改开关状态，不过没什么问题
+                if (manualSwitch){
+                    manualSwitch = false;
+                    return;
+                }
                 newValue ? honeySwitch.showOn("#imagery_attr_" + treeNode.gid + "_show") : honeySwitch.showOff("#imagery_attr_" + treeNode.gid + "_show")
                 // 同步修改ztree的checked状态
                 go.lc.checkNode(treeNode, newValue)
@@ -88,12 +92,15 @@ export default class imageryProvider {
                 // imageryLayer.splitDirection的值例如： Cesium.ImagerySplitDirection.RIGHT
                 imageryLayer.splitDirection = eval("Cesium." + newValue)
             });
-        honeySwitch.init() // 重新初始化开关按钮
+        honeySwitch.init($("#imagery_attr_" + treeNode.gid + "_show")) // 重新初始化开关按钮
+        let manualSwitch = false;
         switchEvent("#imagery_attr_" + treeNode.gid + "_show", function () { // 切换开关按钮的回调函数
             // 修改开关状态，同步更改图层状态和ztree的checked状态
+            manualSwitch = true;
             imageryLayer.show = true;
             go.lc.checkNode(treeNode, true)
         }, function () {
+            manualSwitch = true;
             imageryLayer.show = false;
             go.lc.checkNode(treeNode, false)
         });
