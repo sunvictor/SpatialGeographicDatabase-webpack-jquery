@@ -2,6 +2,7 @@ import {bindBtnImg} from "../html/bindBtnImg";
 import LayerControl from "./layerControl";
 import LayerMap from "./layerMap"
 import imageryProvider from "@/js/cesium/imageryProvider";
+import entityControl from "@/js/cesium/entityControl";
 let _viewer;
 export const go = {}; // 封装所有的类对象
 
@@ -19,6 +20,7 @@ function createObjs(viewer) {
     go.lc = new LayerControl(viewer)
     go.lm = new LayerMap(viewer)
     go.ip = new imageryProvider(viewer);
+    go.ec = new entityControl(viewer);
 }
 
 export function getViewer() {

@@ -15,6 +15,9 @@ bindBtnImg.prototype = {
             case "图层管理":
                 imgUrl = enabled ? "./img/icon/layerManageSelected.png" : "./img/icon/layerManage.png"
                 break;
+            case "图形管理":
+                imgUrl = enabled ? "./img/icon/layerManageSelected.png" : "./img/icon/layerManage.png"
+                break;
             default:
                 break;
         }
