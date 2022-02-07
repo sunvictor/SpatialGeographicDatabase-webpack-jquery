@@ -86,12 +86,12 @@ export default class imageryProvider {
                 // 同步修改ztree的checked状态
                 go.lc.checkNode(treeNode, newValue)
             });
-        Cesium.knockout.getObservable(imageryLayer, "bindModelSplitDirections")
-            .subscribe(function (newValue) {
-                // 监听的是在layerMap.js中自定义的参数bindModelSplitDirections
-                // imageryLayer.splitDirection的值例如： Cesium.ImagerySplitDirection.RIGHT
-                imageryLayer.splitDirection = eval("Cesium." + newValue)
-            });
+        // Cesium.knockout.getObservable(imageryLayer, "bindModelSplitDirections")
+        //     .subscribe(function (newValue) {
+        //         // 监听的是在layerMap.js中自定义的参数bindModelSplitDirections
+        //         // imageryLayer.splitDirection的值例如： Cesium.ImagerySplitDirection.RIGHT
+        //         imageryLayer.splitDirection = eval("Cesium." + newValue)
+        //     });
         honeySwitch.init($("#imagery_attr_" + treeNode.gid + "_show")) // 重新初始化开关按钮
         let manualSwitch = false;
         switchEvent("#imagery_attr_" + treeNode.gid + "_show", function () { // 切换开关按钮的回调函数

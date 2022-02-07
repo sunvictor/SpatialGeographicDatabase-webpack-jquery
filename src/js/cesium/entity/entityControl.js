@@ -1,5 +1,6 @@
 import gykjPanel from "@/js/plugins/panel";
 import {go} from "@/js/cesium/globalObject";
+import entityProvider from "./entityProvider";
 
 let _btnName = "图形管理";
 let _btnIdName = "entityManage";
@@ -37,7 +38,7 @@ export default class entityControl {
                 enable: true,
             },
             callback: {
-                // onRightClick: _this.onRightClick,
+                onRightClick: _this.onRightClick,
                 onCheck: _this.controlEntityShow,
                 onRename: _this.onRename,
                 onRemove: _this.onRemove,
@@ -168,6 +169,52 @@ export default class entityControl {
         }
     }
 
+    /**
+     * 显示右键菜单
+     * @param treeId
+     * @param treeNode
+     * @param type
+     * @param x
+     * @param y
+     */
+    showRMenu(treeId, treeNode, type, x, y) {
+        let _this = this;
+        let rMenu = document.createElement("div")
+        document.querySelector(".B").append(rMenu)
+
+        let deleteA = document.createElement("a")
+        rMenu.append(deleteA)
+        deleteA.classList.add('list-group-item')
+        $(deleteA).text("删除")
+        $(deleteA).on('click', function () {
+            _this.removeNode(treeNode)
+        })
+        let attrA = document.createElement("a")
+        rMenu.append(attrA)
+        attrA.classList.add('list-group-item')
+        $(attrA).text("属性")
+        $(attrA).on('click', function () {
+            _this.showNodeAttr(treeNode)
+        })
+
+        $(rMenu).attr("id", "rMenu")
+        $("#rMenu").css({
+            "top": y + "px",
+            "left": x + "px",
+            "visibility": "visible"
+        }); //设置右键菜单的位置、可见
+        $("body").bind("mousedown", _this.onBodyMouseDown);
+    }
+
+    onRightClick(event, treeId, treeNode) {
+        let _this = this;
+        if (!treeNode && event.target.tagName.toLowerCase() != "button" && $(event.target).parents("a").length == 0) {
+            go.ec.showRMenu(treeId, treeNode, "root", event.clientX, event.clientY - 130); // 减去导航栏的高度
+        } else if (treeNode && !treeNode.noR) {
+            go.ec.showRMenu(treeId, treeNode, "node", event.clientX, event.clientY - 130); // 减去导航栏的高度
+        }
+    }
+
     controlEntityShow(event, treeId, treeNode) {
         let chkStatus = treeNode.getCheckStatus()
         let entity = go.ec.getNodeData(treeNode.gIndex)
@@ -175,6 +222,61 @@ export default class entityControl {
             return;
         }
         entity.show = chkStatus.checked
+    }
+
+    /**
+     * 勾选 或 取消勾选 单个节点 参数含义参建ztree api
+     * @param treeNode
+     * @param checked
+     * @param checkTypeFlag
+     * @param callbackFlag
+     */
+    checkNode(treeNode, checked, checkTypeFlag = true, callbackFlag = false) {
+        const tree = $.fn.zTree.getZTreeObj("entityTree")
+        tree.checkNode(treeNode, checked, checkTypeFlag, callbackFlag)
+    }
+    /**
+     * 移除节点
+     * @param treeNode
+     * @param callbackFlag
+     */
+    removeNode(treeNode, callbackFlag = false) {
+        let _this = this;
+        const tree = $.fn.zTree.getZTreeObj("entityTree")
+        tree.removeNode(treeNode, callbackFlag)
+        _this.removeEntity(treeNode)
+        _this.hideRMenu();
+    }
+
+
+    //鼠标按下事件
+    onBodyMouseDown(event) {
+        if (!(event.target.id == "rMenu" || $(event.target).parents("#rMenu").length > 0)) {
+            // $("#rMenu").hide();
+            // $("#rMenu").css({"visibility": "hidden"});
+            go.ec.hideRMenu()
+        }
+    }
+
+    //隐藏右键菜单
+    hideRMenu() {
+        let _this = this;
+        $("#rMenu").remove();
+        $("body").unbind("mousedown", _this.onBodyMouseDown);
+    }
+
+    /**
+     * 显示节点属性
+     * @param treeNode
+     */
+    showNodeAttr(treeNode) {
+        let _this = this;
+        let data = _this.getNodeData(treeNode.gIndex);
+        if (!data.customProp.isAttrPanelOpen) {
+            new entityProvider(_this.viewer).showAttrPanel(treeNode, data);
+            data.customProp.isAttrPanelOpen = true;
+        }
+        _this.hideRMenu();
     }
 
     getNodeData(index) {

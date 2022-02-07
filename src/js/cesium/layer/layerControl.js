@@ -1,6 +1,6 @@
-import gykjPanel from "../plugins/panel";
-import {go} from "./globalObject";
-import imageryProvider from "@/js/cesium/imageryProvider";
+import gykjPanel from "../../plugins/panel";
+import {go} from "../globalObject";
+import imageryProvider from "@/js/cesium/layer/imageryProvider";
 // import ztree from "@ztree/ztree_v3"
 
 let _btnName = "图层管理";

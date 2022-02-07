@@ -1,4 +1,4 @@
-import pm from "../plugins/publicMethod";
+import pm from "../../plugins/publicMethod";
 import {go} from "@/js/cesium/globalObject";
 
 const LayerMap = (function () {
@@ -99,7 +99,17 @@ const LayerMap = (function () {
             // 监听map是因为会在其他地方调用例如 map.show = true 如果监听viewModel的话，其他地方就需要调用 viewModel.show = true 才能实现
             // 但这也不合理，所以就直接监听map了
             map.bindModelSplitDirections = map.splitDirections;
-            map.splitDirections = ["ImagerySplitDirection.NONE","ImagerySplitDirection.LEFT","ImagerySplitDirection.RIGHT"]
+            // map.splitDirections = ["ImagerySplitDirection.NONE","ImagerySplitDirection.LEFT","ImagerySplitDirection.RIGHT"]
+            map.splitDirections = Cesium.knockout.observableArray([{
+                'Value': 1,
+                'Key': 'tom'
+            }, {
+                'Value': 2,
+                'Key': 'jerry'
+            }, {
+                'Value': 3,
+                'Key': 'david'
+            }]);
             // =============
             return map;
         }

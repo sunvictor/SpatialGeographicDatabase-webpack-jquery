@@ -1,8 +1,8 @@
 import {bindBtnImg} from "../html/bindBtnImg";
-import LayerControl from "./layerControl";
-import LayerMap from "./layerMap"
-import imageryProvider from "@/js/cesium/imageryProvider";
-import entityControl from "@/js/cesium/entityControl";
+import LayerControl from "./layer/layerControl";
+import LayerMap from "./layer/layerMap"
+import imageryProvider from "@/js/cesium/layer/imageryProvider";
+import entityControl from "@/js/cesium/entity/entityControl";
 let _viewer;
 export const go = {}; // 封装所有的类对象
 

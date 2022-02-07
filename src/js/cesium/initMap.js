@@ -1,4 +1,4 @@
-import layerMap from "./layerMap";
+import layerMap from "./layer/layerMap";
 import gykjPanel from "../plugins/panel";
 import {go, globals} from "./globalObject"
 import CesiumZh from "../plugins/CesiumZh"
@@ -80,6 +80,7 @@ function initScene(viewer) {
         }
     });
     go.ec.add({
+        name:"黄色点",
         position: Cesium.Cartesian3.fromDegrees(106.394, 29.81,2.61),
         point: {
             color: Cesium.Color.YELLOW,    //点位颜色
