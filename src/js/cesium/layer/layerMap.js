@@ -93,24 +93,7 @@ const LayerMap = (function () {
                 map = _this.addMapByOriginFunc(params);
             }
             map.customProp = params;
-            // 定义一个额外的参数，是为了在imageryProvider.js中绑定属性使用
-            // 因为是直接监听的map，所以需要定义一个单独的参数，否则就会重复调用导致堆溢出，所以其实不应该监听map
-            // 通常是监听一个自定义的viewModel对象，通过改变viewModel里的值，在回调函数中再去改变map的值
-            // 监听map是因为会在其他地方调用例如 map.show = true 如果监听viewModel的话，其他地方就需要调用 viewModel.show = true 才能实现
-            // 但这也不合理，所以就直接监听map了
-            map.bindModelSplitDirections = map.splitDirections;
-            // map.splitDirections = ["ImagerySplitDirection.NONE","ImagerySplitDirection.LEFT","ImagerySplitDirection.RIGHT"]
-            map.splitDirections = Cesium.knockout.observableArray([{
-                'Value': 1,
-                'Key': 'tom'
-            }, {
-                'Value': 2,
-                'Key': 'jerry'
-            }, {
-                'Value': 3,
-                'Key': 'david'
-            }]);
-            // =============
+            go.ip.setViewModel(map)
             return map;
         }
 

@@ -23,6 +23,28 @@ export default class imageryProvider {
         _this.viewer = viewer;
     }
 
+    setViewModel(map) {
+        // 定义一个额外的参数，是为了在imageryProvider.js中绑定属性使用
+        // 因为是直接监听的map，所以需要定义一个单独的参数，否则就会重复调用导致堆溢出，所以其实不应该监听map
+        // 通常是监听一个自定义的viewModel对象，通过改变viewModel里的值，在回调函数中再去改变map的值
+        // 监听map是因为会在其他地方调用例如 map.show = true 如果监听viewModel的话，其他地方就需要调用 viewModel.show = true 才能实现
+        // 但这也不合理，所以就直接监听map了
+        map.bindModelSplitDirections = map.splitDirections;
+        // map.splitDirections = ["ImagerySplitDirection.NONE","ImagerySplitDirection.LEFT","ImagerySplitDirection.RIGHT"]
+        map.splitDirections = Cesium.knockout.observableArray([{ // 设置下拉框中的选项和值
+            'Value': Cesium.ImagerySplitDirection.NONE,
+            'Key': 'ImagerySplitDirection.NONE'
+        }, {
+            'Value': Cesium.ImagerySplitDirection.LEFT,
+            'Key': 'ImagerySplitDirection.LEFT'
+        }, {
+            'Value': Cesium.ImagerySplitDirection.RIGHT,
+            'Key': 'ImagerySplitDirection.RIGHT'
+        }]);
+        // 默认选中的值
+        map.selectedSelectedOptions = Cesium.knockout.observableArray([map.splitDirection])
+    }
+
     /**
      * 显示图层属性面板
      * @param treeNode 节点数据
@@ -45,7 +67,7 @@ export default class imageryProvider {
                     </td></tr>`
             } else if (element == "splitDirection") {
                 html += `<tr><td>${element}</td><td>
-                    <select data-bind="options: splitDirections, value: bindModelSplitDirections"></select>
+                    <select data-bind="options:splitDirections,optionsText:'Key',optionsValue:'Value',selectedOptions:selectedSelectedOptions"></select>
                        </td></tr>`
             } else {
                 html += `<tr><td>${element}</td><td>
@@ -71,27 +93,7 @@ export default class imageryProvider {
                 }
             }
         })
-        Cesium.knockout.track(imageryLayer);
-        let toolbar = document.getElementById("imagery_attr_" + treeNode.gid);
-        Cesium.knockout.applyBindings(imageryLayer, toolbar);
-        Cesium.knockout.getObservable(imageryLayer, "show")
-            .subscribe(function (newValue) {
-                // 监听到imageryLayer.show变化时 同步更改开关按钮的状态
-                // 如果是在下面的switchEvent中修改开关状态时，也会修改imageryLayer.show，这里也会执行，再一次的修改开关状态，不过没什么问题
-                if (manualSwitch){
-                    manualSwitch = false;
-                    return;
-                }
-                newValue ? honeySwitch.showOn("#imagery_attr_" + treeNode.gid + "_show") : honeySwitch.showOff("#imagery_attr_" + treeNode.gid + "_show")
-                // 同步修改ztree的checked状态
-                go.lc.checkNode(treeNode, newValue)
-            });
-        // Cesium.knockout.getObservable(imageryLayer, "bindModelSplitDirections")
-        //     .subscribe(function (newValue) {
-        //         // 监听的是在layerMap.js中自定义的参数bindModelSplitDirections
-        //         // imageryLayer.splitDirection的值例如： Cesium.ImagerySplitDirection.RIGHT
-        //         imageryLayer.splitDirection = eval("Cesium." + newValue)
-        //     });
+
         honeySwitch.init($("#imagery_attr_" + treeNode.gid + "_show")) // 重新初始化开关按钮
         let manualSwitch = false;
         switchEvent("#imagery_attr_" + treeNode.gid + "_show", function () { // 切换开关按钮的回调函数
@@ -110,5 +112,27 @@ export default class imageryProvider {
         $("#imagery_attr_" + treeNode.gid + "_show span").css({
             zoom: '93%'
         })
+
+        Cesium.knockout.track(imageryLayer);
+        let toolbar = document.getElementById("imagery_attr_" + treeNode.gid);
+        Cesium.knockout.applyBindings(imageryLayer, toolbar);
+        Cesium.knockout.getObservable(imageryLayer, "show")
+            .subscribe(function (newValue) {
+                // 监听到imageryLayer.show变化时 同步更改开关按钮的状态
+                // 如果是在下面的switchEvent中修改开关状态时，也会修改imageryLayer.show，这里也会执行，再一次的修改开关状态，不过没什么问题
+                if (manualSwitch) {
+                    manualSwitch = false;
+                    return;
+                }
+                newValue ? honeySwitch.showOn("#imagery_attr_" + treeNode.gid + "_show") : honeySwitch.showOff("#imagery_attr_" + treeNode.gid + "_show")
+                // 同步修改ztree的checked状态
+                go.lc.checkNode(treeNode, newValue)
+            });
+        Cesium.knockout.getObservable(imageryLayer, "selectedSelectedOptions")
+            .subscribe(function (newValue) {
+                // 监听的是在setViewModel中设置的`选中的值`-selectedSelectedOptions
+                // imageryLayer.splitDirection的值例如： Cesium.ImagerySplitDirection.RIGHT
+                imageryLayer.splitDirection = newValue[0]
+            });
     }
 }

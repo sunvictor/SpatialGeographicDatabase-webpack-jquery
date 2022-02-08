@@ -134,6 +134,8 @@ export default class LayerControl {
         }
         let nodeData = go.lc.getNodeData(treeNode.gIndex);
         nodeData.show = !nodeData.show;
+        // 同步修改ztree的checked状态
+        go.lc.checkNode(treeNode, nodeData.show)
     }
 
     onClick(event, treeId, treeNode, clickFlag) {
