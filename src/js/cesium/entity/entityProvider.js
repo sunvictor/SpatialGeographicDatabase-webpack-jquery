@@ -13,6 +13,7 @@ export default class entityProvider {
         "position": "位置",
         "orientation": "方向",
     }
+    entityCollection = ["billboard", "box", "corridor", "cylinder", "ellipse", "ellipsoid", "label", "model", "tileset", "path", "plane", "point", "polygon", "polyline", "properties", "polylineVolume", "rectangle", "wall"]
 
     constructor(viewer) {
         let _this = this;
@@ -26,18 +27,7 @@ export default class entityProvider {
      */
     showAttrPanel(treeNode, entity) {
         let _this = this;
-        let div = document.createElement('div');
-        div.setAttribute("id", "entity_attr_" + treeNode.gid)
-        let html = "<table>";
-        for (let i = 0; i < _this.attrDict.length; i++) {
-            const element = _this.attrDict[i]
-            if (element == "show") {
-                let className = entity[element] ? "switch-on" : "switch-off"
-                html += `<tr><td>${element}</td><td><span data-bind="value: show" class="${className}" id="entity_attr_${treeNode.gid}_show"></span></td></tr>`
-            }
-        }
-        html += `</table>`
-        $(div).append(html)
+        let div = _this.resoleAttr(treeNode, entity)
         _this.entityAttrPanel = new gykjPanel({
             title: entity.name,
             show: true,
@@ -78,7 +68,7 @@ export default class entityProvider {
             .subscribe(function (newValue) {
                 // entity.show变化时 同步更改开关按钮的状态
                 // 如果是在下面的switchEvent中修改开关状态时，entity.show，这里也会执行，再一次的修改开关状态，不过没什么问题
-                if (manualSwitch){
+                if (manualSwitch) {
                     manualSwitch = false;
                     return;
                 }
@@ -87,5 +77,28 @@ export default class entityProvider {
                 go.ec.checkNode(treeNode, newValue)
             });
 
+    }
+
+    resoleAttr(treeNode, entity){
+        let _this = this;
+        let div = document.createElement('div');
+        div.setAttribute("id", "entity_attr_" + treeNode.gid)
+        let html = "<table>";
+        for (let i = 0; i < _this.attrDict.length; i++) {
+            const element = _this.attrDict[i]
+            if (element == "show") {
+                let className = entity[element] ? "switch-on" : "switch-off"
+                html += `<tr><td>${element}</td><td><span data-bind="value: show" class="${className}" id="entity_attr_${treeNode.gid}_show"></span></td></tr>`
+            }
+        }
+        for (let i = 0; i < _this.entityCollection.length; i++) {
+            const element = _this.entityCollection[i];
+            if (entity[element]){
+                html += `<tr><td><span>${element}</span></td><td><button>属性</button></td></tr>`
+            }
+        }
+        html += `</table>`
+        $(div).append(html)
+        return div;
     }
 }
