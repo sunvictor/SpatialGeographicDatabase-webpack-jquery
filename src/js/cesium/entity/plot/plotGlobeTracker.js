@@ -1,29 +1,31 @@
-import pointGraphics from "./pointGraphics";
+import billboardGraphics from "./billboardGraphics";
 import polylineGraphics from "./polylineGraphics";
-
+import $ from 'jquery'
 
 export default class plotGlobeTracker {
     viewer = null;
     ctrArr = [];
-    pointDrawer = null;
+    billboardDrawer = null;
     polylineDrawer = null;
+
     constructor(viewer) {
         let _this = this;
         _this.viewer = viewer;
-        _this.pointDrawer = new pointGraphics(viewer)
+        _this.billboardDrawer = new billboardGraphics(viewer)
     }
 
-    trackUninterruptedPoint(okCallback,cancelCallback){
+    trackUninterruptedBillboard(okCallback, cancelCallback) {
         let _this = this;
         // _this.clear();
-        if (_this.pointDrawer == null) {
-            _this.pointDrawer = new pointGraphics(_this.viewer);
-            _this.ctrArr.push(_this.pointDrawer);
+        if (_this.billboardDrawer == null) {
+            _this.billboardDrawer = new billboardGraphics(_this.viewer);
+            _this.ctrArr.push(_this.billboardDrawer);
         }
-        _this.pointDrawer.start(okCallback,cancelCallback);
+        _this.billboardDrawer.start(okCallback, cancelCallback);
     }
+
     trackPolyline(okHandler, cancelHandler) {
-        var _this = this;
+        let _this = this;
         // _this.clear();
         if (_this.polylineDrawer == null) {
             _this.polylineDrawer = new polylineGraphics(_this.viewer);

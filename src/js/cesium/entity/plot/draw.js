@@ -1,5 +1,5 @@
 import $ from "jquery";
-import drawPoint from "./edit/GlobeUninterruptedPointDrawer";
+import drawPoint from "./edit/GlobeUninterruptedBillboardDrawer";
 import {go} from "../../globalObject";
 
 export default class drawShape {
@@ -10,11 +10,11 @@ export default class drawShape {
     }
     clickEvents(){
         let _this = this;
-        $("#drawPoint").on('click',function () {
-            go.plot.trackUninterruptedPoint(function (positions) {
+        $("#drawBillboard").on('click',function () {
+            go.plot.trackUninterruptedBillboard(function (positions) {
                 for (let i = 0; i < positions.length; i++) {
                     let objId = (new Date()).getTime() + i;
-                    go.plot.pointDrawer.showPoint(objId, positions[i]);
+                    go.plot.billboardDrawer.showBillboard(objId, positions[i]);
                 }
             }, function (positions) {
                 console.log(positions)

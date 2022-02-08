@@ -42,6 +42,7 @@ export default class entityProvider {
                 }
             }
         })
+        _this.clickEvents(treeNode, entity);
         honeySwitch.init($("#entity_attr_" + treeNode.gid + "_show")) // 重新初始化开关按钮
         let manualSwitch = false;
         switchEvent("#entity_attr_" + treeNode.gid + "_show", function () { // 切换开关按钮的回调函数
@@ -79,7 +80,7 @@ export default class entityProvider {
 
     }
 
-    resoleAttr(treeNode, entity){
+    resoleAttr(treeNode, entity) {
         let _this = this;
         let div = document.createElement('div');
         div.setAttribute("id", "entity_attr_" + treeNode.gid)
@@ -93,12 +94,22 @@ export default class entityProvider {
         }
         for (let i = 0; i < _this.entityCollection.length; i++) {
             const element = _this.entityCollection[i];
-            if (entity[element]){
-                html += `<tr><td><span>${element}</span></td><td><button>属性</button></td></tr>`
+            if (entity[element]) {
+                html += `<tr><td><span>${element}</span></td><td><button data-type="${element}" name="entityType">属性</button></td></tr>`
             }
         }
         html += `</table>`
         $(div).append(html)
         return div;
+
+        // go.plot.
+    }
+
+    clickEvents(treeNode, entity) {
+        $("button[name='entityType']").off('click').on("click", function () {
+            let entityType = $(this).data("type")
+            // alert(entityType)
+            go.plot[entityType + "Drawer"].showDetailPanel(treeNode, entity);
+        })
     }
 }

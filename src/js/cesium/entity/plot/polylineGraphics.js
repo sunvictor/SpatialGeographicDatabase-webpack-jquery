@@ -20,11 +20,11 @@ export default class polylineGraphics{
     start(okCallback, cancelCallback) {
         let _this = this;
         _this.viewModel.enabled = true;
-        _this.polylineDrawer.start(function (positions) {
-            okCallback(positions);
+        _this.polylineDrawer.start(function (positions, lonLats, params) {
+            okCallback(positions, lonLats, params);
             _this.viewModel.enabled = false;
-        }, function (positions) {
-            cancelCallback(positions)
+        }, function () {
+            cancelCallback()
             _this.viewModel.enabled = false;
         });
     }

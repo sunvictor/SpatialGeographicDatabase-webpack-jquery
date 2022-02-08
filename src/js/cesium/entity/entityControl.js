@@ -171,6 +171,9 @@ export default class entityControl {
     }
 
     onDblClick(event, treeId, treeNode) {
+        if (!treeNode){
+            return;
+        }
         if (treeNode && treeNode.isParent) {
             return;
         }
@@ -191,8 +194,8 @@ export default class entityControl {
             offset: new Cesium.HeadingPitchRange(Cesium.Math.toRadians(0), Cesium.Math.toRadians(-90), 1000)
         }).then((bool) => {
             if (!bool) {
-                console.log("图层已隐藏,无法定位到该图层")
-                cocoMessage.warning("图层已隐藏,无法定位到该图层");
+                console.log("定位失败")
+                cocoMessage.warning("定位失败");
             }
         });
     }

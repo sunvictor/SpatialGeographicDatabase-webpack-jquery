@@ -1,4 +1,4 @@
-export default class GlobeUninterruptedPointDrawer {
+export default class GlobeUninterruptedBillboardDrawer {
     constructor() {
         this.init.apply(this, arguments);
     }

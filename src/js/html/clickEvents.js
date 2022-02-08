@@ -1,5 +1,5 @@
 import {go} from "../cesium/globalObject"
-import drawPoint from "../cesium/entity/plot/edit/GlobeUninterruptedPointDrawer"
+import drawPoint from "../cesium/entity/plot/edit/GlobeUninterruptedBillboardDrawer"
 // const $ = require("jQuery");
 import $ from "jquery";
 $(".nav_btn").on('click', function () {

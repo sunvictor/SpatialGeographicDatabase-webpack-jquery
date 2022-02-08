@@ -21,7 +21,7 @@ bindBtnImg.prototype = {
                 imgUrl = enabled ? "./img/icon/layerManageSelected.png" : "./img/icon/layerManage.png"
                 break;
             case "点":
-                imgUrl = enabled ? "./img/icon/drawPointSelected.png" : "./img/icon/drawPoint.png"
+                imgUrl = enabled ? "./img/icon/drawBillboardSelected.png" : "./img/icon/drawBillboard.png"
                 break;
             case "折线":
                 imgUrl = enabled ? "./img/icon/drawPolylineSelected.png" : "./img/icon/drawPolyline.png"

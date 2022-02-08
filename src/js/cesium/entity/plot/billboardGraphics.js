@@ -1,26 +1,30 @@
-import GlobeUninterruptedPointDrawer from "./edit/GlobeUninterruptedPointDrawer";
+import GlobeUninterruptedBillboardDrawer from "./edit/GlobeUninterruptedBillboardDrawer";
 import {go} from "../../globalObject";
 
 
 let _btnName = "点";
-let _btnIdName = "drawPoint";
-export default class pointGraphics {
+let _btnIdName = "drawBillboard";
+export default class billboardGraphics {
     viewModel = {
         enabled: false
     }
-    uninterruptedPointDrawer = null;
+    uninterruptedBillboardDrawer = null;
 
     constructor(viewer) {
         let _this = this;
         _this.viewer = viewer;
         _this.bindModel();
-        _this.uninterruptedPointDrawer = new GlobeUninterruptedPointDrawer(_this.viewer);
+        _this.uninterruptedBillboardDrawer = new GlobeUninterruptedBillboardDrawer(_this.viewer);
+    }
+
+    showDetailPanel(treeNode, entity) {
+        console.log(treeNode)
     }
 
     start(okCallback, cancelCallback) {
         let _this = this;
         _this.viewModel.enabled = true;
-        _this.uninterruptedPointDrawer.start(function (positions) {
+        _this.uninterruptedBillboardDrawer.start(function (positions) {
             okCallback(positions);
             _this.viewModel.enabled = false;
         }, function (positions) {
@@ -29,15 +33,15 @@ export default class pointGraphics {
         });
     }
 
-    showPoint(objId, position) {
+    showBillboard(objId, position) {
         let _this = this;
         let entity = go.ec.add({
             // layerId: _this.layerId,
             objId: objId,
-            shapeType: "Point",
+            shapeType: "Billboard",
             position: position,
             billboard: {
-                image: _this.uninterruptedPointDrawer.image,
+                image: _this.uninterruptedBillboardDrawer.image,
                 eyeOffset: new Cesium.ConstantProperty(new Cesium.Cartesian3(0, 0, 0)),
                 heightReference: Cesium.HeightReference.CLAMP_TO_GROUND, //绝对贴地
                 clampToGround: true,

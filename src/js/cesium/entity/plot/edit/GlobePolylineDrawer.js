@@ -1,32 +1,36 @@
+import gykjPanel from "@/js/plugins/panel";
+
 export default class GlobePolylineDrawer {
-    viewer= null;
-    scene= null;
-    clock= null;
-    canvas= null;
-    camera= null;
-    ellipsoid= null;
-    tooltip= null;
-    entity= null;
-    positions= [];
-    tempPositions= [];
-    drawHandler= null;
-    modifyHandler= null;
-    okHandler= null;
-    cancelHandler= null;
-    dragIcon= "../../../../img/plot/tempMidPoint.png";
-    dragIconLight= "../../../../img/plot/editPoint.png";
-    material= null;
-    toolBarIndex= null;
-    markers= {};
-    layerId= "globeDrawerLayer";
-    width= 8;
-    shapeColor= null;
-    params= {};
-    shapeName= '折线';
-    floatingPoint= null;
+    viewer = null;
+    scene = null;
+    clock = null;
+    canvas = null;
+    camera = null;
+    ellipsoid = null;
+    tooltip = null;
+    entity = null;
+    positions = [];
+    tempPositions = [];
+    drawHandler = null;
+    modifyHandler = null;
+    okHandler = null;
+    cancelHandler = null;
+    dragIcon = "../../../../img/plot/tempMidPoint.png";
+    dragIconLight = "../../../../img/plot/editPoint.png";
+    material = null;
+    toolBarIndex = null;
+    markers = {};
+    layerId = "globeDrawerLayer";
+    width = 8;
+    shapeColor = null;
+    params = {};
+    shapeName = '折线';
+    floatingPoint = null;
+
     constructor() {
         this.init.apply(this, arguments);
     }
+
     init(viewer) {
         var _this = this;
         _this.viewer = viewer;
@@ -39,7 +43,8 @@ export default class GlobePolylineDrawer {
 
         _this.resetParams();
     }
-    clear(){
+
+    clear() {
         var _this = this;
         if (_this.drawHandler) {
             _this.drawHandler.destroy();
@@ -57,6 +62,7 @@ export default class GlobePolylineDrawer {
 
         $("#shapeEditContainer").hide(); // 设置确定按钮隐藏
     }
+
     showModifyPolyline(positions, oldParams, okHandler, cancelHandler) {
         var _this = this;
         _this.positions = positions;
@@ -68,6 +74,7 @@ export default class GlobePolylineDrawer {
         _this.width = _this.params.width;
         _this._showModifyPolyline2Map();
     }
+
     start(okHandler, cancelHandler) {
         var _this = this;
         _this.okHandler = okHandler;
@@ -157,7 +164,8 @@ export default class GlobePolylineDrawer {
         }, Cesium.ScreenSpaceEventType.RIGHT_CLICK);
 
     }
-    _startModify(){
+
+    _startModify() {
         var _this = this;
         var isMoving = false;
         var pickedAnchor = null;
@@ -247,7 +255,8 @@ export default class GlobePolylineDrawer {
             }
         }, Cesium.ScreenSpaceEventType.MOUSE_MOVE);
     }
-    _showPolyline2Map(){
+
+    _showPolyline2Map() {
         var _this = this;
         // if (_this.material == null) {
         _this.material = new Cesium.PolylineGlowMaterialProperty({
@@ -269,7 +278,8 @@ export default class GlobePolylineDrawer {
         _this.entity = _this.viewer.entities.add(bData);
         _this.entity.layerId = _this.layerId;
     }
-    _showModifyPolyline2Map(){
+
+    _showModifyPolyline2Map() {
         var _this = this;
 
         _this._startModify();
@@ -304,6 +314,7 @@ export default class GlobePolylineDrawer {
             }
         }
     }
+
     _updateModifyAnchors(oid) {
         var _this = this;
         var num = _this.tempPositions.length;
@@ -335,6 +346,7 @@ export default class GlobePolylineDrawer {
             }
         }
     }
+
     _updateNewMidAnchors(oid) {
         var _this = this;
         if (oid == null || oid == undefined) {
@@ -386,6 +398,7 @@ export default class GlobePolylineDrawer {
             _this.markers[oid3].position.setValue(c3);
         }
     }
+
     _createPoint(cartesian, oid) {
         var _this = this;
         var point = viewer.entities.add({
@@ -404,6 +417,7 @@ export default class GlobePolylineDrawer {
         _this.markers[oid] = point;
         return point;
     }
+
     _createMidPoint(cartesian, oid) {
         var _this = this;
         var point = viewer.entities.add({
@@ -421,7 +435,8 @@ export default class GlobePolylineDrawer {
         _this.markers[oid] = point;
         return point;
     }
-    _computeTempPositions(){
+
+    _computeTempPositions() {
         var _this = this;
 
         var pnts = [].concat(_this.positions);
@@ -439,6 +454,7 @@ export default class GlobePolylineDrawer {
         var last = pnts[num - 1];
         _this.tempPositions.push(last);
     }
+
     _computeCenterPotition(p1, p2) {
         var _this = this;
         var c1 = _this.ellipsoid.cartesianToCartographic(p1);
@@ -447,59 +463,20 @@ export default class GlobePolylineDrawer {
         var cp = _this.ellipsoid.cartographicToCartesian(cm);
         return cp;
     }
-    _showToolBar(){
+
+    _showToolBar() {
         var _this = this;
-        _this._createToolBar();
+        this._createToolBar();
         var width = $(window).width();
         var wTop = 300;
         // var wLeft = parseInt((width - 145) / 2);
         var wLeft = 600;
-        _this.toolBarIndex = layer.open({
-            title: false,
-            type: 1,
-            fixed: true,
-            resize: false,
-            shade: 0,
-            content: $("#shapeEditContainer"),
-            offset: [wTop + "px", wLeft + "px"],
-            move: "#shapeEditRTCorner",
-            area: ['400px','300px'],
-            skin: 'layui-draw-alert',
-        });
-        var cssSel = "#layui-layer" + _this.toolBarIndex + " .layui-layer-close2";
-        $(cssSel).hide();
     }
-    _createToolBar(){
+
+    _createToolBar() {
         var _this = this;
         var objs = $("#shapeEditContainer");
         objs.remove();
-        // var html = '<div id="shapeEditContainer" style="padding: 10px 10px;">'
-        //          + '    <button name="btnOK" class="layui-btn layui-btn-xs layui-btn-normal"> 确定 </button>'
-        //          + '    <button name="btnCancel" class="layui-btn layui-btn-xs layui-btn-danger"> 取消 </button>'
-        //          + '    <div id="shapeEditRTCorner" style="width: 16px; position: absolute; right: 0px; top: 0px; bottom: 0px">'
-        //          + '    </div>'
-        //          + '</div>';
-//         var html = `<div id="shapeEditContainer" style="color:black; height:300px;width:350px">
-//         <div id="shapeEditRTCorner">折线</div>
-//         <hr>
-//         <div>
-//             <label>名称:</label><input id="polylineName" type="text" value="折线"/>
-//             </div>
-//             <div>
-//           <!--  <label>贴地</label>
-//             <input id="clamp" type="checkbox" name="clamp" checked> -->
-//             <div>
-//             <label>颜色</label>
-//             <span class="polyline-shapecolor-paigusu" style="width:25px;height:25px;background:rgba(228,235,41,1.0);display:inline-block;margin:0;"></span>
-//             </div>
-//            <div><label>宽度</label><input id="polylineWidth" type="range" min="1" max="100" step="1"/></div>
-//         <div style="position: absolute;bottom: 10px;right: 10px;" class="layerBtn">
-//         <button name="btnOK" class="layui-btn layui-btn-xs layui-btn-normal"> 确定 </button>
-//         <button name="btnCancel" class="layui-btn layui-btn-xs layui-btn-danger"> 取消 </button>
-//         </div>
-//         </div>
-// </div>
-// `
         var html = `<div id="shapeEditContainer" >
 <div id="shapeEditRTCorner">折线</div>
 
@@ -525,7 +502,19 @@ export default class GlobePolylineDrawer {
 </div>
 </div>
 `
-        $("body").append(html);
+        let polylineAttrPanel = new gykjPanel({
+            title: "折线",
+            show: true,
+            width: 600,
+            height: 370,
+            right: 100,
+            content: html,
+            callback: {
+                hidePanel: function () {
+                    polylineAttrPanel.destroy();
+                }
+            }
+        })
         _this.initPanelData();
         _this.setAttribute();
         var btnOK = $("#shapeEditContainer button[name='btnOK']");
@@ -545,23 +534,25 @@ export default class GlobePolylineDrawer {
                 _this.params.name = _this.shapeName;
                 _this.okHandler(positions, lonLats, _this.params);
                 _this.clear();
-                layer.close(_this.toolBarIndex);
+                polylineAttrPanel.destroy();
                 _this.resetParams();
             } else {
                 _this.clear();
-                layer.close(_this.toolBarIndex);
+                polylineAttrPanel.destroy();
                 _this.resetParams();
             }
         });
         btnCancel.unbind("click").bind("click", function () {
             _this.clear();
-            layer.close(_this.toolBarIndex);
+            polylineAttrPanel.destroy();
             if (_this.cancelHandler) {
                 _this.cancelHandler();
             }
         });
+        return objs;
     }
-    _getPositionsWithSid(){
+
+    _getPositionsWithSid() {
         var _this = this;
         var viewer = _this.viewer;
         var rlt = [];
@@ -594,6 +585,7 @@ export default class GlobePolylineDrawer {
         });
         return rlt;
     }
+
     _getLonLat(cartesian) {
         var _this = this;
         var cartographic = _this.ellipsoid.cartesianToCartographic(cartesian);
@@ -608,6 +600,7 @@ export default class GlobePolylineDrawer {
         pos.lat = Cesium.Math.toDegrees(pos.lat);
         return pos;
     }
+
     _getLonLats(positions) {
         var _this = this;
         var arr = [];
@@ -620,12 +613,14 @@ export default class GlobePolylineDrawer {
         }
         return arr;
     }
+
     _isSimpleXYZ(p1, p2) {
         if (p1.x == p2.x && p1.y == p2.y && p1.z == p2.z) {
             return true;
         }
         return false;
     }
+
     _clearMarkers(layerName) {
         var _this = this;
         var viewer = _this.viewer;
@@ -640,7 +635,8 @@ export default class GlobePolylineDrawer {
             }
         }
     }
-    _clearAnchors(){
+
+    _clearAnchors() {
         var _this = this;
         for (var key in _this.markers) {
             var m = _this.markers[key];
@@ -648,28 +644,29 @@ export default class GlobePolylineDrawer {
         }
         _this.markers = {};
     }
-    setAttribute(){
+
+    setAttribute() {
         var _this = this;
         // 设置图形颜色
-        $(".polyline-shapecolor-paigusu").paigusu({
-            color: "228,235,41,0.6", //初始色  支持两种配置方案
-        }, function (event, obj) {
-            // console.log(event);
-            // console.log(obj);
-            $(event).data('color', "rgba(" + obj.rgba + ")"); // 用于changeColor.js使用，格式 rgba(25,38,220,0.1);
-            $(event).data('color2', obj.rgba); // 用于paigusu.min.js使用，获取当前颜色 格式 25,38,220,1
-            $(event).css('background', "rgba(" + obj.rgb + ")"); // 设置页面盒子的背景颜色
-            // color = "rgba("+obj.rgba+")";
-            _this.shapeColor = "rgba(" + obj.rgba + ")";
-            // _this.entity.polyline.material = new Cesium.ColorMaterialProperty(new Cesium.CallbackProperty(function () {
-            //     _this.material = Cesium.Color.fromCssColorString("rgba(" + obj.rgba + ")");
-            //     return _this.material;
-            // }, false));
-            _this.entity.polyline.material = new Cesium.PolylineGlowMaterialProperty({
-                glowPower: 0.25,
-                color: Cesium.Color.fromCssColorString("rgba(" + obj.rgba + ")"),
-            });
-        });
+        // $(".polyline-shapecolor-paigusu").paigusu({
+        //     color: "228,235,41,0.6", //初始色  支持两种配置方案
+        // }, function (event, obj) {
+        //     // console.log(event);
+        //     // console.log(obj);
+        //     $(event).data('color', "rgba(" + obj.rgba + ")"); // 用于changeColor.js使用，格式 rgba(25,38,220,0.1);
+        //     $(event).data('color2', obj.rgba); // 用于paigusu.min.js使用，获取当前颜色 格式 25,38,220,1
+        //     $(event).css('background', "rgba(" + obj.rgb + ")"); // 设置页面盒子的背景颜色
+        //     // color = "rgba("+obj.rgba+")";
+        //     _this.shapeColor = "rgba(" + obj.rgba + ")";
+        //     // _this.entity.polyline.material = new Cesium.ColorMaterialProperty(new Cesium.CallbackProperty(function () {
+        //     //     _this.material = Cesium.Color.fromCssColorString("rgba(" + obj.rgba + ")");
+        //     //     return _this.material;
+        //     // }, false));
+        //     _this.entity.polyline.material = new Cesium.PolylineGlowMaterialProperty({
+        //         glowPower: 0.25,
+        //         color: Cesium.Color.fromCssColorString("rgba(" + obj.rgba + ")"),
+        //     });
+        // });
         // 设置边框宽度
         $("#polylineWidth").on('input propertychange', () => {
             var val = $("#polylineWidth").val();
@@ -683,7 +680,8 @@ export default class GlobePolylineDrawer {
             _this.shapeName = val;
         })
     }
-    initPanelData(){
+
+    initPanelData() {
         var _this = this;
         $("#polylineName").val(_this.shapeName); // 设置面板中的图形名称
         // $("#clamp").
@@ -691,7 +689,8 @@ export default class GlobePolylineDrawer {
         $(".polyline-shapecolor-paigusu").css("background", _this.shapeColor); //  设置图形颜色span的背景色
         $("#polylineWidth").val(_this.width); //设置折线宽度
     }
-    resetParams(){
+
+    resetParams() {
         var _this = this;
         _this.params = {
             color: "rgba(228,235,41,0.6)",
