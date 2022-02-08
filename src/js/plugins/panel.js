@@ -207,7 +207,7 @@ const gykjPanel = (function () {
 
         panelZIndex(obj){
             let _this = this;
-            $(obj).off('click').on('click',function () {
+            $(obj).off('mousedown').on('mousedown',function () {
                 $("#panelContent").append(_this.panelDom)
             })
         }
