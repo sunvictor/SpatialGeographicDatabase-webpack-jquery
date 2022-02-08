@@ -212,6 +212,13 @@ export default class entityControl {
         let rMenu = document.createElement("div")
         document.querySelector(".B").append(rMenu)
 
+        let positionA = document.createElement("a")
+        rMenu.append(positionA)
+        positionA.classList.add('list-group-item')
+        $(positionA).text("定位")
+        $(positionA).on('click', function () {
+            _this.positionEntity(treeNode)
+        })
         let deleteA = document.createElement("a")
         rMenu.append(deleteA)
         deleteA.classList.add('list-group-item')
@@ -225,13 +232,6 @@ export default class entityControl {
         $(attrA).text("属性")
         $(attrA).on('click', function () {
             _this.showNodeAttr(treeNode)
-        })
-        let positionA = document.createElement("a")
-        rMenu.append(positionA)
-        positionA.classList.add('list-group-item')
-        $(positionA).text("定位")
-        $(positionA).on('click', function () {
-            _this.positionEntity(treeNode)
         })
 
         $(rMenu).attr("id", "rMenu")

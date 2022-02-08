@@ -43,7 +43,7 @@ const gykjPanel = (function () {
             let _this = this;
             let panelDiv = document.createElement('div');
             _this.panelDom = panelDiv;
-            const mapDiv = document.querySelector('.B');
+            const mapDiv = document.querySelector('#panelContent');
             mapDiv.appendChild(panelDiv);
             if (options == null) {
                 options = {};
@@ -95,6 +95,7 @@ const gykjPanel = (function () {
             $(content).append(options.content) // 这里使用了jquery对append()函数，既能添加node节点，也能添加html格式对字符串，原生JS实现方式后面再尝试
             panelDiv.appendChild(content);
             _this.move(title);
+            _this.panelZIndex(title);
             // _this.resize(document.querySelector('.panel-div-map i.bar'));
             return this;
         }
@@ -201,6 +202,13 @@ const gykjPanel = (function () {
                 }
 
                 // }
+            })
+        }
+
+        panelZIndex(obj){
+            let _this = this;
+            $(obj).off('click').on('click',function () {
+                $("#panelContent").append(_this.panelDom)
             })
         }
 
