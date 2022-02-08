@@ -1,6 +1,7 @@
 import gykjPanel from "@/js/plugins/panel";
 import {go} from "@/js/cesium/globalObject";
 import entityProvider from "./entityProvider";
+import cocoMessage from '@/js/plugins/coco-message'
 
 let _btnName = "图形管理";
 let _btnIdName = "entityManage";
@@ -43,7 +44,7 @@ export default class entityControl {
                 onRename: _this.onRename,
                 onRemove: _this.onRemove,
                 // onClick: _this.onClick,
-                // onDblClick: _this.onDblClick,
+                onDblClick: _this.onDblClick,
                 // beforeDrag: _this.beforeDrag,
                 // beforeDrop: _this.beforeDrop
             }
@@ -169,6 +170,32 @@ export default class entityControl {
         }
     }
 
+    onDblClick(event, treeId, treeNode) {
+        if (treeNode && treeNode.isParent) {
+            return;
+        }
+        let nodeData = go.ec.getNodeData(treeNode.gIndex);
+        go.ec.flyToEntity(nodeData);
+    }
+
+    positionEntity(treeNode){
+        let _this = this;
+        _this.flyToEntity(_this.getNodeData(treeNode.gIndex))
+        _this.hideRMenu();
+    }
+
+    flyToEntity(entity){
+        let _this = this;
+        let height = _this.viewer.camera.positionCartographic.height;
+        _this.viewer.flyTo(entity, {
+            offset: new Cesium.HeadingPitchRange(Cesium.Math.toRadians(0), Cesium.Math.toRadians(-90), 1000)
+        }).then((bool) => {
+            if (!bool) {
+                console.log("图层已隐藏,无法定位到该图层")
+                cocoMessage.warning("图层已隐藏,无法定位到该图层");
+            }
+        });
+    }
     /**
      * 显示右键菜单
      * @param treeId
@@ -195,6 +222,13 @@ export default class entityControl {
         $(attrA).text("属性")
         $(attrA).on('click', function () {
             _this.showNodeAttr(treeNode)
+        })
+        let positionA = document.createElement("a")
+        rMenu.append(positionA)
+        positionA.classList.add('list-group-item')
+        $(positionA).text("定位")
+        $(positionA).on('click', function () {
+            _this.positionEntity(treeNode)
         })
 
         $(rMenu).attr("id", "rMenu")
@@ -235,6 +269,7 @@ export default class entityControl {
         const tree = $.fn.zTree.getZTreeObj("entityTree")
         tree.checkNode(treeNode, checked, checkTypeFlag, callbackFlag)
     }
+
     /**
      * 移除节点
      * @param treeNode

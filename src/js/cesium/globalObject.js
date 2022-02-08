@@ -3,6 +3,9 @@ import LayerControl from "./layer/layerControl";
 import LayerMap from "./layer/layerMap"
 import imageryProvider from "@/js/cesium/layer/imageryProvider";
 import entityControl from "@/js/cesium/entity/entityControl";
+import plotGlobeTracker from "./entity/plot/plotGlobeTracker";
+import drawShape from "./entity/plot/draw";
+
 let _viewer;
 export const go = {}; // 封装所有的类对象
 
@@ -21,6 +24,8 @@ function createObjs(viewer) {
     go.lm = new LayerMap(viewer)
     go.ip = new imageryProvider(viewer);
     go.ec = new entityControl(viewer);
+    go.plot = new plotGlobeTracker(viewer);
+    go.draw = new drawShape(viewer);
 }
 
 export function getViewer() {

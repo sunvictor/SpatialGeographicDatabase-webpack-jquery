@@ -1,6 +1,6 @@
 import pm from "../../plugins/publicMethod";
 import {go} from "@/js/cesium/globalObject";
-
+import cocoMessage from '@/js/plugins/coco-message'
 const LayerMap = (function () {
     class LayerMap {
         labCoordTypeDict = { // 图层坐标系转换字典
@@ -17,7 +17,7 @@ const LayerMap = (function () {
         /**
          * 添加图层
          * @param options 参见addMap注释
-         * @returns {Cesium.ImageryLayer}
+         * @returns {ImageryLayer|boolean}
          */
         add(options) {
             let map = this.addMap(options);

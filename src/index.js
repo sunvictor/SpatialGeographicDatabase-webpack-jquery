@@ -3,6 +3,7 @@ import * as Cesium from 'cesium/Cesium'; // 模块化引用Cesium
 // var Color = require('cesium/Core/Color'); // 引用Cesium部分组件
 // var color = Color.fromRandom();
 import 'bootstrap';
+import cocoMessage from '@/js/plugins/coco-message'
 // import 'bootstrap/dist/css/bootstrap.min.css'; // 在index.html引入css文件，如果在这里引入会导致最开始初始化时html没有样式
 import "cesium/Widgets/widgets.css";
 import $ from "jquery"
@@ -17,6 +18,10 @@ import "./css/panel.css"
 import {initMainHtml} from "./js/html/mainHtml";
 import {startUpEarth, startUpCesium} from "./js/cesium/initMap";
 
+// 初始化消息提示
+cocoMessage.config({
+    duration: 2500,
+});
 
 // require('cesium/Widgets/widgets.css');
 if (typeof XE !== 'undefined') {
