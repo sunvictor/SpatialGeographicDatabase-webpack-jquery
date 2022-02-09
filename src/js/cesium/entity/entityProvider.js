@@ -101,8 +101,6 @@ export default class entityProvider {
         html += `</table>`
         $(div).append(html)
         return div;
-
-        // go.plot.
     }
 
     clickEvents(treeNode, entity) {

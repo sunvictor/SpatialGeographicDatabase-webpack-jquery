@@ -60,6 +60,8 @@ const gykjPanel = (function () {
             const title = document.createElement('div');
             panelDiv.appendChild(title);
             title.classList.add('panel-title');
+            _this.move(title);
+            _this.panelZIndex(title);
             const titleH3 = document.createElement('h3');
             titleH3.classList.add('panel-title-h3');
             titleH3.innerText = options.title ? options.title : "";
@@ -94,8 +96,6 @@ const gykjPanel = (function () {
             // content.innerHTML = options.content ? options.content : "";
             $(content).append(options.content) // 这里使用了jquery对append()函数，既能添加node节点，也能添加html格式对字符串，原生JS实现方式后面再尝试
             panelDiv.appendChild(content);
-            _this.move(title);
-            _this.panelZIndex(title);
             // _this.resize(document.querySelector('.panel-div-map i.bar'));
             return this;
         }
@@ -205,9 +205,9 @@ const gykjPanel = (function () {
             })
         }
 
-        panelZIndex(obj){
+        panelZIndex(titleX){
             let _this = this;
-            $(obj).off('mousedown').on('mousedown',function () {
+            $(titleX).on('click',function (event) { // 这里如果用的是mousedown, 那么关闭按钮的点击事件就会失效, 没找到原因
                 $("#panelContent").append(_this.panelDom)
             })
         }
@@ -279,7 +279,7 @@ const gykjPanel = (function () {
             callback();
         }
 
-        togglePanel() {
+        togglePanel(event) {
             let currentRotate = $(this).data('currentRotate');
             if (!currentRotate || currentRotate == 360) {
                 $(this).parent().parent().parent().addClass('panelDiv-close');
@@ -301,6 +301,7 @@ const gykjPanel = (function () {
                 "-o-transform": "rotate(" + currentRotate + "deg)",
                 /* Opera */
             })
+            event.stopImmediatePropagation();
         }
     }
 
