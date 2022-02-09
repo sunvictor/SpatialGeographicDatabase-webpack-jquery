@@ -36,9 +36,8 @@ export default class entityProvider {
             left: 640,
             content: div,
             callback: {
-                hidePanel: function () {
+                closePanel: function () {
                     entity.customProp.isAttrPanelOpen = false;
-                    _this.entityAttrPanel.destroy();
                 }
             }
         })
@@ -55,12 +54,6 @@ export default class entityProvider {
             entity.show = false;
             go.ec.checkNode(treeNode, false)
         });
-        $("#entity_attr_" + treeNode.gid + "_show").css({
-            zoom: '70%'
-        })
-        $("#entity_attr_" + treeNode.gid + "_show span").css({
-            zoom: '93%'
-        })
 
         Cesium.knockout.track(entity);
         let toolbar = document.getElementById("entity_attr_" + treeNode.gid);
@@ -77,7 +70,11 @@ export default class entityProvider {
                 // 同步修改ztree的checked状态
                 go.ec.checkNode(treeNode, newValue)
             });
+        Cesium.knockout.getObservable(entity, "_name")
+            .subscribe(function (newValue) {
 
+            });
+        return _this.entityAttrPanel
     }
 
     resoleAttr(treeNode, entity) {
@@ -106,8 +103,7 @@ export default class entityProvider {
     clickEvents(treeNode, entity) {
         $("button[name='entityType']").off('click').on("click", function () {
             let entityType = $(this).data("type")
-            // alert(entityType)
-            go.plot[entityType + "Drawer"].showDetailPanel(treeNode, entity);
+            go.plot[entityType + "Drawer"].editShape(treeNode, entity);
         })
     }
 }

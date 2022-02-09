@@ -87,9 +87,8 @@ export default class imageryProvider {
             left: 440,
             content: div,
             callback: {
-                hidePanel: function () {
+                closePanel: function () {
                     imageryLayer.customProp.isAttrPanelOpen = false;
-                    _this.imageryLayerAttrPanel.destroy();
                 }
             }
         })
@@ -106,12 +105,6 @@ export default class imageryProvider {
             imageryLayer.show = false;
             go.lc.checkNode(treeNode, false)
         });
-        $("#imagery_attr_" + treeNode.gid + "_show").css({
-            zoom: '70%'
-        })
-        $("#imagery_attr_" + treeNode.gid + "_show span").css({
-            zoom: '93%'
-        })
 
         Cesium.knockout.track(imageryLayer);
         let toolbar = document.getElementById("imagery_attr_" + treeNode.gid);

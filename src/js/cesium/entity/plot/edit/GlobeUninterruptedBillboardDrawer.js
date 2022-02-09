@@ -36,7 +36,7 @@ export default class GlobeUninterruptedBillboardDrawer {
     }
 
     clear() {
-        var _this = this;
+        let _this = this;
         if (_this.drawHandler) {
             _this.drawHandler.destroy();
             _this.drawHandler = null;
@@ -50,7 +50,7 @@ export default class GlobeUninterruptedBillboardDrawer {
             _this.getPointBy3DModel = null;
         }
         if (_this.toolBarIndex != null) {
-            layer.close(_this.toolBarIndex);
+            // layer.close(_this.toolBarIndex);
         }
         _this.position = null;
         _this.positions = [];

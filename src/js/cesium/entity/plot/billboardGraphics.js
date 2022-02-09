@@ -9,7 +9,8 @@ export default class billboardGraphics {
         enabled: false
     }
     uninterruptedBillboardDrawer = null;
-
+    plotType = "billboard"
+    layerId = "globeDrawerDemoLayer"
     constructor(viewer) {
         let _this = this;
         _this.viewer = viewer;
@@ -17,8 +18,14 @@ export default class billboardGraphics {
         _this.uninterruptedBillboardDrawer = new GlobeUninterruptedBillboardDrawer(_this.viewer);
     }
 
+    clear(){
+        let _this = this;
+        _this.uninterruptedBillboardDrawer.clear();
+    }
+
     showDetailPanel(treeNode, entity) {
         console.log(treeNode)
+        let html
     }
 
     start(okCallback, cancelCallback) {
@@ -62,6 +69,7 @@ export default class billboardGraphics {
         Cesium.knockout.getObservable(_this.viewModel, 'enabled').subscribe(
             function (newValue) {
                 go.bbi.bindImg(_btnName, _btnIdName, newValue) // 切换是否选中图片
+                _this.clear();
                 // _this.entityPanel.show = newValue; // 控制面板显示隐藏
             }
         );

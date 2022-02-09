@@ -14,6 +14,7 @@ honeySwitch.init = function (ele) {
         }
         if ($(this).hasClass("switch-on")) {
             $(this).removeClass("switch-on").addClass("switch-off");
+            $(this).val(false)
             $(".switch-off").css({
                 'border-color': '#dfdfdf',
                 'box-shadow': 'rgb(223, 223, 223) 0px 0px 0px 0px inset',
@@ -21,6 +22,7 @@ honeySwitch.init = function (ele) {
             });
         } else {
             $(this).removeClass("switch-off").addClass("switch-on");
+            $(this).val(true)
             if (honeySwitch.themeColor) {
                 var c = honeySwitch.themeColor;
                 $(this).css({
@@ -91,6 +93,7 @@ window.switchEvent = function (ele, on, off) {
 }
 
 honeySwitch.showOn = function (ele) {
+    $(ele).val(true)
     $(ele).removeClass("switch-off").addClass("switch-on");
     if (honeySwitch.themeColor) {
         var c = honeySwitch.themeColor;
@@ -110,6 +113,7 @@ honeySwitch.showOn = function (ele) {
     }
 }
 honeySwitch.showOff = function (ele) {
+    $(ele).val(false)
     $(ele).removeClass("switch-on").addClass("switch-off");
     $(".switch-off").css({
         'border-color': '#dfdfdf',

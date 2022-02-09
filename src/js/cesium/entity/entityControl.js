@@ -68,8 +68,9 @@ export default class entityControl {
             height: 470,
             top: 220,
             content: ul,
+            closeType: "hide",
             callback: {
-                hidePanel: closeLayerPanel
+                closePanel: closeLayerPanel
             }
         })
         _this.entityPanel.show = false;
@@ -92,13 +93,15 @@ export default class entityControl {
             params.name = "未命名图形"
         }
         const entity = _this.viewer.entities.add(params)
-        entity.customProp = {};
+        if (!entity.customProp) {
+            entity.customProp = {};
+        }
         let newNode = {
             name: entity.name,
             checked: entity.show
             // data: JSON.stringify(map)
         }
-        _this.addNode(-1, newNode, entity)
+        _this.latestNode = _this.addNode(-1, newNode, entity)
         return entity;
     }
 
@@ -170,8 +173,13 @@ export default class entityControl {
         }
     }
 
+    moveNode(targetNode, treeNode, moveType = "next", isSilent = true) {
+        const tree = $.fn.zTree.getZTreeObj("entityTree")
+        tree.moveNode(targetNode, treeNode, moveType, isSilent)
+    }
+
     onDblClick(event, treeId, treeNode) {
-        if (!treeNode){
+        if (!treeNode) {
             return;
         }
         if (treeNode && treeNode.isParent) {
@@ -181,13 +189,13 @@ export default class entityControl {
         go.ec.flyToEntity(nodeData);
     }
 
-    positionEntity(treeNode){
+    positionEntity(treeNode) {
         let _this = this;
         _this.flyToEntity(_this.getNodeData(treeNode.gIndex))
         _this.hideRMenu();
     }
 
-    flyToEntity(entity){
+    flyToEntity(entity) {
         let _this = this;
         let height = _this.viewer.camera.positionCartographic.height;
         _this.viewer.flyTo(entity, {
@@ -199,6 +207,7 @@ export default class entityControl {
             }
         });
     }
+
     /**
      * 显示右键菜单
      * @param treeId
@@ -310,10 +319,16 @@ export default class entityControl {
     showNodeAttr(treeNode) {
         let _this = this;
         let data = _this.getNodeData(treeNode.gIndex);
-        if (!data.customProp.isAttrPanelOpen) {
-            new entityProvider(_this.viewer).showAttrPanel(treeNode, data);
-            data.customProp.isAttrPanelOpen = true;
+        // if (!data.customProp.isAttrPanelOpen) {
+        //     _this.entityAttrPanel = new entityProvider(_this.viewer).showAttrPanel(treeNode, data);
+        //     data.customProp.isAttrPanelOpen = true;
+        // }
+        if (data.customProp.isAttrPanelOpen && _this.entityAttrPanel) {
+            _this.entityAttrPanel.closePanel();
+            _this.entityAttrPanel = null;
         }
+        _this.entityAttrPanel = new entityProvider(_this.viewer).showAttrPanel(treeNode, data);
+        data.customProp.isAttrPanelOpen = true;
         _this.hideRMenu();
     }
 
@@ -321,6 +336,7 @@ export default class entityControl {
         let _this = this;
         return _this.treeData[index]
     }
+
 
     /**
      * 生成一个用不重复的ID

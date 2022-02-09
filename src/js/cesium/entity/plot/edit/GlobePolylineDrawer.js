@@ -1,4 +1,7 @@
 import gykjPanel from "@/js/plugins/panel";
+import {honeySwitch} from "../../../../plugins/honeySwitch";
+import $ from "jquery";
+import cm from "../../../../plugins/CesiumMethod";
 
 export default class GlobePolylineDrawer {
     viewer = null;
@@ -55,7 +58,7 @@ export default class GlobePolylineDrawer {
             _this.modifyHandler = null;
         }
         if (_this.toolBarIndex != null) {
-            layer.close(_this.toolBarIndex);
+            // layer.close(_this.toolBarIndex);
         }
         _this._clearMarkers(_this.layerId);
         // _this.tooltip.setVisible(false);
@@ -478,30 +481,36 @@ export default class GlobePolylineDrawer {
         var objs = $("#shapeEditContainer");
         objs.remove();
         var html = `<div id="shapeEditContainer" >
-<div id="shapeEditRTCorner">折线</div>
-
-<div style="margin-left: 10%; margin-top: 5%;">
-    <label>名称:</label><input style="background: rgba(30,32,45,0.9);    margin-left: 3%; color: #ffffff;    font-size: 14px;
-    width: 200px;
-    height: 25px;
-    text-indent: 10px;outline:none; border:none;" id="polylineName" type="text" value="折线"/>
-    </div>
-    <div style="margin-top: 5%;">
-  <!--  <label style="font-size: 14px;
-  margin-left: 10%;">贴地</label>
-    <input id="clamp" type="checkbox" name="clamp" checked> -->
-    <div style="margin-left: 10%;">
-    <label style="    position: relative; top: 38%;">颜色：</label>
-    <span class="polyline-shapecolor-paigusu" style="width:25px;height:25px;background:rgba(228,235,41,1.0);display:inline-block;"></span>
-    </div>
-   <div style="margin-left: 10%; margin-top: 5%;"><label>宽度：</label><input style="  width: 200px; margin-left: 1%;position: absolute;" id="polylineWidth" type="range" min="1" max="100" step="1"/></div>
-<div style="position: absolute;bottom: 10px;right: 10px;" class="layerBtn">
-<button name="btnOK" class="layui-btn layui-btn-xs layui-btn-normal"> 确定 </button>
-<button name="btnCancel" class="layui-btn layui-btn-xs layui-btn-danger"> 取消 </button>
-</div>
-</div>
-</div>
-`
+                        <div id="shapeEditRTCorner">${_this.shapeName}</div>
+                        <div>
+                            <label>显示:</label><span class="switch-on" 
+                            id="entity_polyline_attr_show"></span>
+                        </div>
+                        <div >
+                            <label>贴地:</label><span class="switch-on"
+                            id="entity_polyline_attr_clampToGround"></span>
+                        </div>
+                        <div>
+                            <label>中心坐标:</label><input style="background: rgba(30,32,45,0.9);margin-left: 3%; color: #ffffff;font-size: 14px;width: 300px;height: 25px;text-indent: 10px;outline:none; border:none;"
+                             id="centerPosition" type="text"/>
+                        </div>
+                        <div>
+                            <div>
+                                <label style="position: relative; top: 38%;">颜色：</label>
+                                <span class="polyline-shapecolor-paigusu" 
+                                style="width:25px;height:25px;background:rgba(228,235,41,1.0);display:inline-block;">
+                                </span>
+                            </div>
+                        <div><label>宽度：</label>
+                        <input data-bind="value: width" style="width: 200px; margin-left: 1%;position: absolute;" 
+                        id="polylineWidth" type="range" min="1" max="100" step="1"/>
+                        </div>
+                         <div style="position: absolute;bottom: 10px;right: 10px;" class="layerBtn">
+                            <button name="btnOK" class="layui-btn layui-btn-xs layui-btn-normal"> 确定 </button>
+                            <button name="btnCancel" class="layui-btn layui-btn-xs layui-btn-danger"> 取消 </button>
+                         </div>
+                        </div>
+                    </div>`
         let polylineAttrPanel = new gykjPanel({
             title: "折线",
             show: true,
@@ -510,8 +519,8 @@ export default class GlobePolylineDrawer {
             right: 100,
             content: html,
             callback: {
-                hidePanel: function () {
-                    polylineAttrPanel.destroy();
+                closePanel: function () {
+                    cancel();
                 }
             }
         })
@@ -543,12 +552,15 @@ export default class GlobePolylineDrawer {
             }
         });
         btnCancel.unbind("click").bind("click", function () {
+           cancel();
+        });
+        function cancel() {
             _this.clear();
             polylineAttrPanel.destroy();
             if (_this.cancelHandler) {
                 _this.cancelHandler();
             }
-        });
+        }
         return objs;
     }
 
@@ -667,6 +679,7 @@ export default class GlobePolylineDrawer {
         //         color: Cesium.Color.fromCssColorString("rgba(" + obj.rgba + ")"),
         //     });
         // });
+        _this.shapeColor = "rgba(228,235,41,1.0)"
         // 设置边框宽度
         $("#polylineWidth").on('input propertychange', () => {
             var val = $("#polylineWidth").val();
@@ -685,9 +698,20 @@ export default class GlobePolylineDrawer {
         var _this = this;
         $("#polylineName").val(_this.shapeName); // 设置面板中的图形名称
         // $("#clamp").
-
+        let positions = _this.entity.polyline.positions.getValue();
+        let feature = cm.calcAbsoluteCenterByCartesians(positions);
+        let centerPosition = feature.geometry.coordinates;
+        $("#centerPosition").val(centerPosition)
         $(".polyline-shapecolor-paigusu").css("background", _this.shapeColor); //  设置图形颜色span的背景色
         $("#polylineWidth").val(_this.width); //设置折线宽度
+        honeySwitch.init($("#entity_polyline_attr_show")) // 重新初始化开关按钮
+        honeySwitch.init($("#entity_polyline_attr_clampToGround")) // 重新初始化开关按钮
+        switchEvent("#entity_polyline_attr_show", function () { // 切换开关按钮的回调函数
+            // 修改开关状态，同步更改图层状态和ztree的checked状态
+            _this.entity.show = true;
+        }, function () {
+            _this.entity.show = false;
+        });
     }
 
     resetParams() {

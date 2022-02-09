@@ -1,20 +1,30 @@
 import {go} from "../../globalObject";
 import GlobePolylineDrawer from "./edit/GlobePolylineDrawer";
+import gykjPanel from "../../../plugins/panel";
+import $ from "jquery";
+import {honeySwitch} from "../../../plugins/honeySwitch";
+import cm from "../../../plugins/CesiumMethod";
 
 
 let _btnName = "折线";
 let _btnIdName = "drawPolyline";
-export default class polylineGraphics{
+export default class polylineGraphics {
     viewModel = {
         enabled: false
     }
     polylineDrawer = null;
-
+    plotType = "polyline";
+    layerId = "globeDrawerDemoLayer"
     constructor(viewer) {
         let _this = this;
         _this.viewer = viewer;
         _this.bindModel();
         _this.polylineDrawer = new GlobePolylineDrawer(_this.viewer);
+    }
+
+    clear(){
+        let _this = this;
+        _this.polylineDrawer.clear()
     }
 
     start(okCallback, cancelCallback) {
@@ -42,7 +52,7 @@ export default class polylineGraphics{
         });
         let bData = {
             name: params.name,
-            // layerId: _this.layerId,
+            layerId: _this.layerId,
             objId: objId,
             shapeType: "Polyline",
             polyline: {
@@ -57,6 +67,34 @@ export default class polylineGraphics{
         let entity = go.ec.add(bData);
         // _this.shape.push(entity)
         return entity;
+    }
+
+
+    editShape(treeNode, entity){
+        let _this = this;
+        go.draw.flag = 1;
+        window.t = treeNode;
+        let objId = entity.objId;
+        let oldPositions = go.draw.draw.shapeDic[objId];
+
+        //先移除entity
+        let deletedEntity = go.draw.getParams(objId);
+        let oldParams = deletedEntity.customProp;
+        // console.log(oldParams);
+        go.draw.clearEntityById(objId);
+        let prevNode = treeNode.getPreNode();
+        //进入编辑状态
+        _this.polylineDrawer.showModifyPolyline(oldPositions, oldParams, function (positions, lonLats, params) {
+            go.draw.draw.shapeDic[objId] = positions;
+            go.ec.removeNode(treeNode)
+            go.ec.entityAttrPanel.closePanel();
+            _this.showPolyline(objId, positions, params);
+            // go.ec.moveNode(prevNode, go.ec.latestNode)
+        }, function () {
+            _this.showPolyline(objId, oldPositions, oldParams);
+            go.ec.removeNode(treeNode)
+            go.ec.showNodeAttr(treeNode)
+        });
     }
 
     /**

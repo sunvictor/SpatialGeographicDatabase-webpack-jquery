@@ -75,14 +75,24 @@ const gykjPanel = (function () {
             const titleCloseA = document.createElement('a');
             titleDiv2.appendChild(titleCloseA);
             titleCloseA.classList.add('panel-title-img-a');
-            titleCloseA.onclick = function () {
-                let callBk = function () {
-                    _this.show = !_this.show
-                };
-                if (options.callback && options.callback.hidePanel) {
-                    callBk = options.callback.hidePanel
+            _this.callBk = function () {
+                switch (options.closeType) {
+                    case "hide":
+                        _this.show = !_this.show;
+                        break;
+                    case "destroy":
+                        _this.destroy();
+                        break;
+                    default:
+                        _this.destroy();
                 }
-                _this.hidePanel(callBk);
+                if (options.callback && options.callback.closePanel) {
+                    options.callback.closePanel();
+                }
+            };
+
+            titleCloseA.onclick = function () {
+                _this.closePanel(_this.callBk);
             }
             const arrow = document.createElement('i');
             arrow.classList.add('panel-arrow')
@@ -100,10 +110,10 @@ const gykjPanel = (function () {
             return this;
         }
 
-        closePanel(domPanel) {
-            let _this = this;
-            this.panelDom.remove();
-        }
+        // closePanel(domPanel) {
+        //     let _this = this;
+        //     this.panelDom.remove();
+        // }
 
         resize(obj) {
             let _this = this;
@@ -205,9 +215,9 @@ const gykjPanel = (function () {
             })
         }
 
-        panelZIndex(titleX){
+        panelZIndex(titleX) {
             let _this = this;
-            $(titleX).on('click',function (event) { // 这里如果用的是mousedown, 那么关闭按钮的点击事件就会失效, 没找到原因
+            $(titleX).on('click', function (event) { // 这里如果用的是mousedown, 那么关闭按钮的点击事件就会失效, 没找到原因
                 $("#panelContent").append(_this.panelDom)
             })
         }
@@ -269,13 +279,16 @@ const gykjPanel = (function () {
             };
         };
 
-        destroy(){
+        destroy() {
             let _this = this;
             $(_this.panelDom).remove()
         }
-        hidePanel(callback) {
+
+        closePanel(callback) {
             let _this = this;
-            // _this.show = !_this.show;
+            if (typeof callback == "undefined") {
+                callback = _this.callBk;
+            }
             callback();
         }
 

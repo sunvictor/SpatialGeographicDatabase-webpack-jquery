@@ -81,7 +81,7 @@ export default class LayerControl {
             height: 470,
             content: ul,
             callback: {
-                hidePanel: closeLayerPanel
+                closePanel: closeLayerPanel
             }
         })
         _this.layerPanel.show = false;
