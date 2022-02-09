@@ -1,10 +1,11 @@
-import {bindBtnImg} from "../html/bindBtnImg";
+import {bindBtnImg} from "../html/BindBtnImg";
 import LayerControl from "./layer/layerControl";
 import LayerMap from "./layer/layerMap"
 import imageryProvider from "@/js/cesium/layer/imageryProvider";
 import entityControl from "@/js/cesium/entity/entityControl";
 import plotGlobeTracker from "./entity/plot/plotGlobeTracker";
 import drawShape from "./entity/plot/draw";
+import MeasureTools from "@/js/cesium/measure/MeasureTools";
 
 let _viewer;
 export const go = {}; // 封装所有的类对象
@@ -26,6 +27,7 @@ function createObjs(viewer) {
     go.ec = new entityControl(viewer);
     go.plot = new plotGlobeTracker(viewer);
     go.draw = new drawShape(viewer);
+    go.measure = new MeasureTools(viewer);
 }
 
 export function getViewer() {

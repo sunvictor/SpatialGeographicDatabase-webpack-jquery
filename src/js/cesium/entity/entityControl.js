@@ -7,6 +7,7 @@ let _btnName = "图形管理";
 let _btnIdName = "entityManage";
 export default class entityControl {
     treeData = [];
+    nodeAndEntity = [];
 
     constructor(viewer) {
         let _this = this;
@@ -85,8 +86,9 @@ export default class entityControl {
     /**
      * 添加图层
      * @param params 参数与 viewer.entities.add 的参数相同
+     * @param isAddNode
      */
-    add(params) {
+    add(params, isAddNode = true) {
         let _this = this;
         if (!params.name) {
             params.name = "未命名图形"
@@ -98,7 +100,9 @@ export default class entityControl {
             checked: entity.show
             // data: JSON.stringify(map)
         }
-        _this.addNode(-1, newNode, entity)
+        if (isAddNode) {
+            let node = _this.addNode(-1, newNode, entity);
+        }
         return entity;
     }
 
@@ -108,6 +112,14 @@ export default class entityControl {
             return false;
         }
         let isRemove = _this.viewer.entities.remove(entity);
+        if (entity.nodeProp) {
+            // console.log(2,entity.nodeProp)
+            const tree = $.fn.zTree.getZTreeObj("entityTree")
+            let node = tree.getNodeByTId(entity.nodeProp.tId)
+            if (node) {
+                _this.removeNode(node);
+            }
+        }
         if (isRemove) {
 
         }
@@ -146,9 +158,11 @@ export default class entityControl {
             parentNode = tree.getNodes()[0]
         }
         newNode = tree.addNodes(parentNode, newNode);
+        data.nodeProp = newNode[0]
+        // _this.nodeAndEntity.push([newNode, data])
         // tree.refresh()
         // }
-        return newNode;
+        return newNode[0];
     }
 
     onRename(event, treeId, treeNode) {
@@ -171,7 +185,7 @@ export default class entityControl {
     }
 
     onDblClick(event, treeId, treeNode) {
-        if (!treeNode){
+        if (!treeNode) {
             return;
         }
         if (treeNode && treeNode.isParent) {
@@ -181,13 +195,13 @@ export default class entityControl {
         go.ec.flyToEntity(nodeData);
     }
 
-    positionEntity(treeNode){
+    positionEntity(treeNode) {
         let _this = this;
         _this.flyToEntity(_this.getNodeData(treeNode.gIndex))
         _this.hideRMenu();
     }
 
-    flyToEntity(entity){
+    flyToEntity(entity) {
         let _this = this;
         let height = _this.viewer.camera.positionCartographic.height;
         _this.viewer.flyTo(entity, {
@@ -199,6 +213,7 @@ export default class entityControl {
             }
         });
     }
+
     /**
      * 显示右键菜单
      * @param treeId
