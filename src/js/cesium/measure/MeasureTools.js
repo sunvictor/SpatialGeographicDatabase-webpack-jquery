@@ -37,26 +37,50 @@ export default class MeasureTools {
         Cesium.knockout.applyBindings(_this.viewModel, toolbar);
         Cesium.knockout.getObservable(_this.viewModel, 'measurePointEnabled').subscribe(
             function (newValue) {
+                _this.clear()
                 go.bbi.bindImg(_pointBtnName, _pointBtnIdName, newValue) // 切换是否选中图片
-                if (newValue) _this.measurePoint()
+                if (newValue) {
+                    _this.closeOtherFunc('measurePointEnabled')
+                    _this.measurePoint()
+                } else {
+                    _this.clearTempEntity()
+                }
             }
         );
         Cesium.knockout.getObservable(_this.viewModel, 'measureDistanceEnabled').subscribe(
             function (newValue) {
+                _this.clear()
                 go.bbi.bindImg(_distanceBtnName, _distanceBtnIdName, newValue) // 切换是否选中图片
-                if (newValue) _this.measureDis()
+                if (newValue) {
+                    _this.closeOtherFunc('measureDistanceEnabled')
+                    _this.measureDis()
+                } else {
+                    _this.clearTempEntity()
+                }
             }
         );
         Cesium.knockout.getObservable(_this.viewModel, 'measureAreaEnabled').subscribe(
             function (newValue) {
+                _this.clear()
                 go.bbi.bindImg(_areaBtnName, _areaBtnIdName, newValue) // 切换是否选中图片
-                if (newValue) _this.measureArea()
+                if (newValue) {
+                    _this.closeOtherFunc('measureAreaEnabled')
+                    _this.measureArea()
+                } else {
+                    _this.clearTempEntity()
+                }
             }
         );
         Cesium.knockout.getObservable(_this.viewModel, 'measureHeightEnabled').subscribe(
             function (newValue) {
+                _this.clear()
                 go.bbi.bindImg(_heightBtnName, _heightBtnIdName, newValue) // 切换是否选中图片
-                if (newValue) _this.measureHeight()
+                if (newValue) {
+                    _this.closeOtherFunc('measureHeightEnabled')
+                    _this.measureHeight()
+                } else {
+                    _this.clearTempEntity()
+                }
             }
         );
     }
@@ -103,9 +127,27 @@ export default class MeasureTools {
             _this.viewer.entities.remove(_this.pointEntity);
         }
         _this.distance = 0;
+        // _this.tempEntityCollection = [];
         _this.viewer.screenSpaceEventHandler.removeInputAction(Cesium.ScreenSpaceEventType.LEFT_CLICK);
         _this.viewer.screenSpaceEventHandler.removeInputAction(Cesium.ScreenSpaceEventType.MOUSE_MOVE);
         _this.viewer.screenSpaceEventHandler.removeInputAction(Cesium.ScreenSpaceEventType.RIGHT_CLICK);
+    }
+
+    clearTempEntity(){
+        let _this = this;
+        for (let i = 0; i < _this.tempEntityCollection.length; i++) {
+            _this.viewer.entities.remove(_this.tempEntityCollection[i]);
+        }
+        _this.tempEntityCollection = [];
+    }
+    closeOtherFunc(nowFunc){
+        let _this = this;
+        for (const viewModelKey in this.viewModel) {
+            if (viewModelKey !== nowFunc){
+                this.viewModel[viewModelKey] = false;
+            }
+        }
+        _this.clearTempEntity()
     }
 
     getCollection() {
@@ -591,7 +633,7 @@ export default class MeasureTools {
                 positions.push(cartesian);
                 positions.push(positions[0]);
                 _this.addPoint(cartesian);
-
+                _this.tempEntityCollection = [];
                 _this.viewModel.measureHeightEnabled = false;
 
                 _this.viewer.screenSpaceEventHandler.removeInputAction(Cesium.ScreenSpaceEventType.LEFT_CLICK);
@@ -663,20 +705,21 @@ export default class MeasureTools {
                 let point = Cesium.Cartesian3.fromDegrees(cartographic.longitude / Math.PI * 180, cartographic.latitude / Math.PI * 180, height);
                 if (isDraw) {
                     polygonPath.push(point);
-                    let temp = _this.viewer.entities.add({
-                        position: point,
-                        point: {
-                            show: true,
-                            color: Cesium.Color.SKYBLUE,
-                            pixelSize: 3,
-                            outlineColor: Cesium.Color.YELLOW,
-                            outlineWidth: 1,
-                            eyeOffset: new Cesium.ConstantProperty(new Cesium.Cartesian3(0, 0, 0)),
-                            heightReference: Cesium.HeightReference.CLAMP_TO_GROUND, //绝对贴地
-                            clampToGround: true,
-                            disableDepthTestDistance: Number.POSITIVE_INFINITY, //元素在正上方
-                        },
-                    }, false);
+                    // let temp = _this.viewer.entities.add({
+                    //     position: point,
+                    //     point: {
+                    //         show: true,
+                    //         color: Cesium.Color.SKYBLUE,
+                    //         pixelSize: 3,
+                    //         outlineColor: Cesium.Color.YELLOW,
+                    //         outlineWidth: 1,
+                    //         eyeOffset: new Cesium.ConstantProperty(new Cesium.Cartesian3(0, 0, 0)),
+                    //         heightReference: Cesium.HeightReference.CLAMP_TO_GROUND, //绝对贴地
+                    //         clampToGround: true,
+                    //         disableDepthTestDistance: Number.POSITIVE_INFINITY, //元素在正上方
+                    //     },
+                    // }, false);
+                    let temp = _this.addPoint(point)
                     // let temp = _this.addPoint(point);
                     AllEnities.push(temp);
                     _this.entityCollection.push(temp);
@@ -743,7 +786,7 @@ export default class MeasureTools {
             _this.viewer.trackedEntity = undefined;
             isDraw = false;
             // tooltip.style.display = 'none';
-
+            _this.tempEntityCollection = [];
             _this.viewModel.measureAreaEnabled = false;
 
         }, Cesium.ScreenSpaceEventType.RIGHT_CLICK);

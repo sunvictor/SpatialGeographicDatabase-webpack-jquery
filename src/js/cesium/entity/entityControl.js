@@ -18,12 +18,12 @@ export default class entityControl {
 
     init() {
         let _this = this;
-        let setting = {
+        _this.treeSetting = {
             view: {
                 selectedMulti: false
             },
             async: {
-                enabled: true
+                enabled: false
             },
             check: {
                 enable: true,
@@ -39,6 +39,7 @@ export default class entityControl {
                 enable: true,
             },
             callback: {
+                beforeRemove: _this.beforeRemove,
                 onRightClick: _this.onRightClick,
                 onCheck: _this.controlEntityShow,
                 onRename: _this.onRename,
@@ -76,7 +77,7 @@ export default class entityControl {
         _this.entityPanel.show = false;
         _this.viewModel['enabled'] = false;
 
-        _this.ztree = $.fn.zTree.init($("#entityTree"), setting, _this.treeData);
+        _this.ztree = $.fn.zTree.init($("#entityTree"), _this.treeSetting, _this.treeData);
 
         function closeLayerPanel() {
             _this.viewModel.enabled = false
@@ -158,6 +159,17 @@ export default class entityControl {
         // if (selectedNode.length > 0) {
         if (parentNode != null) {
             parentNode = tree.getNodes()[0]
+            if (typeof parentNode == "undefined") { // 如果已经没有根节点了,就创建一个
+                _this.treeData = [{
+                    name: "图形管理",
+                    open: true,
+                    checked: true,
+                    type: 'dir'
+                }]
+                _this.ztree = $.fn.zTree.init($("#entityTree"), _this.treeSetting, _this.treeData);
+                _this.addNode(-1, newNode, data)
+                return null;
+            }
         }
         newNode = tree.addNodes(parentNode, newNode);
         data.nodeProp = newNode[0] // 将treeNode数据放入entity中
@@ -187,7 +199,7 @@ export default class entityControl {
 
     moveNode(targetNode, treeNode, moveType = "next", isSilent = true) {
         const tree = $.fn.zTree.getZTreeObj("entityTree")
-        tree.moveNode(targetNode,treeNode,moveType,isSilent)
+        tree.moveNode(targetNode, treeNode, moveType, isSilent)
     }
 
     onDblClick(event, treeId, treeNode) {
@@ -264,8 +276,11 @@ export default class entityControl {
         $("body").bind("mousedown", _this.onBodyMouseDown);
     }
 
+    beforeRemove(treeId, treeNode) {
+
+    }
+
     onRightClick(event, treeId, treeNode) {
-        let _this = this;
         if (!treeNode && event.target.tagName.toLowerCase() != "button" && $(event.target).parents("a").length == 0) {
             go.ec.showRMenu(treeId, treeNode, "root", event.clientX, event.clientY - 130); // 减去导航栏的高度
         } else if (treeNode && !treeNode.noR) {

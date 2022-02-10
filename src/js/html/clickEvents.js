@@ -24,3 +24,6 @@ $("#measureArea").on('click', function () {
 $("#measureHeight").on('click', function () {
     go.measure.viewModel.measureHeightEnabled = !go.measure.viewModel.measureHeightEnabled
 })
+$("#clearMeasure").on('click', function () {
+    go.measure.destroy();
+})
