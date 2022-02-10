@@ -99,31 +99,31 @@ export default class polylineGraphics {
         _this.polylineDrawer.showModifyPolyline(oldPositions, oldParams, function (positions, lonLats, params) {
             go.draw.draw.shapeDic[objId] = positions;
             // go.ec.removeNode(treeNode)
-            // go.ec.entityAttrPanel.closePanel();
+            // treeNode.customProp.entityPanel.closePanel();
             let entity = _this.showPolyline(objId, positions, params, true);
             entity.nodeProp = treeNode;
             go.ec.treeData[deletedEntity.nodeProp.gIndex] = entity;
-            go.ec.entityAttrPanel.closePanel();
+            treeNode.customProp.entityPanel.closePanel();
             let panelOptions = {
-                top: go.ec.entityAttrPanel.top,
-                left: go.ec.entityAttrPanel.left,
-                width: go.ec.entityAttrPanel.width,
-                height: go.ec.entityAttrPanel.height,
+                top: treeNode.customProp.entityPanel.top,
+                left: treeNode.customProp.entityPanel.left,
+                width: treeNode.customProp.entityPanel.width,
+                height: treeNode.customProp.entityPanel.height,
             }
-            go.ec.entityAttrPanel = new entityProvider(_this.viewer).showAttrPanel(node, entity, panelOptions);
+            treeNode.customProp.entityPanel = new entityProvider(_this.viewer).showAttrPanel(node, entity, panelOptions);
             // go.ec.moveNode(prevNode, go.ec.latestNode)
         }, function () {
             let entity = _this.showPolyline(objId, oldPositions, oldParams, true);
             entity.nodeProp = treeNode;
             go.ec.treeData[deletedEntity.nodeProp.gIndex] = entity;
-            go.ec.entityAttrPanel.closePanel();
+            treeNode.customProp.entityPanel.closePanel();
             let panelOptions = {
-                top: go.ec.entityAttrPanel.top,
-                left: go.ec.entityAttrPanel.left,
-                width: go.ec.entityAttrPanel.width,
-                height: go.ec.entityAttrPanel.height,
+                top: treeNode.customProp.entityPanel.top,
+                left: treeNode.customProp.entityPanel.left,
+                width: treeNode.customProp.entityPanel.width,
+                height: treeNode.customProp.entityPanel.height,
             }
-            go.ec.entityAttrPanel = new entityProvider(_this.viewer).showAttrPanel(node, entity, panelOptions);
+            treeNode.customProp.entityPanel = new entityProvider(_this.viewer).showAttrPanel(node, entity, panelOptions);
             // go.ec.removeNode(treeNode)
             // go.ec.showNodeAttr(treeNode)
         });

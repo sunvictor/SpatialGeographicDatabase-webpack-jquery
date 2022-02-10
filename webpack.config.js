@@ -5,6 +5,8 @@ const cesiumSource = './node_modules/cesium/Source';
 const cesiumWorkers = '../Build/Cesium/Workers';
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const webpack = require('webpack');
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+
 module.exports = {
     mode: "development",
     entry: path.join(__dirname, "src", "index.js"),
@@ -14,6 +16,7 @@ module.exports = {
         //需要编译Cesium中的多行字符串
         sourcePrefix: '',
         // publicPath: './'
+        // assetModuleFilename: 'images/[hash][ext][query]' // 指定打包图片的文件夹名称
     },
     amd: {
         //允许Cesium兼容 webpack的require方式
@@ -61,7 +64,7 @@ module.exports = {
                 },
             },
             {
-                test: /\.css$/,
+                test: /\.css$/i,
                 use: ['style-loader', 'css-loader']
             },
             // {
@@ -74,8 +77,12 @@ module.exports = {
             //     }]
             // },
             {
-                test: /\.(png|gif|jpg|jpeg|svg|xml|json)$/,
-                type: 'asset/resource' // webpack5中使用Asset Modules！！！不使用url-loader和file-loader了！！！
+                test: /\.(png|gif|jpg|jpeg|svg|xml|json)$/i,
+                type: 'asset/resource', // webpack5中使用Asset Modules！！！不使用url-loader和file-loader了！！！
+                // type: 'asset', // webpack5中使用Asset Modules！！！不使用url-loader和file-loader了！！！
+                generator: {
+                    filename: 'images/[hash][ext][query]'
+                }
             },{
                 test: /\.(scss)$/,
                 use: [{
@@ -98,14 +105,19 @@ module.exports = {
         ]
     },
     plugins: [
+        // new BundleAnalyzerPlugin(), // 查看打包文件大小
         // new webpack.ProvidePlugin({
         //     $: "jquery",
         //     jQuery: "jquery",
         //     // "window.jQuery": "jquery"
         // }),
+        // new HtmlWebpackPlugin({
+        //     template: path.join(__dirname, "src", "index.html"),
+        //     filename: "index.html"
+        // }),
         new HtmlWebpackPlugin({
-            template: path.join(__dirname, "src", "index.html"),
-            filename: "index.html"
+            title: "空间地理数据库",
+            template: path.join(__dirname, "src", "index.html")
         }),
         // new CopyWebpackPlugin({
         //     patterns: [
@@ -133,6 +145,10 @@ module.exports = {
                 {from: './node_modules/earthsdk/dist/XbsjCesium', to: 'js/earthsdk/XbsjCesium', toType: 'dir'},
                 {from: './node_modules/earthsdk/dist/XbsjEarth', to: 'js/earthsdk/XbsjEarth', toType: 'dir'},
                 {from: './node_modules/bootstrap/dist/css', to: 'css/boostrap/dist/css', toType: 'dir'},
+                // {from: './src/css', to: 'css/css', toType: 'dir'},
+                {from: './src/img', to: 'img', toType: 'dir'},
+                // {from: './src/js/scripts/jquery', to: 'js/jquery', toType: 'dir'},
+                // {from: './node_modules/jquery', to: 'js/jquery', toType: 'dir'},
             ]
         }),
         new webpack.DefinePlugin({

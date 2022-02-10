@@ -41,12 +41,14 @@ export default class entityProvider {
             content: div,
             callback: {
                 closePanel: function () {
-                    entity.customProp.isAttrPanelOpen = false;
+                    treeNode.customProp.isAttrPanelOpen = false;
+                    console.log("hhh")
                 }
             }
         }
         pm.setOptions(options, panelOptions);
         _this.entityAttrPanel = new gykjPanel(options)
+        treeNode.customProp.isAttrPanelOpen = true;
         _this.clickEvents(treeNode, entity);
         honeySwitch.init($("#entity_attr_" + treeNode.gid + "_show")) // 重新初始化开关按钮
         let manualSwitch = false;

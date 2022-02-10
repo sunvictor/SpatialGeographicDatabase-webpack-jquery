@@ -105,6 +105,9 @@ export default class entityControl {
         }
         if (isAddNode) {
             let node = _this.addNode(-1, newNode, entity);
+            node.customProp = {
+                isAttrPanelOpen: false
+            }
         }
         return entity;
     }
@@ -217,6 +220,7 @@ export default class entityControl {
         let _this = this;
         _this.flyToEntity(_this.getNodeData(treeNode.gIndex))
         _this.hideRMenu();
+        _this.ztree.selectNode(treeNode)
     }
 
     flyToEntity(entity) {
@@ -347,11 +351,11 @@ export default class entityControl {
     showNodeAttr(treeNode) {
         let _this = this;
         let data = _this.getNodeData(treeNode.gIndex);
-        if (!data.customProp.isAttrPanelOpen) {
-            _this.entityAttrPanel = new entityProvider(_this.viewer).showAttrPanel(treeNode, data);
-            data.customProp.isAttrPanelOpen = true;
+        if (!treeNode.customProp.isAttrPanelOpen) {
+            treeNode.customProp.entityPanel = new entityProvider(_this.viewer).showAttrPanel(treeNode, data);
         }
         _this.hideRMenu();
+        _this.ztree.selectNode(treeNode)
     }
 
     getNodeData(index) {
