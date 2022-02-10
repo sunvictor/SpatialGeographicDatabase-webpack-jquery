@@ -175,7 +175,7 @@ export default class entityControl {
 
     moveNode(targetNode, treeNode, moveType = "next", isSilent = true) {
         const tree = $.fn.zTree.getZTreeObj("entityTree")
-        tree.moveNode(targetNode, treeNode, moveType, isSilent)
+        tree.moveNode(targetNode,treeNode,moveType,isSilent)
     }
 
     onDblClick(event, treeId, treeNode) {
@@ -319,16 +319,10 @@ export default class entityControl {
     showNodeAttr(treeNode) {
         let _this = this;
         let data = _this.getNodeData(treeNode.gIndex);
-        // if (!data.customProp.isAttrPanelOpen) {
-        //     _this.entityAttrPanel = new entityProvider(_this.viewer).showAttrPanel(treeNode, data);
-        //     data.customProp.isAttrPanelOpen = true;
-        // }
-        if (data.customProp.isAttrPanelOpen && _this.entityAttrPanel) {
-            _this.entityAttrPanel.closePanel();
-            _this.entityAttrPanel = null;
+        if (!data.customProp.isAttrPanelOpen) {
+            _this.entityAttrPanel = new entityProvider(_this.viewer).showAttrPanel(treeNode, data);
+            data.customProp.isAttrPanelOpen = true;
         }
-        _this.entityAttrPanel = new entityProvider(_this.viewer).showAttrPanel(treeNode, data);
-        data.customProp.isAttrPanelOpen = true;
         _this.hideRMenu();
     }
 
