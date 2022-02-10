@@ -4,6 +4,7 @@ import gykjPanel from "../../../plugins/panel";
 import $ from "jquery";
 import {honeySwitch} from "../../../plugins/honeySwitch";
 import cm from "../../../plugins/CesiumMethod";
+import entityProvider from "../entityProvider";
 
 
 let _btnName = "折线";
@@ -15,6 +16,7 @@ export default class polylineGraphics {
     polylineDrawer = null;
     plotType = "polyline";
     layerId = "globeDrawerDemoLayer"
+
     constructor(viewer) {
         let _this = this;
         _this.viewer = viewer;
@@ -22,7 +24,7 @@ export default class polylineGraphics {
         _this.polylineDrawer = new GlobePolylineDrawer(_this.viewer);
     }
 
-    clear(){
+    clear() {
         let _this = this;
         _this.polylineDrawer.clear()
     }
@@ -39,7 +41,7 @@ export default class polylineGraphics {
         });
     }
 
-    showPolyline(objId, positions, params, enable = true) {
+    showPolyline(objId, positions, params, isEdit, enable = true) {
         let _this = this;
         // var color = $("#paigusu").data("color");
         let color = null;
@@ -51,6 +53,7 @@ export default class polylineGraphics {
             color: Cesium.Color.fromCssColorString(color)
         });
         let bData = {
+            show: params.show,
             name: params.name,
             layerId: _this.layerId,
             objId: objId,
@@ -64,21 +67,30 @@ export default class polylineGraphics {
         };
         bData.customProp = params;
         bData.customProp.orginPositions = positions;
-        let entity = go.ec.add(bData);
+        let isAddNode = !isEdit // 是否新增node节点 如果是编辑状态,则不添加node节点
+        let entity = go.ec.add(bData, isAddNode);
         // _this.shape.push(entity)
         return entity;
     }
 
 
-    editShape(treeNode, entity){
+    editShape(treeNode, entity) {
         let _this = this;
+        if (_this.polylineDrawer.isPanelOpen) {
+            return;
+        }
         go.draw.flag = 1;
-        window.t = treeNode;
         let objId = entity.objId;
         let oldPositions = go.draw.draw.shapeDic[objId];
-
         //先移除entity
         let deletedEntity = go.draw.getParams(objId);
+        let node;
+        try {
+            node = go.ec.ztree.getNodeByTId(deletedEntity.nodeProp.tId); // 根据tid获取当前对象的node节点
+        } catch (e) {
+            console.log(e)
+            return;
+        }
         let oldParams = deletedEntity.customProp;
         // console.log(oldParams);
         go.draw.clearEntityById(objId);
@@ -86,14 +98,34 @@ export default class polylineGraphics {
         //进入编辑状态
         _this.polylineDrawer.showModifyPolyline(oldPositions, oldParams, function (positions, lonLats, params) {
             go.draw.draw.shapeDic[objId] = positions;
-            go.ec.removeNode(treeNode)
+            // go.ec.removeNode(treeNode)
+            // go.ec.entityAttrPanel.closePanel();
+            let entity = _this.showPolyline(objId, positions, params, true);
+            entity.nodeProp = treeNode;
+            go.ec.treeData[deletedEntity.nodeProp.gIndex] = entity;
             go.ec.entityAttrPanel.closePanel();
-            _this.showPolyline(objId, positions, params);
+            let panelOptions = {
+                top: go.ec.entityAttrPanel.top,
+                left: go.ec.entityAttrPanel.left,
+                width: go.ec.entityAttrPanel.width,
+                height: go.ec.entityAttrPanel.height,
+            }
+            go.ec.entityAttrPanel = new entityProvider(_this.viewer).showAttrPanel(node, entity, panelOptions);
             // go.ec.moveNode(prevNode, go.ec.latestNode)
         }, function () {
-            _this.showPolyline(objId, oldPositions, oldParams);
-            go.ec.removeNode(treeNode)
-            go.ec.showNodeAttr(treeNode)
+            let entity = _this.showPolyline(objId, oldPositions, oldParams, true);
+            entity.nodeProp = treeNode;
+            go.ec.treeData[deletedEntity.nodeProp.gIndex] = entity;
+            go.ec.entityAttrPanel.closePanel();
+            let panelOptions = {
+                top: go.ec.entityAttrPanel.top,
+                left: go.ec.entityAttrPanel.left,
+                width: go.ec.entityAttrPanel.width,
+                height: go.ec.entityAttrPanel.height,
+            }
+            go.ec.entityAttrPanel = new entityProvider(_this.viewer).showAttrPanel(node, entity, panelOptions);
+            // go.ec.removeNode(treeNode)
+            // go.ec.showNodeAttr(treeNode)
         });
     }
 

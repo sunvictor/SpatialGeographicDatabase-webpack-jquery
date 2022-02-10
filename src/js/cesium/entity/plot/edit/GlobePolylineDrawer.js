@@ -29,7 +29,7 @@ export default class GlobePolylineDrawer {
     params = {};
     shapeName = '折线';
     floatingPoint = null;
-
+    isPanelOpen = false;
     constructor() {
         this.init.apply(this, arguments);
     }
@@ -483,10 +483,6 @@ export default class GlobePolylineDrawer {
         var html = `<div id="shapeEditContainer" >
                         <div id="shapeEditRTCorner">${_this.shapeName}</div>
                         <div>
-                            <label>显示:</label><span class="switch-on" 
-                            id="entity_polyline_attr_show"></span>
-                        </div>
-                        <div >
                             <label>贴地:</label><span class="switch-on"
                             id="entity_polyline_attr_clampToGround"></span>
                         </div>
@@ -524,6 +520,7 @@ export default class GlobePolylineDrawer {
                 }
             }
         })
+        _this.isPanelOpen = true;
         _this.initPanelData();
         _this.setAttribute();
         var btnOK = $("#shapeEditContainer button[name='btnOK']");
@@ -544,10 +541,12 @@ export default class GlobePolylineDrawer {
                 _this.okHandler(positions, lonLats, _this.params);
                 _this.clear();
                 polylineAttrPanel.destroy();
+                _this.isPanelOpen = false;
                 _this.resetParams();
             } else {
                 _this.clear();
                 polylineAttrPanel.destroy();
+                _this.isPanelOpen = false;
                 _this.resetParams();
             }
         });
@@ -557,6 +556,7 @@ export default class GlobePolylineDrawer {
         function cancel() {
             _this.clear();
             polylineAttrPanel.destroy();
+            _this.isPanelOpen = false;
             if (_this.cancelHandler) {
                 _this.cancelHandler();
             }
@@ -704,14 +704,7 @@ export default class GlobePolylineDrawer {
         $("#centerPosition").val(centerPosition)
         $(".polyline-shapecolor-paigusu").css("background", _this.shapeColor); //  设置图形颜色span的背景色
         $("#polylineWidth").val(_this.width); //设置折线宽度
-        honeySwitch.init($("#entity_polyline_attr_show")) // 重新初始化开关按钮
         honeySwitch.init($("#entity_polyline_attr_clampToGround")) // 重新初始化开关按钮
-        switchEvent("#entity_polyline_attr_show", function () { // 切换开关按钮的回调函数
-            // 修改开关状态，同步更改图层状态和ztree的checked状态
-            _this.entity.show = true;
-        }, function () {
-            _this.entity.show = false;
-        });
     }
 
     resetParams() {
@@ -720,6 +713,7 @@ export default class GlobePolylineDrawer {
             color: "rgba(228,235,41,0.6)",
             name: '折线',
             width: 8,
+            show: true
         };
         _this.shapeColor = "rgba(228,235,41,0.6)";
         _this.shapeName = "折线";

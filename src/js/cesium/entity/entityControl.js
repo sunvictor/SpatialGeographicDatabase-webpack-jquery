@@ -306,7 +306,8 @@ export default class entityControl {
      */
     checkNode(treeNode, checked, checkTypeFlag = true, callbackFlag = false) {
         const tree = $.fn.zTree.getZTreeObj("entityTree")
-        tree.checkNode(treeNode, checked, checkTypeFlag, callbackFlag)
+        let checkNode = tree.checkNode(treeNode, checked, checkTypeFlag, callbackFlag);
+        return checkNode;
     }
 
     /**

@@ -9,13 +9,12 @@ const gykjPanel = (function () {
         constructor(options) {
             const _this = this;
             this.zIndex = 1;
-            this.top = 15;
-            this.left = 30;
-            this.width = 200;
-            this.height = 300;
+            // this.top = 15;
+            // this.left = 30;
+            // this.width = 200;
+            // this.height = 300;
             this.currentRotate = 0;
             this.unShow = "none";
-            this.initPanel(options);
             const defineObj = new Object(); // 定义一个临时对象
             // Object.defineProperties(gykjPanel.prototype, {
             Object.defineProperties(this, {
@@ -29,9 +28,51 @@ const gykjPanel = (function () {
                     get: function () {
                         return defineObj.show; // 将属性返回给gykjPanel
                     }
-                }
+                },
+                left: {
+                    // value: options.left,
+                    configurable: true,
+                    set: function (value) {
+                        defineObj.left = value;
+                    },
+                    get: function () {
+                        return defineObj.left;
+                    }
+                },
+                top: {
+                    // value: options.top,
+                    configurable: true,
+                    set: function (value) {
+                        defineObj.top = value;
+                    },
+                    get: function () {
+                        return defineObj.top;
+                    }
+                },
+                width: {
+                    // value: options.left,
+                    configurable: true,
+                    set: function (value) {
+                        defineObj.width = value;
+                    },
+                    get: function () {
+                        return defineObj.width;
+                    }
+                },
+                height: {
+                    // value: options.top,
+                    configurable: true,
+                    set: function (value) {
+                        defineObj.height = value;
+                    },
+                    get: function () {
+                        return defineObj.height;
+                    }
+                },
+
             })
-            this.show = options.show;
+            // this.show = options.show;
+            this.initPanel(options);
         }
 
         /**
@@ -51,10 +92,36 @@ const gykjPanel = (function () {
             panelDiv.classList.add('panelDiv');
             panelDiv.style.zIndex = options.zIndex ? options.zIndex : _this.zIndex;
             // panelDiv.style.position = 'absolute';
-            panelDiv.style.top = (options.top ? options.top : _this.top) + 'px';
-            panelDiv.style.left = (options.left ? options.left : _this.left) + 'px';
-            panelDiv.style.width = (options.width ? options.width : _this.width) + 'px';
-            panelDiv.style.height = (options.height ? options.height : _this.height) + 'px';
+            let top, left, width, height,show;
+            if (typeof options.top == "undefined" || options.top == null) {
+                top = 15;
+            } else {
+                top = options.top;
+            }
+            if (typeof options.left == "undefined" || options.left == null) {
+                left = 30;
+            } else {
+                left = options.left;
+            }
+            if (typeof options.width == "undefined" || options.width == null) {
+                width = 200;
+            } else {
+                width = options.width;
+            }
+            if (typeof options.height == "undefined" || options.height == null) {
+                height = 300;
+            } else {
+                height = options.height;
+            }
+            _this.top = top;
+            _this.left = left;
+            _this.width = width;
+            _this.height = height;
+            _this.show = options.show;
+            panelDiv.style.top = top + 'px';
+            panelDiv.style.left = left + 'px';
+            panelDiv.style.width = width + 'px';
+            panelDiv.style.height = height + 'px';
             panelDiv.style.display = options.show ? "block" : _this.unShow;
             // panelDiv.style.backgroundColor = "rgba(57, 57, 57, 0.8)";
             const title = document.createElement('div');
@@ -263,6 +330,8 @@ const gykjPanel = (function () {
                         if (left > windowWidth - panelWidth) {
                             left = windowWidth - panelWidth;
                         }
+                        _this.left = left;
+                        _this.top = top;
                         parent.style.left = left + 'px';
                         parent.style.top = top + 'px';
 

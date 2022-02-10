@@ -1,5 +1,6 @@
 import GlobeUninterruptedBillboardDrawer from "./edit/GlobeUninterruptedBillboardDrawer";
 import {go} from "../../globalObject";
+import entityProvider from "../entityProvider";
 
 
 let _btnName = "点";
@@ -11,6 +12,7 @@ export default class billboardGraphics {
     uninterruptedBillboardDrawer = null;
     plotType = "billboard"
     layerId = "globeDrawerDemoLayer"
+
     constructor(viewer) {
         let _this = this;
         _this.viewer = viewer;
@@ -18,14 +20,9 @@ export default class billboardGraphics {
         _this.uninterruptedBillboardDrawer = new GlobeUninterruptedBillboardDrawer(_this.viewer);
     }
 
-    clear(){
+    clear() {
         let _this = this;
         _this.uninterruptedBillboardDrawer.clear();
-    }
-
-    showDetailPanel(treeNode, entity) {
-        console.log(treeNode)
-        let html
     }
 
     start(okCallback, cancelCallback) {
@@ -40,10 +37,10 @@ export default class billboardGraphics {
         });
     }
 
-    showBillboard(objId, position) {
+    showBillboard(objId, position, isEdit = false) {
         let _this = this;
-        let entity = go.ec.add({
-            // layerId: _this.layerId,
+        let bData = {
+            layerId: _this.layerId,
             objId: objId,
             shapeType: "Billboard",
             position: position,
@@ -55,6 +52,51 @@ export default class billboardGraphics {
                 disableDepthTestDistance: Number.POSITIVE_INFINITY, //元素在正上方
             },
             clampToGround: true
+        };
+        let isAddNode = !isEdit // 是否新增node节点 如果是编辑状态,则不添加node节点
+        let entity = go.ec.add(bData, isAddNode);
+    }
+
+    editShape(treeNode, entity) {
+        let _this = this;
+        return;
+
+        console.log("RETURNERROR");
+        if (_this.uninterruptedBillboardDrawer.isPanelOpen) {
+            return;
+        }
+        go.draw.flag = 1;
+        let objId = entity.objId;
+        let oldPosition = go.draw.draw.shapeDic[objId];
+
+        //先移除entity
+        let deletedEntity = go.draw.getParams(objId);
+        let node;
+        try {
+            node = go.ec.ztree.getNodeByTId(deletedEntity.nodeProp.tId); // 根据tid获取当前对象的node节点
+        } catch (e) {
+            console.log(e);
+            return;
+        }
+        let oldParams = deletedEntity.customProp;
+        go.draw.clearEntityById(objId);
+        let prevNode = treeNode.getPreNode();
+        //进入编辑状态
+        _this.uninterruptedBillboardDrawer.showModifyPoint(oldPosition, function (position) {
+            go.draw.draw.shapeDic[objId] = position;
+            let entity = _this.showBillboard(objId, position, params, true);
+            entity.nodeProp = treeNode;
+            go.ec.treeData[deletedEntity.nodeProp.gIndex] = entity;
+            go.ec.entityAttrPanel.closePanel();
+            let panelOptions = {
+                top: go.ec.entityAttrPanel.top,
+                left: go.ec.entityAttrPanel.left,
+                width: go.ec.entityAttrPanel.width,
+                height: go.ec.entityAttrPanel.height,
+            }
+            go.ec.entityAttrPanel = new entityProvider(_this.viewer).showAttrPanel(node, entity, panelOptions);
+        }, function () {
+            _this.showBillboard(objId, oldPosition);
         });
     }
 

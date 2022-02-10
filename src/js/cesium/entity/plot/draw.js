@@ -27,7 +27,7 @@ export default class drawShape {
             go.plot.trackUninterruptedBillboard(function (positions) {
                 for (let i = 0; i < positions.length; i++) {
                     let objId = (new Date()).getTime() + i;
-                    _this.draw.shapeDic[objId] = positions;
+                    _this.draw.shapeDic[objId] = positions[i];
                     go.plot.billboardDrawer.showBillboard(objId, positions[i]);
                 }
             }, function (positions) {
@@ -39,7 +39,7 @@ export default class drawShape {
             go.plot.trackPolyline(function (positions, lonlats, params) {
                 let objId = (new Date()).getTime();
                 _this.draw.shapeDic[objId] = positions;
-                go.plot.polylineDrawer.showPolyline(objId, positions, params);
+                go.plot.polylineDrawer.showPolyline(objId, positions, params,false);
             }, function (positions) {
                 console.log(positions)
             })

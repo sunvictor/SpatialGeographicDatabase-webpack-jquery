@@ -2,6 +2,7 @@ import gykjPanel from "@/js/plugins/panel";
 import $ from 'jquery'
 import {honeySwitch} from "@/js/plugins/honeySwitch";
 import {go} from "@/js/cesium/globalObject";
+import pm from "../../plugins/publicMethod";
 
 export default class entityProvider {
     attrDict = ["id", "name", "show", "description", "position", "orientation"] // 图层属性字典
@@ -25,10 +26,13 @@ export default class entityProvider {
      * @param treeNode 节点数据
      * @param entity 图形数据
      */
-    showAttrPanel(treeNode, entity) {
+    showAttrPanel(treeNode, entity, panelOptions = {}) {
         let _this = this;
+        if (_this.entityAttrPanel) {
+            return;
+        }
         let div = _this.resoleAttr(treeNode, entity)
-        _this.entityAttrPanel = new gykjPanel({
+        let options = {
             title: entity.name,
             show: true,
             width: 400,
@@ -40,7 +44,9 @@ export default class entityProvider {
                     entity.customProp.isAttrPanelOpen = false;
                 }
             }
-        })
+        }
+        pm.setOptions(options, panelOptions);
+        _this.entityAttrPanel = new gykjPanel(options)
         _this.clickEvents(treeNode, entity);
         honeySwitch.init($("#entity_attr_" + treeNode.gid + "_show")) // 重新初始化开关按钮
         let manualSwitch = false;
@@ -48,10 +54,12 @@ export default class entityProvider {
             // 修改开关状态，同步更改图层状态和ztree的checked状态
             manualSwitch = true;
             entity.show = true;
+            entity.customProp.show = true;
             go.ec.checkNode(treeNode, true)
         }, function () {
             manualSwitch = true;
             entity.show = false;
+            entity.customProp.show = false;
             go.ec.checkNode(treeNode, false)
         });
 
@@ -66,6 +74,7 @@ export default class entityProvider {
                     manualSwitch = false;
                     return;
                 }
+                entity.customProp.show = newValue;
                 newValue ? honeySwitch.showOn("#entity_attr_" + treeNode.gid + "_show") : honeySwitch.showOff("#entity_attr_" + treeNode.gid + "_show")
                 // 同步修改ztree的checked状态
                 go.ec.checkNode(treeNode, newValue)
