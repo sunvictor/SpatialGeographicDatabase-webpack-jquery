@@ -1,4 +1,5 @@
 import * as turf from '@turf/turf'
+
 class CesiumMethod {
 
     /**
@@ -38,6 +39,36 @@ class CesiumMethod {
         }
         let center = turf.center(turf.featureCollection(turfPoints));
         return center;
+    }
+
+    /**
+     * 根据笛卡尔解析绝对中心坐标点
+     * @param {Array<Cartesian3>} cartesians
+     * @return {{coord: Position, cart: Cartesian3}}
+     */
+    countPolygonCenter(cartesians) {
+        let tempPos = [];
+        for (let i = 0, len = cartesians.length; i < len; i++) {
+            tempPos.push(turf.point(this.cartesianToCoordinate(cartesians[i])))
+        }
+        let center = turf.center(turf.featureCollection(tempPos));
+        let coord = center.geometry.coordinates;
+        let cartesian = Cesium.Cartesian3.fromDegrees(coord[0], coord[1]);
+        return {
+            coord: coord,
+            cart: cartesian,
+        }
+    }
+
+    /**
+     * 计算多边形面积
+     * @param {Array<Array>} coords 一个包含经纬度坐标的二维数组
+     * @return {number}
+     */
+    calcPolygonArea(coords) {
+        let polygon = turf.polygon([coords]);
+        let area = turf.area(polygon);
+        return area;
     }
 }
 

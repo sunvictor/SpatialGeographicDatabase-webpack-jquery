@@ -23,6 +23,9 @@ bindBtnImg.prototype = {
             case "面积测量":
                 imgUrl = enabled ? "./img/icon/measureAreaSelected.png" : "./img/icon/measureArea.png"
                 break;
+            case "高度测量":
+                imgUrl = enabled ? "./img/icon/measureHeightSelected.png" : "./img/icon/measureHeight.png"
+                break;
             case "图层管理":
                 imgUrl = enabled ? "./img/icon/layerManageSelected.png" : "./img/icon/layerManage.png"
                 break;

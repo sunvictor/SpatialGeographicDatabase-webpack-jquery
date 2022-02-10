@@ -18,7 +18,9 @@ $("#measurePoint").on('click', function () {
 $("#measureDistance").on('click', function () {
     go.measure.viewModel.measureDistanceEnabled = !go.measure.viewModel.measureDistanceEnabled
 })
-
 $("#measureArea").on('click', function () {
     go.measure.viewModel.measureAreaEnabled = !go.measure.viewModel.measureAreaEnabled
+})
+$("#measureHeight").on('click', function () {
+    go.measure.viewModel.measureHeightEnabled = !go.measure.viewModel.measureHeightEnabled
 })

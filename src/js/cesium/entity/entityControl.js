@@ -86,8 +86,9 @@ export default class entityControl {
     /**
      * 添加图层
      * @param params 参数与 viewer.entities.add 的参数相同
+     * @param isAddNode
      */
-    add(params) {
+    add(params, isAddNode = true) {
         let _this = this;
         if (!params.name) {
             params.name = "未命名图形"
@@ -101,7 +102,9 @@ export default class entityControl {
             checked: entity.show
             // data: JSON.stringify(map)
         }
-        _this.latestNode = _this.addNode(-1, newNode, entity)
+        if (isAddNode) {
+            let node = _this.addNode(-1, newNode, entity);
+        }
         return entity;
     }
 
@@ -111,6 +114,14 @@ export default class entityControl {
             return false;
         }
         let isRemove = _this.viewer.entities.remove(entity);
+        if (entity.nodeProp) {
+            // console.log(2,entity.nodeProp)
+            const tree = $.fn.zTree.getZTreeObj("entityTree")
+            let node = tree.getNodeByTId(entity.nodeProp.tId)
+            if (node) {
+                _this.removeNode(node);
+            }
+        }
         if (isRemove) {
 
         }
@@ -149,9 +160,10 @@ export default class entityControl {
             parentNode = tree.getNodes()[0]
         }
         newNode = tree.addNodes(parentNode, newNode);
+        data.nodeProp = newNode[0] // 将treeNode数据放入entity中
         // tree.refresh()
         // }
-        return newNode;
+        return newNode[0];
     }
 
     onRename(event, treeId, treeNode) {

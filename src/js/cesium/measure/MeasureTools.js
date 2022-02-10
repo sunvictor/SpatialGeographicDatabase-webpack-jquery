@@ -1,4 +1,5 @@
 import {go} from "@/js/cesium/globalObject";
+import cm from "../../plugins/CesiumMethod";
 
 let _pointBtnName = "位置测量";
 let _pointBtnIdName = "measurePoint";
@@ -6,6 +7,8 @@ let _distanceBtnName = "距离测量";
 let _distanceBtnIdName = "measureDistance";
 let _areaBtnName = "面积测量";
 let _areaBtnIdName = "measureArea";
+let _heightBtnName = "高度测量";
+let _heightBtnIdName = "measureHeight";
 export default class MeasureTools {
     entityCollection = [];
     dis = 0;
@@ -15,7 +18,8 @@ export default class MeasureTools {
     viewModel = {
         measurePointEnabled: false,
         measureDistanceEnabled: false,
-        measureAreaEnabled: false
+        measureAreaEnabled: false,
+        measureHeightEnabled: false
     }
 
     constructor(viewer) {
@@ -47,6 +51,12 @@ export default class MeasureTools {
             function (newValue) {
                 go.bbi.bindImg(_areaBtnName, _areaBtnIdName, newValue) // 切换是否选中图片
                 if (newValue) _this.measureArea()
+            }
+        );
+        Cesium.knockout.getObservable(_this.viewModel, 'measureHeightEnabled').subscribe(
+            function (newValue) {
+                go.bbi.bindImg(_heightBtnName, _heightBtnIdName, newValue) // 切换是否选中图片
+                if (newValue) _this.measureHeight()
             }
         );
     }
@@ -479,7 +489,7 @@ export default class MeasureTools {
         }, Cesium.ScreenSpaceEventType.LEFT_CLICK);
     }
 
-    measureHeight(that) {
+    measureHeight() {
         let _this = this;
         let positions = [];
         let labelEntity_1 = null; // 标签实体
@@ -498,6 +508,9 @@ export default class MeasureTools {
                 // 注册鼠标移动事件
                 _this.viewer.screenSpaceEventHandler.setInputAction(function (moveEvent) {
                     let movePosition = _this.viewer.scene.pickPosition(moveEvent.endPosition); // 鼠标移动的点
+                    if (typeof movePosition == "undefined") { // 如果鼠标悬停在label上, 就有可能获取不到坐标
+                        return;
+                    }
                     if (positions.length >= 2) {
                         positions.pop();
                         positions.pop();
@@ -579,8 +592,7 @@ export default class MeasureTools {
                 positions.push(positions[0]);
                 _this.addPoint(cartesian);
 
-                $(that).find("img")[0].src = that.dataset.image + ".png";
-                $(that).data('enabled', false);
+                _this.viewModel.measureHeightEnabled = false;
 
                 _this.viewer.screenSpaceEventHandler.removeInputAction(Cesium.ScreenSpaceEventType.LEFT_CLICK);
                 _this.viewer.screenSpaceEventHandler.removeInputAction(Cesium.ScreenSpaceEventType.MOUSE_MOVE);
@@ -589,7 +601,7 @@ export default class MeasureTools {
     }
 
     //测量面积
-    measureArea(that) {
+    measureArea() {
         let _this = this;
         // let tooltip = document.getElementById("measureTip");
         let isDraw = false;
@@ -687,10 +699,7 @@ export default class MeasureTools {
                     coords.push([lon, lat])
                 }
                 coords.push(coords[0])
-                let c = [coords];
-                let p = turf.polygon(c);
-                let area = turf.area(p).toFixed(2);
-                console.log(area)
+                let area = cm.calcPolygonArea(coords).toFixed(2);
                 let label = String(countAreaInCartesian3(polygon.path));
                 area = area.substr(0, area.indexOf(".", 0));
                 let text;
@@ -701,8 +710,7 @@ export default class MeasureTools {
                     area = area.substr(0, area.indexOf(".", 0) + 3);
                     text = area + "平方公里"
                 }
-                let res = countPolygonCenter(polygon.path);
-                console.log(res.cart);
+                let res = cm.countPolygonCenter(polygon.path);
                 let textArea = text;
                 // let lastpoint = _this.viewer.entities.add({
                 //     name: '多边形面积',
