@@ -1,5 +1,5 @@
 import gykjPanel from "../../plugins/panel";
-import {go} from "../globalObject";
+import {go} from "../GlobalObject";
 import imageryProvider from "@/js/cesium/layer/imageryProvider";
 // import ztree from "@ztree/ztree_v3"
 
@@ -166,7 +166,11 @@ export default class LayerControl {
         if (!layer) {
             return;
         }
-        layer.show = chkStatus.checked
+        if (layer.customProp.layerType === "terrain") {
+            go.terrain.switchTerrain(layer, chkStatus);
+        } else {
+            layer.show = chkStatus.checked
+        }
     }
 
     addDiyDom(treeId, treeNode) {

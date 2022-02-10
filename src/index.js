@@ -16,7 +16,7 @@ import "./js/plugins/honeySwitch"
 import "./css/plugins/honeySwitch.css"
 import "./css/panel.css"
 import {initMainHtml} from "./js/html/mainHtml";
-import {startUpEarth, startUpCesium} from "./js/cesium/initMap";
+import {startUpEarth, startUpCesium} from "./js/cesium/InitMap";
 
 // 初始化消息提示
 cocoMessage.config({

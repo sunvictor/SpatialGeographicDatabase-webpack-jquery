@@ -1,5 +1,5 @@
 import gykjPanel from "@/js/plugins/panel";
-import {go} from "@/js/cesium/globalObject";
+import {go} from "@/js/cesium/GlobalObject";
 import entityProvider from "./entityProvider";
 import cocoMessage from '@/js/plugins/coco-message'
 

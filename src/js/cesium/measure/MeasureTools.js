@@ -1,4 +1,4 @@
-import {go} from "@/js/cesium/globalObject";
+import {go} from "@/js/cesium/GlobalObject";
 import cm from "../../plugins/CesiumMethod";
 
 let _pointBtnName = "位置测量";

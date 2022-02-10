@@ -1,6 +1,6 @@
 import layerMap from "./layer/layerMap";
 import gykjPanel from "../plugins/panel";
-import {go, globals} from "./globalObject"
+import {go, globals} from "./GlobalObject"
 import CesiumZh from "../plugins/CesiumZh"
 
 const mapConfig = {
@@ -60,28 +60,39 @@ function initScene(viewer) {
     })
     trafficMap.alpha = 0.7
 
+    go.terrain.add({
+        name: "地形",
+        url: "http://183.230.114.154:9010/terrain",
+        type: "origin",
+        terrainProp: {
+            maxiumLevel: 20,
+            requestWaterMask: false,
+            requestVertexNormals: false,
+        }
+    })
+
     go.ec.add({
-        position: Cesium.Cartesian3.fromDegrees(106.3931931565161, 29.805810956616792,2.61),
+        position: Cesium.Cartesian3.fromDegrees(106.3931931565161, 29.805810956616792, 2.61),
         point: {
             color: Cesium.Color.RED,    //点位颜色
             pixelSize: 10                //像素点大小
         },
-        label : {
-            text : '测试名称',
-            font : '14pt Source Han Sans CN',    //字体样式
-            fillColor:Cesium.Color.BLACK,        //字体颜色
-            backgroundColor:Cesium.Color.AQUA,    //背景颜色
-            showBackground:true,                //是否显示背景颜色
+        label: {
+            text: '测试名称',
+            font: '14pt Source Han Sans CN',    //字体样式
+            fillColor: Cesium.Color.BLACK,        //字体颜色
+            backgroundColor: Cesium.Color.AQUA,    //背景颜色
+            showBackground: true,                //是否显示背景颜色
             style: Cesium.LabelStyle.FILL,        //label样式
-            outlineWidth : 2,
-            verticalOrigin : Cesium.VerticalOrigin.CENTER,//垂直位置
-            horizontalOrigin :Cesium.HorizontalOrigin.LEFT,//水平位置
-            pixelOffset:new Cesium.Cartesian2(10,0)            //偏移
+            outlineWidth: 2,
+            verticalOrigin: Cesium.VerticalOrigin.CENTER,//垂直位置
+            horizontalOrigin: Cesium.HorizontalOrigin.LEFT,//水平位置
+            pixelOffset: new Cesium.Cartesian2(10, 0)            //偏移
         }
     });
     go.ec.add({
-        name:"黄色点",
-        position: Cesium.Cartesian3.fromDegrees(106.394, 29.81,2.61),
+        name: "黄色点",
+        position: Cesium.Cartesian3.fromDegrees(106.394, 29.81, 2.61),
         point: {
             color: Cesium.Color.YELLOW,    //点位颜色
             pixelSize: 15                //像素点大小

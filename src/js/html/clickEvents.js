@@ -1,4 +1,4 @@
-import {go} from "../cesium/globalObject"
+import {go} from "../cesium/GlobalObject"
 import drawPoint from "../cesium/entity/plot/edit/GlobeUninterruptedBillboardDrawer"
 // const $ = require("jQuery");
 import $ from "jquery";

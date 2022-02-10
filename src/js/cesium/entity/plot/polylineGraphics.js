@@ -1,4 +1,4 @@
-import {go} from "../../globalObject";
+import {go} from "../../GlobalObject";
 import GlobePolylineDrawer from "./edit/GlobePolylineDrawer";
 import gykjPanel from "../../../plugins/panel";
 import $ from "jquery";

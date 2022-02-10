@@ -1,5 +1,5 @@
 import GlobeUninterruptedBillboardDrawer from "./edit/GlobeUninterruptedBillboardDrawer";
-import {go} from "../../globalObject";
+import {go} from "../../GlobalObject";
 import entityProvider from "../entityProvider";
 
 

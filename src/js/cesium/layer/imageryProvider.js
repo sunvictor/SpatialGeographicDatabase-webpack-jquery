@@ -1,7 +1,7 @@
 import gykjPanel from "@/js/plugins/panel";
 import $ from 'jquery'
 import {honeySwitch} from "@/js/plugins/honeySwitch";
-import {go} from "@/js/cesium/globalObject";
+import {go} from "@/js/cesium/GlobalObject";
 
 export default class imageryProvider {
     attrDict = ["show", "alpha", "brightness", "contrast", "hue", "saturation", "gamma", "splitDirection"] // 图层属性字典

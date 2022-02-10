@@ -1,5 +1,5 @@
 import pm from "../../plugins/publicMethod";
-import {go} from "@/js/cesium/globalObject";
+import {go} from "@/js/cesium/GlobalObject";
 import cocoMessage from '@/js/plugins/coco-message'
 const LayerMap = (function () {
     class LayerMap {
@@ -93,6 +93,7 @@ const LayerMap = (function () {
                 map = _this.addMapByOriginFunc(params);
             }
             map.customProp = params;
+            map.customProp.layerType = "layer"
             go.ip.setViewModel(map)
             return map;
         }

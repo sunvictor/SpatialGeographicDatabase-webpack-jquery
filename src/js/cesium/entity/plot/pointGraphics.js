@@ -1,4 +1,4 @@
-import {go} from "../../globalObject";
+import {go} from "../../GlobalObject";
 
 let _btnName = "点";
 let _btnIdName = "drawPoint";

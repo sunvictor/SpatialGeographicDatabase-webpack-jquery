@@ -1,7 +1,7 @@
 import gykjPanel from "@/js/plugins/panel";
 import $ from 'jquery'
 import {honeySwitch} from "@/js/plugins/honeySwitch";
-import {go} from "@/js/cesium/globalObject";
+import {go} from "@/js/cesium/GlobalObject";
 import pm from "../../plugins/publicMethod";
 
 export default class entityProvider {

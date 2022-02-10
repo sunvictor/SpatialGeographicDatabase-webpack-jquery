@@ -1,6 +1,6 @@
 import $ from "jquery";
 import drawPoint from "./edit/GlobeUninterruptedBillboardDrawer";
-import {go} from "../../globalObject";
+import {go} from "../../GlobalObject";
 
 export default class drawShape {
     draw = {
