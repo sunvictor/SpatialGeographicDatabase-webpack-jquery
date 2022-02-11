@@ -1,10 +1,10 @@
-import {go} from "../../GlobalObject";
+import {go} from "../../globalObject";
 import GlobePolylineDrawer from "./edit/GlobePolylineDrawer";
 import gykjPanel from "../../../plugins/panel";
 import $ from "jquery";
 import {honeySwitch} from "../../../plugins/honeySwitch";
 import cm from "../../../plugins/CesiumMethod";
-import entityProvider from "../entityProvider";
+import entityProvider from "../EntityProvider";
 
 
 let _btnName = "折线";

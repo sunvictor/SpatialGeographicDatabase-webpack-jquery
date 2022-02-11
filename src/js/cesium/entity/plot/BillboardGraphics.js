@@ -1,6 +1,6 @@
 import GlobeUninterruptedBillboardDrawer from "./edit/GlobeUninterruptedBillboardDrawer";
-import {go} from "../../GlobalObject";
-import entityProvider from "../entityProvider";
+import {go} from "../../globalObject";
+import entityProvider from "../EntityProvider";
 
 
 let _btnName = "点";

@@ -1,6 +1,6 @@
-import layerMap from "./layer/layerMap";
+import layerMap from "./layer/LayerMap";
 import gykjPanel from "../plugins/panel";
-import {go, globals} from "./GlobalObject"
+import {go, globals} from "./globalObject"
 import CesiumZh from "../plugins/CesiumZh"
 
 const mapConfig = {

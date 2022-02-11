@@ -1,6 +1,6 @@
 import gykjPanel from "@/js/plugins/panel";
-import {go} from "@/js/cesium/GlobalObject";
-import entityProvider from "./entityProvider";
+import {go} from "@/js/cesium/globalObject";
+import entityProvider from "./EntityProvider";
 import cocoMessage from '@/js/plugins/coco-message'
 
 let _btnName = "图形管理";

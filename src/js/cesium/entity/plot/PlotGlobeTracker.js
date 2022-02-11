@@ -1,5 +1,5 @@
-import billboardGraphics from "./billboardGraphics";
-import polylineGraphics from "./polylineGraphics";
+import billboardGraphics from "./BillboardGraphics";
+import polylineGraphics from "./PolylineGraphics";
 import $ from 'jquery'
 
 export default class plotGlobeTracker {

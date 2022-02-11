@@ -1,10 +1,10 @@
 import {bindBtnImg} from "../html/BindBtnImg";
-import LayerControl from "./layer/layerControl";
-import LayerMap from "./layer/layerMap"
-import imageryProvider from "@/js/cesium/layer/imageryProvider";
-import entityControl from "@/js/cesium/entity/entityControl";
-import plotGlobeTracker from "./entity/plot/plotGlobeTracker";
-import drawShape from "./entity/plot/draw";
+import LayerControl from "./layer/LayerControl";
+import LayerMap from "./layer/LayerMap"
+import imageryProvider from "@/js/cesium/layer/ImageryProvider";
+import entityControl from "@/js/cesium/entity/EntityControl";
+import plotGlobeTracker from "./entity/plot/PlotGlobeTracker";
+import drawShape from "./entity/plot/Draw";
 import MeasureTools from "@/js/cesium/measure/MeasureTools";
 import TerrainControl from "@/js/cesium/terrain/TerrainControl";
 

@@ -1,6 +1,6 @@
 import gykjPanel from "../../plugins/panel";
-import {go} from "../GlobalObject";
-import imageryProvider from "@/js/cesium/layer/imageryProvider";
+import {go} from "../globalObject";
+import imageryProvider from "@/js/cesium/layer/ImageryProvider";
 import cocoMessage from "@/js/plugins/coco-message";
 import pm from "@/js/plugins/publicMethod";
 // import ztree from "@ztree/ztree_v3"

@@ -16,7 +16,7 @@ import "./js/plugins/honeySwitch"
 import "./css/plugins/honeySwitch.css"
 import "./css/panel.css"
 import {initMainHtml} from "./js/html/mainHtml";
-import {startUpEarth, startUpCesium} from "./js/cesium/InitMap";
+import {startUpEarth, startUpCesium} from "./js/cesium/initMap";
 
 // 初始化消息提示
 cocoMessage.config({
@@ -25,7 +25,7 @@ cocoMessage.config({
 
 // require('cesium/Widgets/widgets.css');
 if (typeof XE !== 'undefined') {
-    XE.ready().then(function(){
+    XE.ready().then(function () {
         startUpEarth();
     })
 } else {
@@ -33,6 +33,7 @@ if (typeof XE !== 'undefined') {
 }
 initMainHtml();
 
+$(document.body).show(); // 加载index.html时是给body加了`display: none`的, 因为css还没有加载进去, 会导致最开始的html没有样式, 所以最开始就不显示body了
 // const { app, BrowserWindow } = require('electron')
 //
 // function createWindow () {

@@ -1,5 +1,5 @@
 import pm from "../../plugins/publicMethod";
-import {go} from "@/js/cesium/GlobalObject";
+import {go} from "@/js/cesium/globalObject";
 import cocoMessage from '@/js/plugins/coco-message'
 const LayerMap = (function () {
     class LayerMap {
