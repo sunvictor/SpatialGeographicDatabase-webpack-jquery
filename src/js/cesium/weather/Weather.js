@@ -841,6 +841,7 @@ export default class Weather {
     }
 
     changeToDark() {
+        let _this = this;
         let bloom = _this.viewer.scene.postProcessStages.bloom;
         let contrast = bloom.uniforms.contrast;
         let brightness = bloom.uniforms.brightness;
@@ -878,6 +879,7 @@ export default class Weather {
     }
 
     changeToDayLight() {
+        let _this = this;
         let bloom = _this.viewer.scene.postProcessStages.bloom;
         let contrast = bloom.uniforms.contrast;
         let brightness = bloom.uniforms.brightness;

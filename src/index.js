@@ -18,7 +18,7 @@ import "./css/panel.css"
 import {initMainHtml} from "./js/html/mainHtml";
 import {startUpEarth, startUpCesium} from "./js/cesium/initMap";
 import skyBoxOnGround from "./js/cesium/weather/SkyBoxOnGround";
-
+import './js/plugins/heatmap'
 // 初始化消息提示
 cocoMessage.config({
     duration: 2500,

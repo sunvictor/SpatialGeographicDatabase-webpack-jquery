@@ -1,6 +1,7 @@
 require("./clickEvents")
 // const $ = require("jQuery");
 import $ from "jquery";
+
 export function initMainHtml() {
     $(".nav li").data("checked", "0"); //0代表所有得标签
     $(".nav li:eq(0)").data("checked", "1"); //1代表当前选中标签
@@ -58,4 +59,23 @@ export function initMainHtml() {
         ;
         var compasstop = $("#cesiumTop").height();
     }
+
+    function addAlertArrow() {
+        $(".alert_arrow").each(function () {
+            let html = `<div class="al_arrow">
+                                            <span>
+                                                <img width="10px" height="10px" src="../../img/jianjian.png" alt="">
+                                            </span>
+                                        </div>`
+            // $(this).after(html)
+            // $(this).append(html)
+            let div = $("<div></div>")
+            div.css("position","relative")
+            $(this).after(div)
+            div.append(this)
+            div.append(html)
+        });
+    }
+
+    addAlertArrow();
 }

@@ -175,6 +175,12 @@ div {
     z-index: 1;
 }
 
-.customWidget{
+.customWidget {
     display: inline-block;
+}
+
+.al_arrow {
+    cursor: pointer;
+    float: left;
+    line-height: 80px;
 }
