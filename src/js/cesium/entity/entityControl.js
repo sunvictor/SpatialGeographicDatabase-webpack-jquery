@@ -67,7 +67,7 @@ export default class entityControl {
             show: true,
             width: 400,
             height: 470,
-            top: 220,
+            left: 250,
             content: ul,
             closeType: "hide",
             callback: {

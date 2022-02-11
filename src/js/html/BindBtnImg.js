@@ -35,6 +35,9 @@ bindBtnImg.prototype = {
             case "图形管理":
                 imgUrl = enabled ? "./img/icon/layerManageSelected.png" : "./img/icon/layerManage.png"
                 break;
+            case "地形管理":
+                imgUrl = enabled ? "./img/icon/layerManageSelected.png" : "./img/icon/layerManage.png"
+                break;
             case "点":
                 imgUrl = enabled ? "./img/icon/drawBillboardSelected.png" : "./img/icon/drawBillboard.png"
                 break;

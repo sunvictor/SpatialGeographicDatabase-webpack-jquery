@@ -61,6 +61,16 @@ function initScene(viewer) {
     trafficMap.alpha = 0.7
 
     go.terrain.add({
+        name: "中国14级（测试）",
+        show: false,
+        url: "https://lab.earthsdk.com/terrain/577fd5b0ac1f11e99dbd8fd044883638",
+        terrainProp:{
+            requestWaterMask: true,
+            requestVertexNormals: true,
+        }
+    })
+
+    go.terrain.add({
         name: "地形",
         url: "http://183.230.114.154:9010/terrain",
         type: "origin",
@@ -101,6 +111,8 @@ function initScene(viewer) {
 }
 
 function defaultCOnfig(viewer) {
+    Cesium.Ion.defaultAccessToken =
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI0YWJlYzNkNS0yY2M0LTQxZWQtOGZhNi05MjEzYmVmZGVkNTkiLCJpZCI6MzU1NTEsImlhdCI6MTYwNDYyNzY2NH0.JxhQQxEvJTrmeARILcywKaPoPEPjO1RlqL28CRjktx8';
     CesiumZh.load(); // 汉化
     // 解决infobox报‘allow-scripts’问题
     if (typeof viewer.infoBox != "undefined") {

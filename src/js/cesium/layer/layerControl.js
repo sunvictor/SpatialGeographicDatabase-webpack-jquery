@@ -80,6 +80,7 @@ export default class LayerControl {
             width: 400,
             height: 470,
             content: ul,
+            closeType: "hide",
             callback: {
                 closePanel: closeLayerPanel
             }
@@ -166,11 +167,7 @@ export default class LayerControl {
         if (!layer) {
             return;
         }
-        if (layer.customProp.layerType === "terrain") {
-            go.terrain.switchTerrain(layer, chkStatus);
-        } else {
-            layer.show = chkStatus.checked
-        }
+        layer.show = chkStatus.checked
     }
 
     addDiyDom(treeId, treeNode) {

@@ -12,6 +12,9 @@ $("#layerManage").on('click', function () {
 $("#entityManage").on('click', function () {
     go.ec.viewModel.enabled = !go.ec.viewModel.enabled
 })
+$("#terrainManage").on('click', function () {
+    go.terrain.viewModel.enabled = !go.terrain.viewModel.enabled
+})
 $("#measurePoint").on('click', function () {
     go.measure.viewModel.measurePointEnabled = !go.measure.viewModel.measurePointEnabled
 })
