@@ -7,7 +7,7 @@ import plotGlobeTracker from "./entity/plot/PlotGlobeTracker";
 import drawShape from "./entity/plot/Draw";
 import MeasureTools from "@/js/cesium/measure/MeasureTools";
 import TerrainControl from "@/js/cesium/terrain/TerrainControl";
-
+import Weather from "@/js/cesium/weather/Weather";
 let _viewer;
 export const go = {}; // 封装所有的类对象
 
@@ -30,6 +30,7 @@ function createObjs(viewer) {
     go.draw = new drawShape(viewer);
     go.measure = new MeasureTools(viewer);
     go.terrain = new TerrainControl(viewer);
+    go.weather = new Weather(viewer);
 }
 
 export function getViewer() {

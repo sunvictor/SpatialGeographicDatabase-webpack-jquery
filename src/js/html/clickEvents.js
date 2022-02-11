@@ -30,3 +30,39 @@ $("#measureHeight").on('click', function () {
 $("#clearMeasure").on('click', function () {
     go.measure.destroy();
 })
+$("#lightRain").on('click', function () {
+    go.weather.viewModel.lightRainEnabled = !go.weather.viewModel.lightRainEnabled;
+})
+$("#midRain").on('click', function () {
+    go.weather.viewModel.midRainEnabled = !go.weather.viewModel.midRainEnabled;
+})
+$("#heavyRain").on('click', function () {
+    go.weather.viewModel.heavyRainEnabled = !go.weather.viewModel.heavyRainEnabled;
+})
+$("#raindropFunc").on('click', function () {
+    go.weather.viewModel.raindropEnabled = !go.weather.viewModel.raindropEnabled;
+})
+$("#thunder").on('click', function () {
+    go.weather.viewModel.thunderEnabled = !go.weather.viewModel.thunderEnabled;
+})
+$("#snow").on('click', function () {
+    go.weather.viewModel.snowEnabled = !go.weather.viewModel.snowEnabled;
+})
+$("#overcast").on('click', function () {
+    go.weather.viewModel.overcastEnabled = !go.weather.viewModel.overcastEnabled;
+})
+$("#cloudy").on('click', function () {
+    go.weather.viewModel.cloudyEnabled = !go.weather.viewModel.cloudyEnabled;
+})
+$("#sunny").on('click', function () {
+    go.weather.viewModel.sunnyEnabled = !go.weather.viewModel.sunnyEnabled;
+})
+$("#nightView").on('click', function () {
+    go.weather.viewModel.nightViewEnabled = !go.weather.viewModel.nightViewEnabled;
+})
+$("#snowMountain").on('click', function () {
+    go.weather.viewModel.snowMountainEnabled = !go.weather.viewModel.snowMountainEnabled;
+})
+$("#screenFog").on('click', function () {
+    go.weather.viewModel.screenFogEnabled = !go.weather.viewModel.screenFogEnabled;
+})

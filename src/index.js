@@ -17,6 +17,7 @@ import "./css/plugins/honeySwitch.css"
 import "./css/panel.css"
 import {initMainHtml} from "./js/html/mainHtml";
 import {startUpEarth, startUpCesium} from "./js/cesium/initMap";
+import skyBoxOnGround from "./js/cesium/weather/SkyBoxOnGround";
 
 // 初始化消息提示
 cocoMessage.config({
@@ -27,6 +28,7 @@ cocoMessage.config({
 if (typeof XE !== 'undefined') {
     XE.ready().then(function () {
         startUpEarth();
+        skyBoxOnGround();
     })
 } else {
     startUpCesium();

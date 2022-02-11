@@ -13,7 +13,8 @@ bindBtnImg.prototype = {
     },
     bindImg(btnName, btnIdName, enabled) {
         // let imgUrl = null;
-        let imgUrl = $("#" + btnIdName).find('img').attr('src')
+        let btn = $("#" + btnIdName)
+        let imgUrl = btn.find('img').attr('src')
         if (imgUrl.indexOf("Selected") === -1){
             imgUrl = imgUrl.replace(".png","Selected.png")
         }else{
@@ -53,7 +54,7 @@ bindBtnImg.prototype = {
         //     default:
         //         break;
         // }
-        $("#" + btnIdName).data("enabled", enabled);
-        $("#" + btnIdName).find("img")[0].src = imgUrl;
+        btn.data("enabled", enabled);
+        btn.find("img")[0].src = imgUrl;
     }
 }
