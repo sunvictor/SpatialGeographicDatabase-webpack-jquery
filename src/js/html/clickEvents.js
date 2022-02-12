@@ -82,3 +82,9 @@ $("#heatMap").on('click', function () {
     }
     go.bbi.bindImg("热力图", "heatMap", !enabled) // 切换是否选中图片
 })
+$("#addModel").on('click', function () {
+    go.model.viewModel.enabled = !go.model.viewModel.enabled;
+})
+$("#earthRotation").on('click', function () {
+    go.er.viewModel.enabled = !go.er.viewModel.enabled;
+})

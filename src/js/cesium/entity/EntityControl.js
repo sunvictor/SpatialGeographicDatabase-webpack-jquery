@@ -117,18 +117,23 @@ export default class entityControl {
         if (!Cesium.defined(entity)) {
             return false;
         }
-        let isRemove = _this.viewer.entities.remove(entity);
-        if (entity.nodeProp) {
-            // console.log(2,entity.nodeProp)
-            const tree = $.fn.zTree.getZTreeObj("entityTree")
-            let node = tree.getNodeByTId(entity.nodeProp.tId)
-            if (node) {
-                _this.removeNode(node);
-            }
+        let isRemove;
+        if (entity instanceof Cesium.Entity) {
+            isRemove = _this.viewer.entities.remove(entity);
+        } else if (entity instanceof Cesium.Cesium3DTileset) {
+            isRemove = _this.viewer.scene.primitives.remove(entity)
         }
         if (isRemove) {
-
+            if (entity.nodeProp) {
+                // console.log(2,entity.nodeProp)
+                const tree = $.fn.zTree.getZTreeObj("entityTree")
+                let node = tree.getNodeByTId(entity.nodeProp.tId)
+                if (node) {
+                    _this.removeNode(node);
+                }
+            }
         }
+
         return isRemove;
     }
 

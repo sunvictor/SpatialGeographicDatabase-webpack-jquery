@@ -108,6 +108,13 @@ function initScene(viewer) {
             pixelSize: 15                //像素点大小
         }
     });
+
+    go.model.add({
+        // lon: 106.4044164,
+        // lat: 29.8292394,
+        name: "未命名瓦片1",
+        url: "http://183.230.114.154:9010/newsmap202201/zsyc1/tileset.json"
+    })
 }
 
 function defaultCOnfig(viewer) {

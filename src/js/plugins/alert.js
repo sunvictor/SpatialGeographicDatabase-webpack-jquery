@@ -34,9 +34,7 @@ export default class gykjAlert {
 
     setPosition(btn, alert) {
         btn.off('click').on('click', function (e) {
-            let x = e.pageX || (e.clientX + scrollX); //兼容火狐和其他浏览器
-            let y = e.pageY || (e.clientY + scrollY);
-            console.log(y)
+            let x = e.pageX || (e.clientX + scrollX);
             alert.css('display') === "none" ? alert.show() : alert.hide();
             alert.css({
                 left: x - 60 + "px",

@@ -10,6 +10,8 @@ import TerrainControl from "@/js/cesium/terrain/TerrainControl";
 import Weather from "@/js/cesium/weather/Weather";
 import Floodlight from "@/js/cesium/effect/Floodlight";
 import HeatMap from "@/js/cesium/effect/HeatMap";
+import ModelControl from "@/js/cesium/model/ModelControl";
+import EarthRotation from "@/js/cesium/effect/EarthRotation";
 let _viewer;
 export const go = {}; // 封装所有的类对象
 
@@ -34,7 +36,9 @@ function createObjs(viewer) {
     go.terrain = new TerrainControl(viewer);
     go.weather = new Weather(viewer);
     go.fl = new Floodlight(viewer);
-    go.heatmap = new HeatMap(viewer)
+    go.heatmap = new HeatMap(viewer);
+    go.model = new ModelControl(viewer);
+    go.er = new EarthRotation(viewer);
 }
 
 export function getViewer() {
