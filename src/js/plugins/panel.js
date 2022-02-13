@@ -92,7 +92,7 @@ const gykjPanel = (function () {
             panelDiv.classList.add('panelDiv');
             panelDiv.style.zIndex = options.zIndex ? options.zIndex : _this.zIndex;
             // panelDiv.style.position = 'absolute';
-            let top, left, width, height,show;
+            let top, left, width, height, show;
             if (typeof options.top == "undefined" || options.top == null) {
                 top = 15;
             } else {
@@ -171,8 +171,20 @@ const gykjPanel = (function () {
             content.style.height = (options.height ? options.height - 50 : height - 50) + 'px';
             content.classList.add('panel-content');
             // content.innerHTML = options.content ? options.content : "";
-            $(content).append(options.content) // 这里使用了jquery对append()函数，既能添加node节点，也能添加html格式对字符串，原生JS实现方式后面再尝试
-            panelDiv.appendChild(content);
+            if (typeof options.type == "undefined" || options.type == 1) {
+                $(content).append(options.content) // 这里使用了jquery对append()函数，既能添加node节点，也能添加html格式对字符串，原生JS实现方式后面再尝试
+                panelDiv.appendChild(content);
+            } else if (options.type == 2) {
+                // $.get(options.content, "", function (res) {
+                //     console.log(res)
+                //     $(panelDiv).html(res)
+                // })
+                let iframe = document.createElement('iframe');
+                iframe.src = options.content;
+                iframe.style.width = "100%"
+                iframe.style.height = "100%"
+                panelDiv.appendChild(iframe);
+            }
             // _this.resize(document.querySelector('.panel-div-map i.bar'));
             return this;
         }

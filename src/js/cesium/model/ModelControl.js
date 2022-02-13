@@ -214,7 +214,6 @@ export default class ModelControl {
             name: o.name,
             checked: tileset.show
         }
-        console.log(tileset)
         let node = go.ec.addNode(-1, newNode, tileset)
     }
 

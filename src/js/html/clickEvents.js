@@ -88,3 +88,15 @@ $("#addModel").on('click', function () {
 $("#earthRotation").on('click', function () {
     go.er.viewModel.enabled = !go.er.viewModel.enabled;
 })
+$("#dataSource").on('click', function () {
+    go.ds.viewModel.enabled = !go.ds.viewModel.enabled;
+})
+$("#panoramicView").on('click', function () {
+    go.pc.viewModel.enabled = !go.pc.viewModel.enabled;
+})
+$("#wireFrame").on('click', function () {
+    let enabled = $(this).data('enabled')
+    go.bbi.bindImg("地形三角网", "wireFrame", !enabled) // 切换是否选中图片
+    viewer.cesiumInspector.viewModel.wireframe = !enabled;
+    $(this).data('enabled', !enabled)
+})

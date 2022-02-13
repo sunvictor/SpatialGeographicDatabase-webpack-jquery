@@ -12,6 +12,8 @@ import Floodlight from "@/js/cesium/effect/Floodlight";
 import HeatMap from "@/js/cesium/effect/HeatMap";
 import ModelControl from "@/js/cesium/model/ModelControl";
 import EarthRotation from "@/js/cesium/effect/EarthRotation";
+import DataSourceControl from "@/js/cesium/entity/kml/DataSourceControl";
+import PanoramicView from "@/js/cesium/effect/PanoramicView";
 let _viewer;
 export const go = {}; // 封装所有的类对象
 
@@ -39,6 +41,8 @@ function createObjs(viewer) {
     go.heatmap = new HeatMap(viewer);
     go.model = new ModelControl(viewer);
     go.er = new EarthRotation(viewer);
+    go.ds = new DataSourceControl(viewer);
+    go.pc = new PanoramicView(viewer);
 }
 
 export function getViewer() {

@@ -122,6 +122,8 @@ export default class entityControl {
             isRemove = _this.viewer.entities.remove(entity);
         } else if (entity instanceof Cesium.Cesium3DTileset) {
             isRemove = _this.viewer.scene.primitives.remove(entity)
+        } else if (entity instanceof  Cesium.KmlDataSource) {
+            isRemove = _this.viewer.dataSources.remove(entity)
         }
         if (isRemove) {
             if (entity.nodeProp) {

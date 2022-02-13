@@ -115,6 +115,11 @@ function initScene(viewer) {
         name: "未命名瓦片1",
         url: "http://183.230.114.154:9010/newsmap202201/zsyc1/tileset.json"
     })
+
+    go.ds.add({
+        url: "https://cesium-1301474191.cos.ap-nanjing.myqcloud.com/map%20(2).kml",
+        type: "kml"
+    })
 }
 
 function defaultCOnfig(viewer) {

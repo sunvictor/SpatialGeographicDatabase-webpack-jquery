@@ -1,0 +1,1744 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="zh">
+
+<head>
+	<title>空间地理数据库</title>
+	<meta charset="utf-8">
+
+	<link rel="stylesheet" href="./Cesium/Build/Cesium/Widgets/widgets.css">
+	<link rel="stylesheet" href="./Cesium/Apps/Sandcastle/templates/bucket.css">
+	<link rel="stylesheet" href="./CSS/index.css">
+	<link rel="stylesheet" href="./CSS/raindrop.css">
+	<!-- <link rel="stylesheet" href="./layui/css/layui.css"> -->
+	<link rel="stylesheet" href="./CSS/layui-min.css">
+	<script src="./js/index.js"></script>
+	<script type="text/javascript" src="./JS/jquery.min.js"></script>
+	<!-- <script type="text/javascript" src="./Cesium/Build/Cesium/Cesium.js"></script> -->
+	<script type="text/javascript" src="./Cesium/Build/CesiumUnminified/Cesium.js"></script>
+	<!-- <script src="./XbsjCesium/XbsjCesium.js"></script> -->
+	<script type="text/javascript" src="./Cesium/Apps/Sandcastle/Sandcastle-header.js"></script>
+	<script type="text/javascript" src="./JS/tilesetEffect.js"></script>
+	<script src="./JS/canvas2image.js"></script>
+	<script src="./JS/CesiumMeasure.js"></script>
+	<!-- <script src="./viewerCesiumNavigationMixin.js"></script> -->
+	<script src="./XbsjEarth/XbsjEarth.js"></script>
+
+	<!-- <script src="./Cesium/Build/Cesium1.78/Cesium.js"></script> -->
+	<style>
+		#screenshot {
+			position: fixed;
+			right: 10px;
+			top: 10px;
+			width: 40px;
+			height: 40px;
+			display: none;
+		}
+
+		@import url(./Apps/Sandcastle/templates/bucket.css);
+		@import url(./Cesium/Build/CesiumUnminified/Widgets/Animation/lighter.css);
+		/* @import url(./CSS/progressBar.css); */
+
+		.loading {
+			width: 100%;
+			/* height: 100%; */
+			position: fixed;
+			top: 0;
+			left: 0;
+			background: #fff;
+		}
+
+		.loading .progress {
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 0%;
+			height: 3px;
+			background-color: rgb(44, 125, 218);
+		}
+	</style>
+	<!-- <script src="./layui/layui.all.js"></script> -->
+</head>
+
+<body class="sandcastle-loading" data-sandcastle-bucket="./Cesium-1.78/Apps/Sandcastle/templates/bucket-requirejs.html">
+
+	<!-- 功能弹出框 -->
+	<div class="login">
+		<div id="head">
+			<h3>图层管理</h3>
+			<img id="iconoff" onclick="show_all()" src="./CSS/img/jianjian.png">
+			<span><img style="width: 20px; height: 20px; " src="./CSS/img/组 22.png"></span>
+		</div>
+		<!-- 内容 -->
+		<div class="login-body" id="offbody">
+
+			<!-- <div class="send">
+					
+				</div> -->
+			<div id="layer">
+				<table border="" cellspacing="" cellpadding="">
+					<tbody data-bind="foreach: layers">
+						<tr data-bind="css: { up: $parent.upLayer === $data, down: $parent.downLayer === $data }">
+							<td class="om"><input type="checkbox" data-bind="checked: show"
+									onclick="object.layers.DarkLayer(this)" />
+							</td>
+							<td class="om"><span
+									data-bind="text: name, visible: !$parent.isSelectableLayer($data)"></span>
+								<!-- <select
+									data-bind="visible: $parent.isSelectableLayer($data), options: $parent.baseLayers, optionsText: 'name', value: $parent.selectedLayer"></select>
+							-->
+							</td>
+							<td class="om"><input type="range" min="0" max="1" step="0.01"
+									data-bind="value: alpha, valueUpdate: 'input'" /></td>
+							<td class="om">
+								<button type="button" class="cesium-button"
+									data-bind="click: function() { $parent.raise($data, $index()); }, visible: $parent.canRaise($index())">
+									▲</button>
+							</td>
+							<td class="om">
+								<button type="button" class="cesium-button"
+									data-bind="click: function() { $parent.lower($data, $index()); }, visible: $parent.canLower($index())">
+									▼</button>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+				<table class="table1" border="" cellspacing="" cellpadding="">
+					<tr>
+						<td class="om">
+							<input class="input1" type="checkbox" data-bind="checked: enableContour"><span
+								style="line-height: 100%;" />等高线</span>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							间距
+							<input style="width: 136px" type="range" min="1.0" max="500.0" step="1.0"
+								data-bind="value: contourSpacing, valueUpdate: 'input', enable: enableContour" />
+							<span data-bind="text: contourSpacing"></span>米
+						</td>
+					</tr>
+					<tr>
+						<td>
+							等高线宽度
+							<input style="width: 125px" type="range" min="1.0" max="10.0" step="1.0"
+								data-bind="value: contourWidth, valueUpdate: 'input', enable: enableContour" />
+							<span data-bind="text: contourWidth"></span>像素
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<button type="button" data-bind="click: changeColor, enable: enableContour">
+								改变颜色
+							</button>
+						</td>
+					</tr>
+				</table>
+			</div>
+
+		</div>
+	</div>
+	<!-- 模型弹出框 -->
+	<div class="login1">
+		<div id="head1">
+			<h3>模型</h3>
+			<img id="iconoff1" onclick="show_all1()" src="./CSS/img/jianjian.png">
+			<span><img style="width: 20px; height: 20px; " src="./CSS/img/组 22.png"></span>
+
+		</div>
+		<!-- 内容 -->
+		<div class="login-body" id="offbody1">
+
+			<!-- <div class="send"></div> -->
+			<div id='extra'>
+
+			</div>
+		</div>
+	</div>
+	<!-- 飞行移动弹出框 -->
+	<div class="login2" id="login2">
+		<div id="head2">
+			<h3>飞行移动</h3>
+			<img id="iconoff2" onclick="show_all2()" src="./CSS/img/jianjian.png">
+			<span><img style="width: 20px; height: 20px; " src="./CSS/img/组 22.png"></span>
+
+		</div>
+		<!-- 内容 -->
+		<div class="login-body" id="offbody2">
+
+			<!-- <div class="send"></div> -->
+			<div id='extra_two'>
+
+			</div>
+		</div>
+	</div>
+
+	<!-- 灯光弹出框 -->
+	<div id="login4">
+		<table>
+			<tr>
+				<td class="dengpao">灯光亮度</td>
+				<td><input id="light" type="range" min="0" max="1" step="0.01"
+						data-bind="value: delta, valueUpdate: 'input'" />
+				</td>
+			</tr>
+		</table>
+	</div>
+	<!-- 路线规划弹出框 -->
+	<div id="routePanel" class="login6">
+		<div id="head6">
+			<h3>路线规划</h3>
+			<img id="iconoff3" onclick="show_all3()" src="./CSS/img/jianjian.png">
+			<span><img style="width: 20px; height: 20px; " src="./CSS/img/组 22.png"></span>
+
+		</div>
+		<!-- 内容 -->
+		<div class="login6-body" id="offbody3">
+			<div>
+				<button name="start" id="startingPoint" class="layui-btn" style="width: 80px;">设置起始点</button>
+				<button name="end" id="endingPoint" class="layui-btn" style="width: 80px;">设置目标点</button>
+				<button id="startSearch" class="layui-btn" style="width: 80px;">开始搜索</button>
+				<button id="clearRoute" class="layui-btn" style="width: 80px;">清除</button>
+			</div>
+			<div>
+				<label>驾车</label><input type="radio" name="method" id="" value="driving" checked>
+				<label>公交</label><input type="radio" name="method" id="" value="transit">
+				<label>骑行</label><input type="radio" name="method" id="" value="riding">
+			</div>
+		</div>
+	</div>
+
+	<!-- 弹出框都在上面 -->
+
+	<div class="cesiumTop" id="cesiumTop">
+		<ul class="nav">
+
+			<li class="selected">功能</li>
+			<li>视图</li>
+
+			<li>天气</li>
+			<li>飞行移动</li>
+			<li id="effect">效果</li>
+			<li id="model">模型</li>
+			<li id="draw">绘制图形</li>
+			<li>其他</li>
+		</ul>
+		<div id="content">
+			<div class="content">
+
+				<div class="list list1">
+
+
+					<div class="control">测量</div>
+					<div class="allFrame" id="measurepoint" data-image="./CSS/img/Cesium图标_位置测量"
+						data-image-active='./CSS/img/Cesium图标_位置测量-选中'>
+						<div><img class="icon" src="./CSS/img/Cesium图标_位置测量.png">
+						</div>
+						位置测量
+					</div>
+					<div class="allFrame" id="measurepolyline" data-image="./CSS/img/Cesium图标_距离测量"
+						data-image-active='./CSS/img/Cesium图标_距离测量-选中'>
+						<div><img class="icon" src="./CSS/img/Cesium图标_距离测量.png">
+						</div>
+						距离测量
+					</div>
+					<div class="allFrame" id="measurepolygon" data-image="./CSS/img/Cesium图标_面积测量"
+						data-image-active='./CSS/img/Cesium图标_面积测量-选中'>
+						<div><img class="icon" src="./CSS/img/Cesium图标_面积测量.png">
+						</div>
+						面积测量
+					</div>
+					<div class="allFrame" id="measureHeight" data-image="./CSS/img/Cesium图标_高度测量"
+						data-image-active='./CSS/img/Cesium图标_高度测量-选中'>
+						<div><img class="icon" src="./CSS/img/Cesium图标_高度测量.png">
+						</div>
+						高度测量
+					</div>
+					<div class="allFrame" id="clearmeasure" data-image="./CSS/img/Cesium图标_移除"
+						data-image-active='./CSS/img/Cesium图标_移除-选中'>
+						<div><img class="icon" src="./CSS/img/Cesium图标_移除.png">
+						</div>
+						清除测量数据
+					</div>
+
+
+				</div>
+				<div class="list">
+					<div class="control control1">图层管理</div>
+					<div class="allFrame btn" id="layers" data-image="./CSS/img/Cesium图标_图层管理"
+						data-image-active='./CSS/img/Cesium图标_图层管理-选中'>
+						<div><img class="icon" src="./CSS/img/Cesium图标_图层管理.png">
+						</div>
+						图层管理
+					</div>
+					<div class="line"></div>
+					<div class="control">控件</div>
+					<div class="allFrame co5" id="timeline" data-image="./CSS/img/Cesium图标_时间线"
+						data-image-active='./CSS/img/Cesium图标_时间线-选中'>
+						<div><img class="icon" src="./CSS/img/Cesium图标_时间线.png">
+						</div>
+						时间线
+					</div>
+					<div class="allFrame" id="navigator" data-image="./CSS/img/Cesium图标_指北针"
+						data-image-active='./CSS/img/Cesium图标_指北针-选中'>
+						<div><img class="icon" src="./CSS/img/Cesium图标_指北针.png">
+						</div>
+						指北针
+					</div>
+					<div class="allFrame" id="plottingScale" data-image="./CSS/img/Cesium图标_比例尺"
+						data-image-active='./CSS/img/Cesium图标_比例尺-选中'>
+						<div><img class="icon" src="./CSS/img/Cesium图标_比例尺.png">
+						</div>
+						比例尺
+					</div>
+					<div class="control">效果</div>
+					<!-- <div class="allFrame" id="depth" data-image="./CSS/img/Cesium图标_比例尺"
+						data-image-active='./CSS/img/Cesium图标_比例尺-选中'>
+						<div><img class="icon" src="./CSS/img/Cesium图标_比例尺.png">
+						</div>
+						深度检测
+					</div> -->
+					<div class="allFrame" id="terrainSwitch" data-image="./CSS/img/terrain"
+						data-image-active='./CSS/img/terrain-checked'>
+						<div><img class="icon" src="./CSS/img/terrain.png">
+						</div>
+						地形
+					</div>
+					<div class="allFrame" id="theme" data-image="./CSS/img/theme"
+						data-image-active='./CSS/img/theme-选中'>
+						<div><img class="icon" src="./CSS/img/theme.png">
+						</div>
+						亮色主题
+					</div>
+				</div>
+
+				<div class="list">
+
+
+					<div class="control">天气</div>
+					<div class="allFrame co6" id="loadRain-light" data-image="./CSS/img/Cesium图标_小雨"
+						data-image-active='./CSS/img/Cesium图标_小雨-选中'>
+						<div><img class="icon" src="./CSS/img/Cesium图标_小雨.png">
+						</div>
+						小雨
+					</div>
+					<div class="allFrame" id="loadRain-mid" data-image="./CSS/img/Cesium图标_中雨"
+						data-image-active='./CSS/img/Cesium图标_中雨-选中'>
+						<div><img class="icon" src="./CSS/img/Cesium图标_中雨.png">
+						</div>
+						中雨
+					</div>
+					<div class="allFrame" id="loadRain-heavy" data-image="./CSS/img/Cesium图标_大雨"
+						data-image-active='./CSS/img/Cesium图标_大雨-选中'>
+						<div><img class="icon" src="./CSS/img/Cesium图标_大雨.png">
+						</div>
+						大雨
+					</div>
+					<div class="allFrame" id="raindrop_button" data-image="./CSS/img/Cesium图标_雨滴"
+						data-image-active='./CSS/img/Cesium图标_雨滴-选中'>
+						<div><img class="icon" src="./CSS/img/Cesium图标_雨滴.png">
+						</div>
+						雨滴
+					</div>
+					<div class="allFrame" id="thunder_buttom" data-image="./CSS/img/Cesium图标_雷雨"
+						data-image-active='./CSS/img/Cesium图标_雷雨-选中'>
+						<div><img class="icon" src="./CSS/img/Cesium图标_雷雨.png">
+						</div>
+						雷雨
+					</div>
+					<div class="allFrame" id="loadSnow" data-image="./CSS/img/Cesium图标_下雪"
+						data-image-active='./CSS/img/Cesium图标_下雪-选中'>
+						<div><img class="icon" src="./CSS/img/Cesium图标_下雪.png">
+						</div>
+						下雪
+					</div>
+					<div class="allFrame" id="overcast" data-image="./CSS/img/Cesium图标_阴天"
+						data-image-active='./CSS/img/Cesium图标_阴天-选中'>
+						<div><img class="icon" src="./CSS/img/Cesium图标_阴天.png">
+						</div>
+						阴天
+					</div>
+					<div class="allFrame" id="cloudy" data-image="./CSS/img/Cesium图标_多云"
+						data-image-active='./CSS/img/Cesium图标_多云-选中'>
+						<div><img class="icon" src="./CSS/img/Cesium图标_多云.png">
+						</div>
+						多云
+					</div>
+					<div class="allFrame" id="sunny" data-image="./CSS/img/Cesium图标_晴天"
+						data-image-active='./CSS/img/Cesium图标_晴天-选中'>
+						<div><img class="icon" src="./CSS/img/Cesium图标_晴天.png">
+						</div>
+						晴天
+					</div>
+					<div class="allFrame" id="night" data-image="./CSS/img/Cesium图标_黑夜"
+						data-image-active='./CSS/img/Cesium图标_黑夜-选中'>
+						<div><img class="icon" src="./CSS/img/Cesium图标_黑夜.png">
+						</div>
+						黑夜
+					</div>
+					<div class="allFrame" id="snowMountain1" data-image="./CSS/img/Cesium图标_雪山"
+						data-image-active='./CSS/img/Cesium图标_雪山-选中'>
+						<div><img class="icon" src="./CSS/img/Cesium图标_雪山.png">
+						</div>
+						雪山
+					</div>
+					<div class="allFrame" id="screenFog" data-image="./CSS/img/Cesium图标_全屏雾效"
+						data-image-active='./CSS/img/Cesium图标_全屏雾效-选中'>
+						<div><img class="icon" src="./CSS/img/Cesium图标_全屏雾效.png">
+						</div>
+						<!-- 全屏雾效 -->
+						雾
+					</div>
+					<div class="allFrame" id="remove" data-image="./CSS/img/Cesium图标_移除"
+						data-image-active='./CSS/img/Cesium图标_移除-选中'>
+						<div><img class="icon" src="./CSS/img/Cesium图标_移除.png">
+						</div>
+						移除天气
+					</div>
+				</div>
+
+				<div class="list">
+
+					<div class="control">飞行移动</div>
+					<div class="allFrame co7 btn2" id="fly" data-image="./CSS/img/Cesium图标_飞机飞行"
+						data-image-active='./CSS/img/Cesium图标_飞机飞行-选中'>
+						<div><img class="icon" src="./CSS/img/Cesium图标_飞机飞行.png">
+						</div>
+						绕北碚飞行
+					</div>
+					<div class="allFrame btn2" id="air_fly" data-image="./CSS/img/Cesium图标_飞机飞行"
+						data-image-active='./CSS/img/Cesium图标_飞机飞行-选中'>
+						<div><img class="icon" src="./CSS/img/Cesium图标_飞机飞行.png">
+						</div>
+						飞机飞行
+					</div>
+					<div class="allFrame btn2" id="vehicle_move" data-image="./CSS/img/Cesium图标_汽车移动-58"
+						data-image-active='./CSS/img/Cesium图标_汽车移动-选中-71'>
+						<div><img class="icon" src="./CSS/img/Cesium图标_汽车移动-58.png">
+						</div>
+						汽车移动
+					</div>
+					<div class="allFrame" id="route-planning" data-image="./CSS/img/路线规划"
+						data-image-active='./CSS/img/路线规划-选中'>
+						<div><img class="icon" src="./CSS/img/路线规划.png">
+						</div>
+						路线规划
+					</div>
+				</div>
+
+
+				<div class="list">
+					<div class="control">效果</div>
+					<div class="allFrame co6" id="radar" data-image="./CSS/img/Cesium图标_雷达"
+						data-image-active='./CSS/img/Cesium图标_雷达-选中'>
+						<div><img class="icon" src="./CSS/img/Cesium图标_雷达.png">
+						</div>
+						雷达
+					</div>
+					<div class="allFrame" id="proliferation" data-image="./CSS/img/Cesium图标_扩散"
+						data-image-active='./CSS/img/Cesium图标_扩散-选中'>
+						<div><img class="icon" src="./CSS/img/Cesium图标_扩散.png">
+						</div>
+						扩散
+					</div>
+					<div class="allFrame" id="wall" data-image="./CSS/img/Cesium图标_动态墙"
+						data-image-active='./CSS/img/Cesium图标_动态墙-选中'>
+						<div><img class="icon" src="./CSS/img/Cesium图标_动态墙.png">
+						</div>
+						动态墙
+					</div>
+
+					<div class="allFrame" id="floodLight" data-image="./CSS/img/Cesium图标_灯光"
+						data-image-active='./CSS/img/Cesium图标_灯光-选中'>
+						<div><img class="icon" src="./CSS/img/Cesium图标_灯光.png">
+						</div>
+						灯光
+
+					</div>
+
+					<div id="arrowhead" onclick="sh()">
+						<img class="arrowhead" src="./CSS/img/jianjian.png">
+					</div>
+
+
+
+					<div class="allFrame" id="streetLamp" data-image="./CSS/img/Cesium图标_路灯"
+						data-image-active='./CSS/img/1111'>
+						<div><img class="icon" src="./CSS/img/Cesium图标_路灯.png">
+						</div>
+						路灯
+					</div>
+					<div id="arrowhead1" onclick="sh()">
+						<img class="arrowhead1" src="./CSS/img/jianjian.png">
+					</div>
+					<div class="allFrame" id="fire" data-image="./CSS/img/Cesium图标_火灾"
+						data-image-active='./CSS/img/Cesium图标_火灾-选中'>
+						<div><img class="icon" src="./CSS/img/Cesium图标_火灾.png">
+						</div>
+						火灾
+					</div>
+					<div class="allFrame" id="heatmap" data-image="./CSS/img/Cesium图标_热力图"
+						data-image-active='./CSS/img/Cesium图标_热力图-选中'>
+						<div><img class="icon" src="./CSS/img/Cesium图标_热力图.png">
+						</div>
+						热力图
+					</div>
+				</div>
+
+
+				<div class="list">
+					<div class="control">模型</div>
+					<div class="allFrame co6 btn1" id="model1" data-image="./CSS/img/模型"
+						data-image-active='./CSS/img/模型-选中'>
+						<div><img class="icon" src="./CSS/img/模型.png">
+						</div>
+						黛湖
+					</div>
+					<div class="allFrame btn1" id="model2" data-image="./CSS/img/模型"
+						data-image-active='./CSS/img/模型-选中'>
+						<div><img class="icon" src="./CSS/img/模型.png">
+						</div>
+						缙云山
+					</div>
+					<div class="allFrame btn1" id="model3" data-image="./CSS/img/模型"
+						data-image-active='./CSS/img/模型-选中'>
+						<div><img class="icon" src="./CSS/img/模型.png">
+						</div>
+						传感器产研园
+					</div>
+
+					<div class="allFrame btn1" id="model4" data-image="./CSS/img/房屋"
+						data-image-active='./CSS/img/房屋-选中'>
+						<div><img class="icon" src="./CSS/img/房屋.png">
+						</div>
+						房屋
+					</div>
+					<div class="allFrame " id="deleteModel" data-image="./CSS/img/Cesium图标_移除"
+						data-image-active='./CSS/img/Cesium图标_移除-选中'>
+						<div><img class="icon" src="./CSS/img/Cesium图标_移除.png">
+						</div>
+						删除
+					</div>
+					<div class="allFrame btn1" id="multiModels" data-image="./CSS/img/选择"
+						data-image-active='./CSS/img/选择-选择'>
+						<div><img class="icon" src="./CSS/img/选择.png">
+						</div>
+						选择模型位置
+					</div>
+					<div class="allFrame btn1" id="modelPanel" data-image="./CSS/img/控制面板"
+						data-image-active='./CSS/img/控制面板-选中'>
+						<div><img class="icon" src="./CSS/img/控制面板.png">
+						</div>
+						模型控制面板
+					</div>
+				</div>
+
+				<div class="list">
+					<div class="control">绘图颜色</div>
+					<div id="paigusu" data-image="./CSS/img/72" data-image-active='./CSS/img/49'>
+						<div>
+						</div>
+
+					</div>
+					<div class="line line1"></div>
+
+					<!-- <div class="line line3"></div> -->
+					<div class="control co2">绘图</div>
+					<div class="allFrame btn3" id="drawPoint" data-image="./CSS/img/Cesium图标_点"
+						data-image-active='./CSS/img/Cesium图标_点-选中'>
+						<div><img class="icon" src="./CSS/img/Cesium图标_点.png">
+						</div>
+						点
+					</div>
+					<div class="allFrame btn3" id="drawLine" data-image="./CSS/img/Cesium图标_线"
+						data-image-active='./CSS/img/Cesium图标_线-选中'>
+						<div><img class="icon" src="./CSS/img/Cesium图标_线.png">
+						</div>
+						线
+					</div>
+					<div class="allFrame btn3" id="drawPolygon" data-image="./CSS/img/Cesium图标_多边形"
+						data-image-active='./CSS/img/Cesium图标_多边形-选中'>
+						<div><img class="icon" src="./CSS/img/Cesium图标_多边形.png">
+						</div>
+						多边形
+					</div>
+					<div class="allFrame btn3" id="drawRectangle" data-image="./CSS/img/Cesium图标_矩形"
+						data-image-active='./CSS/img/Cesium图标_矩形-选中'>
+						<div><img class="icon" src="./CSS/img/Cesium图标_矩形.png">
+						</div>
+						矩形
+					</div>
+					<div class="allFrame btn3" id="drawCircle" data-image="./CSS/img/Cesium图标_圆"
+						data-image-active='./CSS/img/Cesium图标_圆-选中'>
+						<div><img class="icon" src="./CSS/img/Cesium图标_圆.png">
+						</div>
+						圆形
+					</div>
+					<div class="allFrame btn3" id="drawBufferLine" data-image="./CSS/img/Cesium图标_缓冲区"
+						data-image-active='./CSS/img/Cesium图标_缓冲区-选中'>
+						<div><img class="icon" src="./CSS/img/Cesium图标_缓冲区.png">
+						</div>
+						缓冲区
+					</div>
+					<div class="allFrame btn3" id="drawPlotStraight" data-image="./CSS/img/Cesium图标-65"
+						data-image-active='./CSS/img/Cesium图标-78'>
+						<div><img class="icon" src="./CSS/img/Cesium图标-65.png">
+						</div>
+						直线箭头
+					</div>
+					<div class="allFrame btn3" id="drawAlotAttack" data-image="./CSS/img/Cesium图标"
+						data-image-active='./CSS/img/Cesium图标_汽车移动-选中 副本 2'>
+						<div><img class="icon" src="./CSS/img/Cesium图标.png">
+						</div>
+						攻击箭头
+					</div>
+					<div class="allFrame btn3" id="drawPlotPincer" data-image="./CSS/img/Cesium图标-102"
+						data-image-active='./CSS/img/Cesium图标-103'>
+						<div><img class="icon" src="./CSS/img/Cesium图标-102.png">
+						</div>
+						钳击箭头
+					</div>
+					<div class="line line2"></div>
+					<div class="control">操作</div>
+					<div class="allFrame" id="editShape" data-image="./CSS/img/Cesium图标_编辑图形"
+						data-image-active='./CSS/img/Cesium图标_编辑图形-选中'>
+						<div><img class="icon" src="./CSS/img/Cesium图标_编辑图形.png">
+						</div>
+						编辑图形
+					</div>
+					<div class="allFrame" id="deleteShape" data-image="./CSS/img/Cesium图标_移除"
+						data-image-active='./CSS/img/Cesium图标_移除-选中'>
+						<div><img class="icon" src="./CSS/img/Cesium图标_移除.png">
+						</div>
+						删除图形
+					</div>
+					<div class="allFrame" id="moveShape" data-image="./CSS/img/Cesium图标_移动图形"
+						data-image-active='./CSS/img/Cesium图标_移动图形-选中'>
+						<div><img class="icon" src="./CSS/img/Cesium图标_移动图形.png">
+						</div>
+						移动图形
+					</div>
+				</div>
+
+
+				<div class="list">
+					<div class="control">其他</div>
+					<div class="allFrame" id="rotation" data-image="./CSS/img/Cesium图标_飞机飞行"
+						data-image-active='./CSS/img/Cesium图标_飞机飞行-选中'>
+						<div><img class="icon" src="./CSS/img/Cesium图标_飞机飞行.png">
+						</div>
+						飞行浏览
+					</div>
+					<div class="allFrame" id="loadKML" data-image="./CSS/img/Cesium图标_公园"
+						data-image-active='./CSS/img/Cesium图标_公园-选中'>
+						<div><img class="icon" src="./CSS/img/Cesium图标_公园.png">
+						</div>
+						公园
+					</div>
+					<div class="allFrame" id="loadbeibei" data-image="./CSS/img/Cesium图标_北碚"
+						data-image-active='./CSS/img/Cesium图标_北碚-选中'>
+						<div><img class="icon" src="./CSS/img/Cesium图标_北碚.png">
+						</div>
+						北碚
+					</div>
+
+					<div class="allFrame" id="showWaters" data-image="./CSS/img/Cesium图标_河流"
+						data-image-active='./CSS/img/Cesium图标_河流-选中'>
+						<div><img class="icon" src="./CSS/img/Cesium图标_河流.png">
+						</div>
+						河流
+					</div>
+					<div class="allFrame" id="view360" data-image="./CSS/img/Cesium图标_全景360"
+						data-image-active='./CSS/img/Cesium图标_全景360-选中'>
+						<div><img class="icon" src="./CSS/img/Cesium图标_全景360.png">
+						</div>
+						全景360
+					</div>
+					<div class="allFrame " id="dig" data-image="./CSS/img/Cesium图标_挖洞"
+						data-image-active='./CSS/img/Cesium图标_挖洞-选中'>
+						<div><img class="icon" src="./CSS/img/Cesium图标_挖洞.png">
+						</div>
+						挖坑
+					</div>
+					<!-- <div class="allFrame" id="a" data-image="./CSS/img/Cesium图标_作用到地形"
+						data-image-active='./CSS/img/Cesium图标_作用到地形-选中'>
+						<div><img class="icon" src="./CSS/img/Cesium图标_作用到地形.png">
+						</div>
+						作用到地形
+					</div> -->
+					<div class="allFrame" id="wireFrame" data-image="./CSS/img/Cesium图标_地形三角网"
+						data-image-active='./CSS/img/Cesium图标_地形三角网-选中'>
+						<div><img class="icon" src="./CSS/img/Cesium图标_地形三角网.png">
+						</div>
+						地形三角网
+					</div>
+				</div>
+			</div>
+		</div>
+
+
+	</div>
+
+	<!-- 以上是新加的，下面不用管 -->
+	<div class="cesiumBotoum" id="cesiumBotoum">
+		<div id="cesiumContainer">
+			<!-- <div id="checked">
+				<span id="earthRotationButton"></span>
+				<span id="layerButton"></span>
+			</div>
+			<div id="toolbar">
+				<img id="screenshot" src="./images/screenshot.png" alt="截屏" srcset="">
+				<table border="" cellspacing="" cellpadding="">
+					<tr>
+						<td><input type="button" id="rotation" value="飞行浏览" title="飞行浏览" /></td> -->
+			<!-- <td><input type="button" id="layers" value="功能" title="显示功能" /></td> -->
+			<!-- <td><input type="button" id="controlWidget" value="控件管理" title="控件管理" /></td>
+						<td><input type="button" id="loadKML" value="公园" title="显示公园" /></td>
+						<td><input type="button" id="loadbeibei" value="北碚" title="显示公园" /></td>
+						<td><input type="button" value="河流" title="显示河流" /></td>
+						<td><input type="button" id="showWeather" value="天气" title="显示天气列表" /></td>
+						<td><input type="button" id="flyAndMove" value="飞行移动" title="显示天气飞行移动列表" /></td>
+						<td><input type="button" id="effect" value="效果" title="效果" /></td>
+						<td><input type="button" id="model" value="模型" title="显示模型列表" /></td>
+
+						<td><input type="button" value="全景360" title="" /></td>
+						<td><input type="button" id="drag" value="挖坑" title="" /></td>
+						<td><input type="button" id="a" value="作用到地形" title="" /></td>
+						<td><input type="button" id="wireFrame" value="地形三角网" title="" /></td> -->
+
+
+			<!-- <td><input class="button index-btn" type="button" id="view360" value="全景360" title="" /></td> -->
+			<!-- <td><input class="button index-btn" type="button" id="measurepolyline" value="测量距离" title="" /></td>
+						<td><input class="button index-btn" type="button" id="measurepolygon" value="测量面积" title="" /></td>
+						<td><input class="button index-btn" type="button" id="clearmeasure" value="清除测量数据" title="" /></td> -->
+
+			<!-- </tr>
+				</table>
+				<div id="comment"></div>
+				<div id="modelControl" style="display: none;">
+					<table> -->
+			<!-- <tr>
+							<td>高度：</td>
+							<td><input id="heightControl" type="range" min="0" max="800" step="1"
+									data-bind="value: height, valueUpdate: 'input'" />
+							</td>
+						</tr> -->
+			<!-- 模型X,Y,Z轴移动 -->
+			<!-- <tr>
+							<td>X轴移动：</td>
+							<td><input id="XControl" type="range" min="-500" max="100" step="0.01"
+									data-bind="value: xMove, valueUpdate: 'input'" />
+							</td>
+						</tr>
+						<tr>
+							<td>Y轴移动：</td>
+							<td><input id="YControl" type="range" min="-800" max="20" step="0.01"
+									data-bind="value: yMove, valueUpdate: 'input'" />
+							</td>
+						</tr>
+						<tr>
+							<td>Z轴移动：</td>
+							<td><input id="ZControl" type="range" min="-100" max="200" step="0.01"
+									data-bind="value: zMove, valueUpdate: 'input'" />
+							</td>
+						</tr> -->
+			<!-- <tr>
+							<td>平移经度：</td>
+							<td><input id="lonControl" type="range" min="-0.001" max="0.001" step="0.0001"
+									data-bind="value: lon, valueUpdate: 'input'" />
+							</td>
+						</tr>
+						<tr>
+							<td>平移纬度：</td>
+							<td><input id="latControl" type="range" min="-0.001" max="0.001" step="0.0001"
+									data-bind="value: lat, valueUpdate: 'input'" />
+							</td>
+						</tr>
+						<tr>
+							<td>旋转X:</td>
+							<td><input id="rotatex" type="range" min="-180" max="180" step="1"
+									data-bind="value: rox, valueUpdate: 'input'" />
+							</td>
+						</tr>
+						<tr>
+							<td>旋转Y:</td>
+							<td><input id="rotatey" type="range" min="-180" max="180" step="1"
+									data-bind="value: roy, valueUpdate: 'input'" />
+							</td>
+						</tr>
+						<tr>
+							<td>旋转Z:</td>
+							<td><input id="rotatez" type="range" min="-90" max="90" step="1"
+									data-bind="value: roz, valueUpdate: 'input'" />
+							</td>
+						</tr> -->
+			<!-- 控制模型移动效果 -->
+			<!-- <tr>
+							<td>
+								<input id="ya" type="button" value="上">
+								<input id="ys" type="button" value="下">
+								<input id="xs" type="button" value="左">
+								<input id="xa" type="button" value="右">
+							</td>
+						</tr> -->
+			<!-- </table>
+				</div>
+			</div>
+
+
+
+			<div id="latlng_show"
+				style="width: auto; height: 30px; position: absolute; bottom: 0px; right: 50px; z-index: 1; font-size: 15px; display:none;">
+				<div style="width: auto; margin-left: 15px; height: 30px; float: left;">
+					<font size="3" color="white">经度：<span id="longitude_show"></span></font>
+				</div>
+				<div style="width: auto; margin-left: 15px; height: 30px; float: left;">
+					<font size="3" color="white">纬度：<span id="latitude_show"></span></font>
+				</div>
+				<div style="width: auto; margin-left: 15px; height: 30px; float: left;">
+					<font size="3" color="white">视角高：<span id="altitude_show"></span>M
+					</font>
+				</div>
+			</div>
+
+		</div>-->
+		</div>
+		<div id="loadingOverlay">
+			<h1>加载中...</h1>
+			<!-- <img src="./img/Fountain.gif" alt=""> -->
+		</div>
+	</div>
+	<div class="loading">
+		<div class="progress"></div>
+	</div>
+	<!-- <img src="./img/stone6.jpg" > -->
+	<script type="text/javascript">
+		// $(".loading .progress").animate({
+		// 	width: "10%"
+		// }, 100)
+	</script>
+	<!-- <img src="./img/stone6.jpg" >
+		 <img src="./img/stone6.jpg" > -->
+	<script type="text/javascript">
+		// $(".loading .progress").animate({
+		// 	width: "30%"
+		// }, 100)
+	</script>
+	<!-- <img src="./img/stone6.jpg" >
+		<img src="./img/stone6.jpg" > -->
+	<script type="text/javascript">
+		// $(".loading .progress").animate({
+		// 	width: "50%"
+		// }, 100)
+	</script>
+	<!-- <img src="./img/stone6.jpg" >
+		 <img src="./img/stone6.jpg" > -->
+	<script type="text/javascript">
+		// $(".loading .progress").animate({
+		// 	width: "70%"
+		// }, 100)
+	</script>
+	<!-- <img src="./img/stone6.jpg" >
+		 <img src="./img/stone6.jpg" > -->
+	<script type="text/javascript">
+		// $(".loading .progress").animate({
+		// 	width: "90%"
+		// }, 100)
+	</script>
+	<div id="loadingDiv" style="position: absolute;
+	  top: 55%;
+	  left: 34%;
+	  width: 30%;">
+		<div class="layui-progress layui-progress-big" lay-showpercent="true" lay-filter="demo">
+			<div class="layui-progress-bar layui-bg-cyan" lay-percent="0%" style="width: 0%;"></div>
+		</div>
+		<button id="startLoading" data-type="loading" style="display: none;">start Loading</button>
+	</div>
+</body>
+
+<script>
+	$(function () {
+
+		$(".nav li").data("checked", "0"); //0代表所有得标签
+
+		$(".nav li:eq(0)").data("checked", "1"); //1代表当前选中标签
+
+		var isShow = true; //默认是显示状态
+
+		//获取点击事件的对象
+		$(".nav li").click(function () {
+			var ck = $(this).data("checked"); //获取当前点击元素
+
+			if (ck == "0" && !isShow) { //0代表没有选中得其他标签 
+				//获取要显示或隐藏的对象
+				shownav();
+				isShow = !isShow; //因为调用了隐藏函数 ，  所以这里取反
+
+			}
+			if (ck == "0") { //当  当前元素为没选中时
+				$(".nav li").data("checked", "0");
+				$(this).data("checked", "1"); //让当前变为选中
+			}
+			if (ck == "1") {
+				//获取要显示或隐藏的对象
+				shownav();
+				isShow = !isShow;
+			}
+
+
+
+
+			var divShow = $(".content").children('.list');
+			//判断当前对象是否被选中，如果没选中的话进入if循环
+			if (!$(this).hasClass('selected')) {
+				//获取当前对象的索引
+				var index = $(this).index();
+				//当前对象添加选中样式并且其同胞移除选中样式；
+				$(this).addClass('selected').siblings('li').removeClass('selected');
+				//索引对应的div块显示
+				$(divShow[index]).show();
+				//索引对应的div块的同胞隐藏
+				$(divShow[index]).siblings('.list').hide();
+			}
+		});
+	});
+	// 点击改变背景图函数
+	$(function () {
+		$(".allFrame").on("click", function () {
+			// 点击改变图片
+			$(".allFrame").each(function (index, item) {
+				$(this).find("img")[0].src = this.dataset.image + ".png";
+			})
+			$(this).find("img")[0].src = this.dataset.imageActive + ".png";
+
+		});
+	});
+	// 功能弹出框
+	$(function () {
+		/*点击按钮弹框出现*/
+		$('.btn').click(function () {
+			var layerShow = $("#layers").data("open");
+			object.layers.start();
+			if (!layerShow) {
+				isClose('layers');
+				$('.login').show();
+				center();
+				$("#layers").data("open", true);
+			} else {
+				isClose('layers');
+				$(".login").hide();
+				$("#layers").data("open", false);
+			}
+		});
+		/*当窗口大小改变时弹框仍然位于中央*/
+		$(window).resize(function () {
+			center();
+		});
+		/*点击弹框右上角关闭按钮关闭弹框*/
+		$("#head span").click(function () {
+			$(".login").hide();
+			$("#layers").data("open", false);
+		});
+		/*使弹框位于左侧中央*/
+		function center() {
+			var left = ($(window).width() - $(".login").width()) / 2;
+			// var top = ($(window).height() - $(".login").height()) / 2;
+			var top = $("#cesiumTop").height() + 20;
+			$('.login').css({
+				'left': "14px",
+				'top': top
+			});
+		}
+		var title = document.getElementById('head');
+		move(title);
+	});
+
+
+
+	// 模型弹出框
+	$(function () {
+		/*点击按钮弹框出现*/
+		$('#modelPanel').click(function () {
+			var opened = $('#modelPanel').data('open');
+			if (!opened) {
+				$('#modelPanel').data('open', true);
+				$('.login1').show();
+				center();
+
+				modelClickStatus = true;
+			} else {
+				$('#modelPanel').data('open', false);
+				$('.login1').hide();
+				modelClickStatus = false;
+				object.model.listenModel.resetColor();
+			}
+		});
+		/*当窗口大小改变时弹框仍然位于中央*/
+		$(window).resize(function () {
+			center();
+		});
+		/*点击弹框右上角关闭按钮关闭弹框*/
+		$("#head1 span").click(function () {
+			$(".login1").hide();
+			$('#modelPanel').data('open', false);
+			modelClickStatus = false;
+			object.model.listenModel.resetColor();
+		});
+		/*使弹框位于左侧中央*/
+		function center() {
+			var left = ($(window).width() - $(".login1").width()) / 2;
+			var top = ($(window).height() - $(".login1").height()) / 2;
+			$('.login1').css({
+				'left': left,
+				'top': top
+			});
+		}
+		var title1 = document.getElementById('head1');
+		move(title1);
+	});
+	// 飞行移动弹出框
+
+	$(function () {
+		/*点击按钮弹框出现*/
+		$('.btn2').click(function () {
+			// $('.login2').show();
+			center();
+		});
+		/*当窗口大小改变时弹框仍然位于中央*/
+		$(window).resize(function () {
+			center();
+		});
+		/*点击弹框右上角关闭按钮关闭弹框*/
+		$("#head2 span").click(function () {
+			// $(".login2").hide();
+			// // 点击关闭按钮关闭飞行事件
+			// var eventID = $("#head2 span").data('EventID');
+			// $('#' + eventID).data("open", false);
+			// var data = $('#' + eventID).data('data');
+			// if (eventID == 'air_fly' || eventID == "vehicle_move") {
+			// 	data.flyBreak();
+			// } else {
+			// 	data.clear();
+			// }
+			// $('#' + eventID).data('data', '');
+			$('.login2').hide();
+		});
+		/*使弹框位于左侧中央*/
+		function center() {
+			var left = ($(window).width() - $(".login2").width()) / 2;
+			var top = ($(window).height() - $(".login2").height()) / 2;
+			$('.login2').css({
+				'left': 20,
+				'top': 130
+			});
+		}
+		var title2 = document.getElementById('head2');
+		move(title2);
+	});
+
+	//路线规划弹出框
+	$(function () {
+		$("#route-planning").click(function () {
+			$("#routePanel").show();
+			center();
+		})
+		/*当窗口大小改变时弹框仍然位于中央*/
+		$(window).resize(function () {
+			center();
+		});
+		/*点击弹框右上角关闭按钮关闭弹框*/
+		$("#head6 span").click(function () {
+			$(".login6").hide();
+			$('#routePanel').data('open', false);
+		});
+		/*使弹框位于左侧中央*/
+		function center() {
+			// var left = ($(window).width() - $(".login6").width()) / 2;
+			// var top = ($(window).height() - $(".login6").height()) / 2;
+			var right = 35;
+			var top = 145;
+			$('.login6').css({
+				'right': right,
+				'top': top
+			});
+		}
+		var title6 = document.getElementById('head6');
+		move(title6);
+	})
+	/*封装移动函数*/
+	function move(obj) {
+		var onOff = false;
+		var l = 0,
+			t = 0,
+			x = 0,
+			y = 0;
+		var parent = obj.parentNode;
+
+		obj.onmousedown = function (event) {
+			var e = event || window.event;
+			x = e.clientX;
+			y = e.clientY;
+			l = parseInt(parent.offsetLeft);
+			t = parseInt(parent.offsetTop);
+			onOff = true;
+			obj.style.cursor = "move"; //此时鼠标形状为可移动手势
+			$("body").attr("onselectstart", "return false") // 拖动弹出框时禁止全选操作
+			document.onmousemove = function (event) {
+				if (onOff) {
+					var e = event || window.event;
+					parent.style.left = l + e.clientX - x + 'px';
+					parent.style.top = t + e.clientY - y + 'px';
+
+				}
+
+			}
+			document.onmouseup = function () {
+				if (onOff) {
+					onOff = false;
+				}
+				$("body").attr("onselectstart", "return true")
+			};
+
+		};
+	};
+	// 功能弹出框的显示隐藏函数
+	function show_all() {
+		var iconoff = document.getElementById("iconoff");
+		var offbody = $("#offbody");
+		var display = offbody.css('display')
+		if (display == "block") {
+			// offbody.style.display = 'none';
+			offbody.css('display', 'none');
+			iconoff.style.transform = 'rotate(180deg)';
+		} else {
+			// offbody.style.display = 'block';
+			offbody.css('display', 'block');
+			iconoff.style.transform = 'rotate(0deg)';
+		}
+	};
+	// 模型弹出框的显示隐藏函数
+	function show_all1() {
+		var iconoff = document.getElementById("iconoff1");
+		// var offbody = document.getElementById("offbody1");
+		var offbody1 = $("#offbody1");
+		var display = offbody1.css('display')
+		if (display == "block") {
+			// offbody.style.display = 'none';
+			offbody1.css('display', 'none');
+			iconoff.style.transform = 'rotate(180deg)';
+		} else {
+			// offbody.style.display = 'block';
+			offbody1.css('display', 'block');
+			iconoff.style.transform = 'rotate(0deg)';
+		}
+	};
+	// 点击灯光路灯亮度隐藏显示
+	function sh() {
+		var login4 = document.getElementById("login4");
+		var login5 = document.getElementById("login5");
+		if (login4.style.display == "block") {
+			login4.style.display = 'none';
+
+		} else {
+			login4.style.display = 'block';
+			login5.style.display = 'none';
+		}
+	};
+
+	// $(function () {
+	// 		/*点击按钮弹框出现*/
+	// 		$('.arrowhead').click(function () {
+	// 			if(login4.style.display="none"){
+	// 				$('.login4').show();
+	// 			}else{
+	// 				$(".login4").hide();
+	// 			}
+
+	// 		});
+	// 	});
+
+
+
+
+	// 飞行移动弹出框的显示和隐藏函数
+	function show_all2() {
+		var iconoff = document.getElementById("iconoff2");
+		// var offbody = document.getElementById("offbody2");
+		var offbody2 = $("#offbody2");
+		var display = offbody2.css('display')
+		if (display == "block") {
+			// offbody.style.display = 'none';
+			offbody2.css('display', 'none');
+			iconoff.style.transform = 'rotate(180deg)';
+		} else {
+			// offbody.style.display = 'block';
+			offbody2.css('display', 'block');
+			iconoff.style.transform = 'rotate(0deg)';
+		}
+	};
+	// 路线规划弹出框的显示和隐藏函数
+	function show_all3() {
+		var iconoff = document.getElementById("iconoff3");
+		// var offbody = document.getElementById("offbody3");
+		var offbody3 = $("#offbody3");
+		var display = offbody3.css('display')
+		if (display == "block") {
+			// offbody.style.display = 'none';
+			offbody3.css('display', 'none');
+			iconoff.style.transform = 'rotate(180deg)';
+		} else {
+			// offbody.style.display = 'block';
+			offbody3.css('display', 'block');
+			iconoff.style.transform = 'rotate(0deg)';
+		}
+
+
+	};
+
+	// 导航栏得显示隐藏函数
+	function shownav() {
+		var cesiumTop = document.getElementById('cesiumTop');
+		var content = document.getElementById('content');
+		var cesiumBotoum = document.getElementById('cesiumBotoum');
+		if (content.style.display != 'none') {
+			content.style.display = 'none';
+			cesiumTop.style.height = 'null';
+			cesiumBotoum.style.height = '96%';
+		} else {
+			content.style.display = "block";
+			cesiumBotoum.style.height = '84.5%';
+		};
+		var compasstop = $("#cesiumTop").height();
+		earth.camera.navigator.compassStyle.top = compasstop + 15;
+	}
+
+
+	// 生成滚动条，用body的宽减去滚动条的宽，再重新计算body的宽，形成缩放功能
+	function setBodyWidth() {
+		var barWidthHelper = document.createElement('div');
+		barWidthHelper.style.cssText = "overflow:scroll;display:none; width:100px; height:100px;";
+		document.body.appendChild(barWidthHelper);
+		var barWidth = barWidthHelper.offsetWidth - barWidthHelper.clientWidth;
+		document.body.removeChild(barWidthHelper);
+		var bodyWidth = window.screen.availWidth - barWidth;
+		// var contentWidth = barWidth - barWidthHelper.clientWidth;
+		return bodyWidth;
+
+	};
+	$(document).ready(
+
+		function () {
+			var bodyWidth = setBodyWidth() + "px";
+			document.body.style.width = bodyWidth;
+			$(".map").css("width", bodyWidth);
+			$(".content").css("width", bodyWidth);
+
+		}
+	);
+</script>
+
+<script src="./cesium.local.js"></script>
+<script src="./CesiumZh.js"></script>
+<script type="text/javascript">
+	// var layer;
+	// layui.use('layer', function () {
+	// 	layer = layui.layer;
+	// });
+	var loadingCount = 0;
+	loadingCount = loadingCount + Math.random() * 10 | 0;
+	// layui.element.progress('demo', loadingCount + '%');
+	// var viewer = new Cesium.Viewer(
+	// 		"cesiumContainer", {
+	// 			animation: false, //是否显示动画控件
+	// 			homeButton: false, //是否显示home键
+	// 			geocoder: false, //是否显示地名查找控件        如果设置为true，则无法查询
+	// 			baseLayerPicker: false, //是否显示图层选择控件
+	// 			timeline: false, //是否显示时间线控件
+	// 			fullscreenButton: false, //是否全屏显示
+	// 			scene3DOnly: false, //如果设置为true，则所有几何图形以3D模式绘制以节约GPU资源
+	// 			infoBox: false, //是否显示点击要素之后显示的信息
+	// 			sceneModePicker: true, //是否显示投影方式控件  三维/二维
+	// 			navigationInstructionsInitiallyVisible: false,
+	// 			navigationHelpButton: false, //是否显示帮助信息控件
+	// 			selectionIndicator: false, //是否显示指示器组件
+	// 			contextOptions: {
+	// 				webgl: {
+	// 					alpha: true,
+	// 					depth: true,
+	// 					stencil: true,
+	// 					antialias: true,
+	// 					premultipliedAlpha: true,
+	// 					//通过canvas.toDataURL()实现截图需要将该项设置为true
+	// 					preserveDrawingBuffer: true,
+	// 					failIfMajorPerformanceCaveat: true
+	// 				}
+	// 			},
+	// 			imageryProvider: new Cesium.TileMapServiceImageryProvider({
+	// 				url: "../gykjCesium/Cesium/Build/CesiumUnminified/Assets/Textures/NaturalEarthII",
+	// 			}),
+	// 		});
+	var viewer = null;
+	var scene = null;
+	var earth = null;
+	var object = null;
+
+	function startup() {
+		loadingCount = loadingCount + Math.random() * 10 | 0;
+		// layui.element.progress('demo', loadingCount + '%');
+		var layerTemp = false;
+		var GeometryTemp = false;
+		var _3DModel = false;
+		earth = new XE.Earth('cesiumContainer', {
+			imageryProvider: new Cesium.TileMapServiceImageryProvider({
+				url: "./Cesium/Build/CesiumUnminified/Assets/Textures/NaturalEarthII",
+			}),
+			baseLayerPicker: false,
+			homeButton: false,
+			animation: true,
+			timeline: true,
+			geocoder: false,
+			infoBox: false,
+			selectionIndicator: false,
+			sceneModePicker: false,
+			sceneMode: Cesium.SceneMode.SCENE3D, //使用earthsdk切换3d视角要加上这句
+			scene3DOnly: false,
+			shouldAnimate: true,
+			fullscreenButton: false,
+			contextOptions: {
+				webgl: {
+					alpha: true,
+					depth: true,
+					stencil: true,
+					antialias: true,
+					premultipliedAlpha: true,
+					//通过canvas.toDataURL()实现截图需要将该项设置为true
+					preserveDrawingBuffer: true,
+					failIfMajorPerformanceCaveat: true
+				}
+			},
+		});
+		viewer = earth.czm.viewer;
+		scene = earth.czm.scene;
+		earth.interaction.picking.enabled = false;
+		console.log("🚀 ~ file: index.html ~ line 1322 ~ startup ~ earth", earth)
+		console.log(earth);
+		// 创建对象，传入Cesium.Viewer对象。
+		// var _local = new CesiumLocal(viewer);
+		// console.log(_local);
+		CesiumZh.load()
+		loadingCount = loadingCount + Math.random() * 10 | 0;
+		// layui.element.progress('demo', loadingCount + '%');
+		viewer.defaultTerrainProvider = viewer.terrainProvider;
+
+
+
+
+
+		// var options = {};
+		// options.defaultResetView = Cesium.Rectangle.fromDegrees(71, 3, 90, 14);
+
+		// // extend our view by the cesium navigaton mixin
+		// options.enableCompass = false; //罗盘
+		// options.enableZoomControls = true; //缩放
+		// options.enableDistanceLegend = true; //比例尺
+		// options.enableCompassOuterRing = false; //指南针外环
+		// viewer.extend(Cesium.viewerCesiumNavigationMixin, options);
+		// //当然也可以使用默认的
+		// console.log(Cesium.viewerCesiumNavigationMixin);
+		// viewer.extend(Cesium.viewerCesiumNavigationMixin, {});
+		earth.camera.navigator.showCompass = false; // 显示指北针
+		earth.camera.navigator.showDistanceLegend = false; // 显示比例尺 
+		// 1.1.3 数据绑定
+		var compasstop = $("#cesiumTop").height();
+		earth.camera.navigator.compassStyle.top = compasstop + 15;
+		earth.camera.navigator.distanceLegendStyle.bottom = 30;
+		// 双向绑定的属性，如果一方发生变化，另一方同样会跟随变化
+		// //获取对象
+		// var cesiumNavigation = viewer.cesiumNavigation;
+
+		// 加载蓝色地球 false为加载蓝色地图
+		// viewer.imageryLayers.get(0).show = false;
+		//隐藏版权信息
+		viewer._cesiumWidget._creditContainer.style.display = "none";
+		//双击鼠标左键清除默认事件
+		viewer.cesiumWidget.screenSpaceEventHandler.removeInputAction(Cesium.ScreenSpaceEventType.LEFT_DOUBLE_CLICK);
+
+		viewer.camera.setView({
+			destination: Cesium.Cartesian3.fromDegrees(106.39169649, 29.80413929, 38270.3),
+			orientation: {
+				heading: Cesium.Math.toRadians(0),
+				pitch: Cesium.Math.toRadians(-90),
+				roll: Cesium.Math.toRadians(0)
+			}
+		});
+		loadingCount = (loadingCount + Math.random() * 10 | 0) * 2;
+		// layui.element.progress('demo', loadingCount + '%');
+		viewer.shadows = false;
+		viewer.scene.fog.density = 0;
+		// F键查看帧率
+		document.addEventListener('keydown', function (event) {
+			var e = event || window.event || arguments.callee.caller.arguments[0];
+			if (e) {
+				switch (e.keyCode) {
+					case 84:
+						viewer.scene.debugShowFramesPerSecond = !viewer.scene.debugShowFramesPerSecond;
+						break;
+					case 73:
+						var canvas = viewer.scene.canvas;
+
+						//只需要定义图片的宽度（高度计算得到）
+						var imageWidth = 500;
+
+						//保存（下载）图片
+						Canvas2Image.saveAsImage(canvas, imageWidth, imageWidth * canvas.height / canvas.width,
+							'png');
+					default:
+				}
+			}
+		});
+		viewer.scene.globe.depthTestAgainstTerrain = true;
+
+		var earthRad = 6378137.0;
+		var handler1 = new Cesium.ScreenSpaceEventHandler(viewer.canvas);
+
+		handler1.setInputAction(function (event) {
+			var rectangle = viewer.camera.computeViewRectangle();
+			// var west =rectangle.west / Math.PI * 180;
+			// var east = rectangle.east / Math.PI * 180;
+			var dis = (rectangle.west - rectangle.east) * earthRad
+			console.log(dis / 700)
+		}, Cesium.ScreenSpaceEventType.WHEEL);
+
+		function DateTimeFormatter(datetime, viewModel, ignoredate) {
+			var julianDT = new Cesium.JulianDate()
+			Cesium.JulianDate.addHours(datetime, 8, julianDT)
+			var gregorianDT = Cesium.JulianDate.toGregorianDate(julianDT)
+			var objDT
+			if (ignoredate)
+				objDT = ''
+			else {
+				objDT = new Date(gregorianDT.year, gregorianDT.month - 1, gregorianDT.day)
+				objDT = gregorianDT.year + '年' + objDT.toLocaleString('zh-cn', {
+					month: 'short'
+				}) + gregorianDT.day + '日'
+				if (viewModel || gregorianDT.hour + gregorianDT.minute === 0)
+					return objDT
+				objDT += ' '
+			}
+			return objDT + Cesium.sprintf('%02d:%02d:%02d', gregorianDT.hour, gregorianDT.minute, gregorianDT.second)
+		};
+
+		function TimeFormatter(time, viewModel) {
+			return DateTimeFormatter(time, viewModel, true)
+		};
+		viewer.clock.currentTime = Cesium.JulianDate.addHours(Cesium.JulianDate.now(new Date()), 8, new Cesium
+			.JulianDate());
+		// getClickPos();
+		/**
+		 *  显示经纬度、相机高度控件
+		 */
+		// showLocation(true); //
+		loadingCount = (loadingCount + Math.random() * 10 | 0) + 5;
+		// layui.element.progress('demo', loadingCount + '%');
+		object = {
+			tracker: new GlobeTracker(viewer), // 画图 draw/GlobeTracker.js
+			drawS: new drawShape(viewer), // 画图 draw/draw.js
+			model: new globeModel(viewer), // 模型 model/globeModel.js
+			water: new globeWater(viewer), // 水域效果 water/globeWater.js
+			kml: new loadKML(viewer, "layerToKML.kmz"), // kml数据 kml/loadKML.js
+			beibei: new loadbeibei(viewer, "重庆市北碚区.kmz"), // kml数据 kml/重庆市北碚区.js
+			layers: new layersClass(), // 图层 layers.js
+			weathers: new weather(viewer), //天气
+			floodlight: new Floodlight(viewer), //灯光与路灯
+			dynamicWall: new DynamicWall(viewer), //动态墙
+			fire: '',
+			panoramicView: new panoramicView(viewer),
+			bound: new bound(viewer), //反选范围
+			heat: new heatMap(viewer),
+			rotation: new earthRotation(viewer),
+			clu: new cluster(viewer),
+			measure: new MeasureTools(viewer),
+			rotation: new earthRotation(),
+			route: new routePlanning(),
+			dig: new digPit(),
+			move: new Move(),
+			// refWater: new reflectionWater(),
+		}
+		loadingCount = loadingCount + Math.random() * 10 | 0;
+		// layui.element.progress('demo', loadingCount + '%');
+		/**
+		 * 默认加载水域
+		 */
+		object.water.localWater.start();
+		// object.water.geoWater.start(true);
+		loadingCount = (loadingCount + Math.random() * 10 | 0) + 10;
+		// layui.element.progress('demo', loadingCount + '%');
+		// object.refWater.load();
+
+		object.drawS.initDrawHelper();
+		object.drawS.bindGloveEvent();
+		// 1.1.2 场景配置
+		earth.sceneTree.root = {
+			"expand": true,
+			"title": "预览场景",
+			"children": [{
+				"ref": 'cutsurface',
+				"czmObject": {
+					"xbsjType": "CutSurface",
+					"positions": [
+						1.9016941450693987,
+						0.5972543858015236,
+						1.9017081078353575,
+						0.5972541960471051,
+						1.9017069832581177,
+						0.5972344450097695,
+						1.9016914810852974,
+						0.5972349751140238
+					]
+				}
+			}]
+		};
+		var cutsurface = earth.sceneTree.$refs.cutsurface.czmObject;
+		cutsurface.height = 350;
+		Window.cutsurface = cutsurface;
+		$("#drag").click(function () {
+			cutsurface.creating = true;
+			// var cesiumTopHeight = $("#cesiumTop").height();
+			// layer.msg(' 左键添加点，右键删除点，shift+右键停止绘制，上下移动鼠标确定高度，再次点击左键创建完成',{
+			//     offset: cesiumTopHeight+8,
+			// })
+			console.log(Window.cutsurface)
+			// terrainDiscardClick();
+		})
+		$("#a").click(function () {
+			earth.terrainEffect.depthTest = true;
+			cutsurface.applyTerrain();
+		})
+
+		function terrainDiscardClick() {
+			earth.terrainEffect.depthTest = true;
+			cutsurface.applyTerrain();
+
+			this.wallImageUrl =
+				"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADUAAAA3CAYAAACsLgJ7AAAaNElEQVRogaV6CXhV1bn2u8ezz5icTIQEEsgECSHGMEcqCYOiMtgiVwSLBYeqpdVrRUTr8OstpYjDrf3VUqdaJWq9Uq6KRWRSxjCEKUDmkHk45yRnnvbwP2udk5BAQOz/Pc9K9lnzu75vfdPezJ133olLiWEYhEIhGAwGeL1eFBQUIDExEd3d3YiLi6P1RUVFKC8vR35+PjiOQ1paGurr6yGK4tiJEydO9fv9kzmWzdUJfCbLMiYyq6apwbCstodluRIMc9JudxypOl91IHPMyBBvcGFYoggZPBRFu2xPP4b4f2cQAa1pGux2O4LBIJOZmTlPEISpUydPulUQ2EKwDEwmEwCyOSX6XwMDFiLPDxMhFQJYZjRKSElKaPMEAtvDqmG/1+PdGVKdjUaLCEYToaoaE13yR6H8UaBYlqUc9Pl88Pv9KCkpvXfsmJy18QkJmX19/LKCUx0B1LgVtPs02IMavHJkVxIHxAoMkiQGo80scuN4jDDrU2Il/QrAukIJKIrN1bHJHbb/H8kc6BREToMqsJpGwfUB+0GA1wSKcIaQzWajYlZcXPyrousKHjCYLQWkvskZwL9aw2hwa6hyqWj0aPAqDBiWgciy4FiAzKBqgKJqCKsKdKyMZCmEMZYARpsYTErgMT1Vzw2TUh/SAsOW9/od73l9nb+XTP4OgZegKAwHaCoiU10V3A/eKcIVcqeIuHEcl33//Q+sT04e9jPSr643gM8bQtjaLKPFz8AocoiVOJgEBnz0IMgW+o6ZpXNHd6UBAUWFM6jCG1IhQMWMYSxuH8VjRqqBDvR5wi6v0nwPo7P/U5JEaCrPaxoFpv3boMxmMzo7OxEfH49HHnnkzsKCgo8FnQ6yHMaLx73Y2qzADx7DjDxiRIZyQtMunasfG31mB4KjvxlwLEM52OaVEQ7LyIsFHs3ToTDJQMfaHd1bglzdz2Ji9NA0kVNURWWuwi2OaK+hQBHOEGCkLFq0aPXcuXP/wvE8DrZ58cgBL3Z0MUi26JBs4CByEUBDnlp0dTbKIY7UseR3hJssG2kTWCBex8Kq51Hn1vBtSxiKIqMoUYBBb8qVA8bpTm/Hl5JB83GsyKqa1i+Hl625ZMmSyyp5nqearbm5Ga+//vqGkpKS1eRQNp1x4g+nZMQYRYw080NyZvDsUQ5FwXFU2ZD/DDim7zkKmLl4WQj3ekMKqhwhlCYCG6YZoRdEdHc7qu2B09ePHBnj0zQdo6pD636W2JiBhQAKBALweDz43e9+tzYCCFh/rBcvVaoYaZUoIEX9AUCXLjRQ/AhAFuAZQMcBKgXBojvAwRlmoUCDVcdiwjAJBx0MfrHbg05PAImJcTkWPre8rcUJgVG0PgV22VneeOONF38wDFRVxblz5/Daa6/9YtmyZe+R+g3HevDHswqKhukh8QwFdE00gFOEM6TwLAM+yiGi4p1hBmYRKLSGYRE0dPhZHHcI4BkNek6ja511hJHIh/BBiRlxBh2amlu/CrI187JT0+gBXAaqsLDw4mmyLCrPnMFdS5dmvvfee7Wk7s8nerH+rIxxSQZ6sj+GO32guCiHCHcEAooBRBbwKwwsIrAm34sMU7BfW+/r1uP/ntdDx0bkmyxZ6QgjSwrhg1ILREHEmcrTr6ti42/GZeciDBXaAHAMcXv6yO12U01XXV1dazabM4+0e/Dz7wJIskiw6Fio18qhIUBRLjEMVQh8VPxcYRZrxvswOd4HWeUha4R7ZHMqyhpN+LheQrxOgaySGuBYRwA/HaFh3bQ4BAJhrNvw+yllf/9bedqoUYho+gjxRurORLjkcDjw9NNPP0gA2UPAQ/t8MOl11PbI/5/+2CCsDKBoDBJ0GrJMYXrj5Oj0hHt6DhhrkcERTkXllxxoboIO/7jgQ0myCzeNtmDVg4/sePG5dTG1tY0wm+P7ecXdsWgRsrKyYDIaUVpamvzCCy/8i4B9ZncLyt0Csq06gNOBqHNFlnGly3k1TjGaClEnQmfQQRAEiKIQnU/F7OF+GHgVYY3t134Cq6LFJ2Bvpw4GXot4IlpU0bAMdjYHMDuFR2q8SRcTH9e0/ettJ/QGHVQlDGgKGOL2EOVAPPDdu3Z9MK24+Of7ztRi9qZDmH7bQupVdDa1wGixwGyNQcjvv3Zg0bvECxx8ThdCLif0uogSEHkWmjkR94xRsDDVRTuHVZYCIvTaOTO+7xQQI6iUiyEVVAwZRsPhNj9Wjmbw/NQ4qJrWm5I6Ylhne1tIEEV657lwOExt0ogRI9iXNmz4lGFZdulbX6PVB+SOLwCvF9BxvhLtlUcRn5UPg0GHcDB4bcCinBKMenTV16H71F6EXTb4u5oQ6u3EsJFpOOG1gNU05Fhk8KwGZ5jDW9Vm7OsUEKdTqfajRQNVB0RMLSKH07YgbklhEasXpMSUNHXnrt178sblIzklFfysWbNQU1ND3KB7idGqbLahvMGGUZkZxPWnrNeZTFDcXWg4sBOjJs+AZDAi6PNdM8fIHeY4HoJkAC9K4BgFDC9Se2XiVHxcr8NRG48ESUWTh0eTl0G8FAXUF7xoF4tBZNEgs3jnnBfPT9Nj3pzSe96fMOF5g0EPvV4PNicnh9wl3LVkyWNkA58eqUE4KEPiLzrwGgUWi0BXPWr370BYZSgw7RJ1qGkRW8fzHC0cx0Y8T+2iB0pGkM2SEw8rEUMcI2lo8gs4ZJfQI7MUXF8fyiEtMq5vDlKXYhGxu0NBQNEQn5AwKiY2ZvTpUydwouI42LfeegstLS3jYmJjxwbCMrZUNMIca+qf5OKGNUiWeKjubtR+/w28Hjd4QQdeFCBIetrOMhHOBhSWFnJH+sRQi4YekfADNLqVEbknBBzHRLQe6RxSIvUUkBoZQ+xQ3+EQMoo87GEGx9q99PeEoqLlzY2NqKuuAkvC9fT09GLSsKvyAk639iDBbBjSASY1otEEX3sNXK2N0JkFuHqccLS3geM5Cs7rcqNu/w7Ufb8NrScPg2FZ6sDSbWka9cYVVaX/ycaJFXb2OlF9aDdqDu5Ec+VxyGBBwid5wF1So7aKaD9ifkSBQwgc9rcF6N4W37HoDoM5FknDU8GKoogpkydnkIadZ1vosXDE07yCWSKnxUt6yhXRDLhsdnTXnITBKoERWCjhIOSeNiiOVihuW/+4PhFSo8DkaFEYIBgKwW9vg9/RioCzm4odLaoGGvMyLBTqWRDuCggzOlrMeh0q7DKdf2x2Vn7xzNkjGFECO2LECOSPy6URbL3NDYEEYz9w8Yln4OMMOFXdi+YL9eA0FR1VTVCCMnhRB04y0sKKUsT29AU/VPFo9PQJt9S+zYOBwkuQOVJEhOl90iiHggqDgMqC5Tko4NF0ugIN+79Bzd5tgKMNHaoeLc4It8bmZI8j95zNzs5G5ujRY0hljy8IvchfERQNH1gGtZ1eZJmA32cD2Xwvzp5rwLHdXwJykIKKcFQFw7Dg9BIEI8DwxDiqVIyo+JF4iIAnki7oEZYVKIpKPRclqiB4gxEdDXVorjgAUZKgMgKC9jaEOmsRaK8BH3TBqQqo7gnRNZOGJSfrrYngU1NTrebY2GRS6QvJVGshuiHBIEEkyS1BR70CInrnWntww/jR+NOMRKTEx+CmtYvxl71n8efdZ1HpkJEoCdTPI2PkUADNJ46BFTj4HQ4qtqAakqPgWior0FkvIej2gOF4yHIocueoFwKEOSAYCCDs7EaYjXoUOgmc3gyVC0MwWKAYDbCFfRRU2uiMuOsmTQEvimIcGBiJxfaHFXqfOEGAHA6i+UwlGEFAwNEJVtShurUHs8ePwI5HbqGThEMh6EURj84uwN2TM7HhhB8fHT6HNpsH2cOt0OQQHLUnqeoXJAmczkC9F6I8iNLobTgHVVGoBuUlE1Q1RMWTSoUoounkefja6qgX0XBwP5JyJ4LlRQqaKCVnVzsuXHCgmU0EsjNhYhQuQVDBsyzLR9SoBllRI0EcL9AL7zhfDmJpFE7EhS4v7i3NxdvLo/GXChC3hIT7xDYlWIzYcKMOy0eOxDPbPfjnsQaIOgGjE2KimSSt365p0Y3zBtMARaLSQvZC8iCsHgg57ZA9dnAGMwJdF6COuZ4eCCFOp0fA1gL3+Xo4sksBZELHM5pFx4NVydFBo8EbsRVaVPUS8ZNMZig6I5pcITw0J78fkCxHNI7b66LRstYfZPHIH52KLQ/OxrsrZmBiejyq2nrg8AXp/D9ERFWT7fQ6nOjp9kNjWfA6Pd0LrzdFPJjoWlQhCDrAEgtJjDgKxAT4ZZXkPxhivWQSVhMnU4lmUIhC8IUUXGiy44k5+Xhj6Q20nnCGhPzbTv4DX53aTEGxDIuGjtoBW1axojgH+1fPx+9/OhGBsIKzzXYEZOWq4IgLpYX8qNv/DXZ9/gnOV58HS5TJUGOYKMcZEP+PVnlkjbEFFLCVlZVdQbeniwwzCBzVQjzHotsTQFO3CxuXT8f6n02mxjMYDJFcOZxeF9767ikY9WJkMwKPA/XbcN87t+BcS2U0IxGhp24pRPmaBVg1ezzsniDOtvdSUWQv8RvZaM6svtuFFnsP/uu2cVi/8HrUdLnR7fZDIMbdoCd3I5rT7MeGZIuRPjd2OtxHz9aDPXHihFzX2FhPKmMkgZ5mp9MHVyCM/15ajN/OoSaMGkhRiJzIxq9/i25/LXKSC/onn5RZjPO2nVj96SKUHXgbgVCY1pMYbExyDF5fMg1fPDQbJTnDUdftRmuvDwIXiaEI98h6VR29GJ8ah/9dNRdPz5uE1TcXYt3tRfCGNVywuWCvq4ES8FBnmGjRkKzAIgkYm2Kla3W0t9tcHa1giTidOHXmNKlMjTUgVNsOu8uPrQ/Owm9Kx1EZJn04lqNp5C+PfYKjrVuRNSwHp5sq+kGlWsZiZt48JMSz+ODws3jw/Vuw49Q2GgyebDqCivpDKB2bgt2P3Yqye0uQEqtHZX0XBXO+04VOlx9//OkkHFm7ELeNT4OmKDTvt3ZuIb5/YgFUOYzynV+DC7qpUSeonN4ARsWbkJ+WSPdQU99YT+Ixjlz6zMzMrDlz5sy1u3zocvvw/kOzcVNeWoRD4RA4hqMidrTuIF7f8xhGJiTDqIvFwdqdGGEeh5EJo2gypLKtHC09tchKzkZvoBXfVn4OXyAEo2DB/xx/E1VtZzHSmo5pWRl4eEYefKqKigs2TMlIwocrZmDJpIyLYsWyVHEQcCPiTFhwXRrKW3pxssmBBIueimtLdw8WFKRhQVEWmto7HU+uWbMm6HQoVPirqqrIRcDd0/Pw9dp5mJUbAfTJwXfR5WqlgIgKLzuyEazgg0G0QmD1MBlY/OX7p+D1+6IHEAkeQ2EFKdaRGJ+Rja2nX8WWik1ITxqJLyr/hAc/mI83d2wAiwBeWjQZp59dip2P3IxpGUn9gA5W7cWr256HzWkHw1HXHXnDrTj05HwsnDAKVQ3d8AbDNLicOTaVtv9rz77t3s7mUDAUiLz12L1nz36fz9drMBhiRd4ExQ+8tOMxHGjcipvGL6CDAuEQRJ0CqyEBshK5L2bJiiAXoqfWZm/Byeb9sJoioiAr1C9AQVoh7J4WVDS3YHJWMRyebmw59QqONX+DwhElWHXT07Sfoihw+Zz47Mi7+Prsu+jxtaKy4ztcP3IO5l23FOlJ6fQK/POhOXg6xYp1W46QC4vScel0vc0fffQR1btymOYUEQoG5fT09MQJEyYUd/S24fEPV+Bo+2fITsnA3Lx7IfACZDWErSfeAs/x4NiIwiDGUlZkzMm9G4cbt+NQw/8iwTx8gN2K+HmSIEESdQiGwxB5CSMTUhFQHNh+5mO0ObrwkzG30oCysuUYNuy4H1nDRyI7JZf2OVj7NXad/RIiZ0ZuakQxzRqbAk4Nw6LncV/pdeRu+R5aec8Kqj2I/dLpIg7oK6+88jL5bzGb0eE7AZaR8R8THoNBMsDp9eCjA39GQPZA5KT+DXMsD3egl9qpvNRC6mIpqnKZSaHeRDQqJs9EM5p0VswumIM9dX/D50feof0K0iZgWnYx9Qt9gQCMYiwmZE1EUoKI/961Cq9ue7Z/zv+ckY0tv5pLn7/ZvedbaIqmM8VAMseAI3aHsN5ms3kWLlh466i00alG0QS7sxc/yboLX50qw7vf/wEVLTuQGpeKaMTXb1tkLQiHy4M0ay7q7McQlAMU7A8TMe4+iDyH2wsfwLCYkVSRfFezhXKtTxqI564TDEiJT8Lhhh1o7GhF/jDiCIiQzJFXPb9cec9dzc3NHUaDgR7sIAtYWlp6465du/aS5+fKHsZXZ/6OEckJSLLGI9YQB1nWBqV3CQk8j8bOBsTpM5BkNcEZ6AbL/DAo4obVdZ/Gmrlvojjjdmw5Uoa/H/oDEq0SzFIsFduBRKSB4zScqK+AWc7Hew9/BYvFiLJPysqWLlm6dGBfru+BiGFtbe0FhmGUkpKSmRa9BfurP0NaUhpMQyzSL1qqCqspFkG1FyElCB0fEU+HrxO9PqKlnHAHe+EN9kJjNBhEM421PMFe5KdORmnWSvx1zwZ8dnwjEq0G4j7D5umg40ifvuLyO2B32tDr6sHMcfNRnDcHLqfTPX369BtVRQ0P3BMfBcRu3LhxrqIow10up83r9YQnZP1EeHjmH/HmnqcwJj0vEmddgYi/aNSZ6b0hysPpsyNv2FSkxY2hb+QJV8JKAGfbD6PT0wirIQk8xyFGl4IN2x7Fedse5KWNRSAoY3R8AVJjM+i4gflxonx8AR94zYBfkLdLLLBt/1ffsAzru0wKyJ8PP/xw47Jly37bV+nxuGWTyUwBv/jpL7Gr+mNcnz0VGnO5EhgkIiyHtp46ZMdNwguLyi5rd3p78MSnt0LlQ4g1JMHlc0FDGLFGK1odjVg28WncWrj8qmsMpFAo5AkGg4433njjxSeffPLt/n2QP3l5eVMHdvZ6fe2HDh86Qp5/u+AVFI2YjbMXTgLqlRMyoK5/EIzC4+dTnxqyPcZoxeKix9DjsUHRZBh0EkySBUE5BIR4jEueOuS4js4OXGitR1dnN8Ihub9eFEWT2WxOW7NmzV/XrVv36CBQXV1dgYGTWCyW2CV3Llm8efPmTwySEeuWbsYoSwHONFTQrC0zxNtWluHQ6WzGmMTJyE4df0XgJeN+hnjdCLj8diqWWjTxr4Q0uLy9g/ra7F2Y/6spmHFfDsr+8RFqzzXgf7Z8igd+ef9nVVVVnQP7rl279tWioqK8flAMyboPIL1eb3a5XL5ly5YtOXr0yHGdqMOf7v0S00bNx8maY3C6nVTmMeCjBpWREQ4ouLVg5RUBgb5P5rBg/C/R3dNOc3h9FMm+DhaD97e9hsNN5XhpzZt4ctUzyC3KxH+tf/Huv256e/GqVb9+9dK58/Pzp2JQ4HMJjRkzJpvUFN9wQ/F3e/fuJQ7rC3e9i3tu+B26uu1oaK2FpjA0tCFGlXBp2uh5mJRdMmiiQ8f2oarm3KC62yYuR/6w6bB7OyiwK6XkC8dOwTcvH8SC6cvQ0dPWdPsd86dWnjj/UXp6unjnnf8xbmBfEkns2bPn2FVBhUKRgCgcCgdnlJSUbPrrpnfJ7xWzHsfLd29FuqUAR88dRlNnE42Z3E435uQNMhfYeeArLHr2J1j6QjGaWhovNjDALQW/QJe9LeKJkzxfWKaiPZBmT1qIwpypCIWC6OnpcT/+67V3nD595pv6+vrO++677+d9XVtbWz0FBQUPNDU1newfvn379h3aJVRUVDTpUqCPr358jd1ud/T1/Mf+Tdrjf1usTXyS136zab6myEr/JC3tF7T5a/K1RX8epc1+0ao9+IeFmsfj7m/3Bbzar9+5WbvzjRxt8es5WsGvGK288vtLt3FNdPDgwZqB+7wip4aijS9t/GNWdlbel199sZ0031F8P15a/ikenfk6Vs54Bix3cbr6lip0+S/AYoiD1ZqAJud5uDzO/na9zoClU55A44VWJBtysGrOS0hPGDPkuuS1bU+Pg/53uVyXtU+dOjVz8+bNrw56tTQUpyZMmNDPqSlTpmDx4sUwGo39Y+bNv21h2cdln1/tJFttjdq55grtXPNxzeHquqxdlTVt/4nd/b+DgfCg9uPHj7cVFRX9p8Vi+WlsbOzimJiYxXFxcUsKCwsffuaZZ74Ohwf3X79+/RNXBZWamko/d5s8eTI+//xzfPHFF3j77bdx8803DzqlsbljJrS1t3X+W3ITpZrq2ua339+0q+JkRfvA+ueee+6dqwgOU1FR0Tywv8PhaEQkNTM05ebmjgsEAnUrV66kn/P09PQQjYiMjIxB/SWdvtcaazUPrNu581uX0+lE8vBkC+EuicGIdnB73fQLz8zRmYPmWHHf8pX7vjuwY/v27ftRgOS++ttuu23c+vXryYeSg/pbLBbMnj17ZlZWVtzAepfLRTUNBSUIwmXgtm3b9ondbj9FtJPP52M4jmNJNnfixIn1sbGxn65fv/4TcjplZWWfSBJJkkfo22+/rZozZ86yqLOcAgYmniPfuECTZTmgk0TDmdOVr2ZlZVn7xjyy6rE7CCjjQPkmGapJk6acP39+/7Fjx04JgkASr8RP1a6//vqs5OTkWZfuecOGDVujLyuBI0eOlP9YkbFYLPqcnJzRl9ZnZmZe/gXXJTRjxow1l47LyMgo2Lx582XX4Frp5Zdf3k1SgP0rzZw588Hy8nIbYZ/dbtdsNtuQxe12a9XV1b7Vq1f/jbAtLS0t87PPPjtFxrS1tSkPP/zwewOcjKuR6dlnn91CxgSDQW3fvn0NcXFxo8m3uFu3bq0m8/X09Ay5B9LW29ur1dfXB3bs2NHy/PPPfztr1qwXAQzvW6//ewyiGePj49NkOWJshtgQI4oibyPfnAK7iH2O1mdZLJbJoVAoEAgEdhJn/BpAEYqXJKnUarXGtLe3HwZwJlpfYLFY8liWZSJ5/ks2wTAk1c329PR4NE0j/l8T8Xn7OwD4f7E4vwR3Bt0zAAAAAElFTkSuQmCC";
+			this.bottomImageUrl = "https://www.baidu.com/img/PCtm_d9c8750bed0b3c7d089fa7d55720d6cf.png"
+
+			if (this.applyToTerrain) {
+				this.applyToerrain = false;
+			} else {
+				this.applyToTerrain = true;
+			}
+			console.log(1)
+		}
+
+		$("#wireFrame").click(function () {
+			// earth.terrainEffect.wireFrame = !earth.terrainEffect.wireFrame;
+			viewer.cesiumInspector.viewModel.wireframe = !viewer.cesiumInspector.viewModel.wireframe;
+		})
+		// Sandcastle.finishedLoading();
+	}
+
+	// 1 XE.ready()会加载Cesium.js等其他资源，注意ready()返回一个Promise对象。
+	// XE.ready().then(startup); // 不加载插件时，可以直接这样使用
+	XE.ready().then(() => {
+		loadingCount = loadingCount + Math.random() * 10 | 0;
+		// layui.element.progress('demo', loadingCount + '%');
+		// 加载标绘插件
+		const p1 = XE.HTML.loadJS('./viewerCesiumNavigationMixin.js');
+		return Promise.all([p1]);
+	}).then(() => {
+		startup();
+		var helper = new Cesium.EventHelper();
+		helper.add(viewer.scene.globe.tileLoadProgressEvent, function (event) {
+			// console.log("每次加载矢量切片都会进入这个回调");
+			if (event == 0) {
+				// console.log("这个是加载最后一个矢量切片的回调");
+				// $(".loading .progress").animate({
+				// 	width: "100%"
+				// }, 100, function () {
+				// 	$(".loading").fadeOut();
+				// })
+				loadingCount = loadingCount + Math.random() * 10 | 0;
+				layui.element.progress('demo', '100%');
+				n = 100;
+				$("#loadingDiv").hide();
+				Sandcastle.finishedLoading();
+			}
+		});
+		viewer.timeline.container.style.visibility = 'hidden';
+		viewer.animation.container.style.visibility = 'hidden';
+		// viewer.extend(Cesium.viewerCesiumInspectorMixin);
+		// console.log(Cesium.viewerCesiumInspectorMixin)
+		// console.log(Cesium.viewerCesiumNavigationMixin);
+		// var options = {};
+		// options.enableCompassOuterRing = true; //指南针外环
+		// options.enableZoomControls = true; //缩放
+		// viewer.extend(Cesium.viewerCesiumNavigationMixin, options);
+		// console.log(viewer);
+
+		var cesiumInspectorContainer = document.createElement("div");
+		// cesiumInspectorContainer.className = "cesium-viewer-cesiumInspectorContainer";
+		// viewer.container.appendChild(cesiumInspectorContainer);
+		// 	var cesiumInspector = new Cesium.CesiumInspector(
+		//   cesiumInspectorContainer,
+		//   viewer.scene
+		// );
+
+		// console.log(cesiumInspector)
+		// Object.defineProperties(viewer, {
+		//   cesiumInspector: {
+		//     get: function () {
+		//       return cesiumInspector;
+		//     },
+		//   },
+		// });
+		addMap();
+	});
+</script>
+<script src="./JS/dig.js"></script>
+<script src="./JS/BaiduImageryProvider.js"></script>
+<!-- <script src="./JS/mouseControl.js"></script> -->
+<script src="./JS/transformCoordinate.js"></script>
+<script src="./JS/AddMap.js"> </script>
+<script src="./JS/searchEvent.js"> </script>
+<script src="./JS/rotation.js"></script>
+<script src="./JS/layers.js"></script>
+<script src="./JS/SkyBoxOnGround.js"></script>
+<script src="./JS/weather.js"></script>
+<script src="./JS/ShowLocation.js"></script>
+<script src="./layui/layui.all.js"></script>
+<script src="./JS/turf/turf.min.js"></script>
+<script src="./JS/kml/loadKML.js"></script>
+<script src="./JS/kml/loadbeibei.js"></script>
+<!-- <script src="./JS/water/WaterMaterialProperty.js"></script> -->
+<script src="./JS/water/geojsonWater.js"></script>
+<script src="./JS/water/positions.js"></script>
+<script src="./JS/water/partWater.js"></script>
+<script src="./JS/water/localWater.js"></script>
+<script src="./JS/water/globeWater.js"></script>
+<!-- <script src="./JS/water/reflectionWater.js"></script> -->
+<script src="./JS/water/snow.js"></script>
+<script src="./JS/draw/algorithm.js"></script>
+<script src="./JS/draw/plotUtil.js"></script>
+<script src="./JS/draw/ChangeColor.js"></script>
+<script src="./JS/draw/GlobeTooltip.js"></script>
+<script src="./JS/draw/GlobePolygonDrawer.js"></script>
+<script src="./JS/draw/GlobePolylineDrawer.js"></script>
+<script src="./JS/draw/GlobeRectangleDrawer.js"></script>
+<script src="./JS/draw/GlobeCircleDrawer.js"></script>
+<script src="./JS/draw/GlobePointDrawer.js"></script>
+<script src="./JS/draw/GlobeTracker.js"></script>
+<script src="./JS/draw/GlobeBufferLineDrawer.js"></script>
+<script src="./JS/draw/moveShape.js"></script>
+<script src="./JS/draw/draw.js"></script>
+<script src="./JS/draw/pullPolygon.js"></script>
+<script src="./JS/draw/PlotAttackArrowDrawer.js"></script>
+<script src="./JS/draw/PlotPincerArrowDrawer.js"></script>
+<script src="./JS/draw/PlotStraightArrowDrawer.js"></script>
+<script src="./JS/model/multModels.js"></script>
+<script src="./JS/model/listenModel.js"></script>
+<script src="./JS/model/Add3DModel.js"></script>
+<!-- <script src="./JS/model/scale.js"></script> -->
+<script src="./JS/model/globeModel.js"></script>
+<script src="./JS/draw/GlobeUninterruptedPointDrawer.js"></script>
+<script src="./JS/draw/GlobeMoveShape.js"></script>
+<script src="./paigusu.min.js"></script>
+<script src="./JS/floodlight.js"></script>
+<script src="./JS/flyAndMove.js"></script>
+<script src="./JS/getTerrainHeight.js"></script>
+<!-- <script src="./JS/getClickPosition.js"></script> -->
+<script src="./JS/fire.js"></script>
+<script src="./JS/radarScan.js"></script>
+<script src="./JS/circleScan.js"></script>
+<script src="./JS/DynamicWall.js"></script>
+<script src="./JS/panoramicView.js"></script>
+<script src="./JS/bound.js"></script>
+<script src="./JS/cluster.js"></script>
+<script src="./JS/heatmap.js"></script>
+<script src="./JS/heatmap_demo.js"></script>
+<script src="./JS/routePlanning.js"></script>
+<script src="./JS/widget/controlWidget.js"></script>
+<script type="text/javascript">
+	var layer;
+	layui.use('layer', function () {
+		layer = layui.layer;
+	});
+
+	const draw = {
+		shape: [], // 封装所有的实体
+		layerId: "globeDrawerDemoLayer", //图层名称
+		shapeDic: {}, //全局变量，用来记录shape坐标信息
+		flag: 0, //编辑或删除标识,1为编辑，2为删除
+	}
+	const colorViewModel = {
+		color: "黄色",
+		colors: ["白色", "红色", "绿色", "蓝色", "黄色", "灰色"],
+		alpha: 0.7,
+	}
+	// 将viewModel成员转换为knockout可观察对象。
+	Cesium.knockout.track(colorViewModel);
+	// 控制模型面板
+	var modelClickStatus = false;
+
+	$('#paigusu').paigusu({
+		color: "228,235,41,0.8", //初始色  支持两种配置方案
+		// recommend : '25,38,220,1|25,38,220,1|46,49,104,1|25,38,220,1|46,49,104,1|25,38,220,1|46,49,104,1|25,38,220,1|46,49,104,1|25,38,220,1|46,49,104,1'
+		//                ,color : '42,0,255'
+	}, function (event, obj) {
+		console.log(event);
+		console.log(obj);
+		$(event).data('color', "rgba(" + obj.rgba + ")"); // 用于changeColor.js使用，格式 rgba(25,38,220,0.1);
+		$(event).data('color2', obj.rgba); // 用于paigusu.min.js使用，获取当前颜色 格式 25,38,220,1
+		$(event).css('background', "rgba(" + obj.rgb + ")"); // 设置页面盒子的背景颜色
+		// color = "rgba("+obj.rgba+")";
+	});
+</script>
+<script src="./JS/init.js"></script>
+<script>
+	var n = 0;
+	layui.use('element', function () {
+		var $ = layui.jquery,
+			element = layui.element; //Tab的切换功能，切换事件监听等，需要依赖element模块
+
+		//触发事件
+		var active = {
+			setPercent: function () {
+				//设置50%进度
+				element.progress('demo', '50%')
+			},
+			loading: function (othis) {
+				var DISABLED = 'layui-btn-disabled';
+				if (othis.hasClass(DISABLED)) return;
+
+				//模拟loading
+
+				var timer = setInterval(function () {
+					n = n + Math.random() * 10 | 0;
+					if (n >= 100) {
+						n = 100;
+						clearInterval(timer);
+						othis.removeClass(DISABLED);
+					} else
+					if (n > 93) {
+						n = 93;
+						clearInterval(timer);
+						othis.removeClass(DISABLED);
+					}
+					element.progress('demo', n + '%');
+				}, 300 + Math.random() * 1000);
+
+				othis.addClass(DISABLED);
+			}
+		};
+
+		// $('.site-demo-active').on('click', function () {
+		var _this = $('startLoading');
+		// console.log(_this);
+		var othis = _this,
+			type = _this.data('type');
+		// active[type] ? active[type].call(_this, othis) : '';
+		// });
+		active.loading(othis);
+	});
+</script>
+
+</html>

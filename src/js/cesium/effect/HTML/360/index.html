@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0,shrink-to-fit=no">
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta content="black" name="apple-mobile-web-app-status-bar-style">
+    <meta content="telephone=no" name="format-detection">
+    <meta name="msapplication-tap-highlight" content="no">
+    <style>
+        ul li{
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+<h1>重力感应3D效果</h1>
+<div>
+    <ul id="nav">
+      
+    </ul>
+</div>
+<script type="text/javascript" src="json.js"></script>
+<script type="text/javascript">
+navObj();
+function navObj(){
+    var data=json.content[0].Photos;
+    var nav=document.getElementById("nav");
+    for (var i = 0; i < data.length; i++) {
+        var li=document.createElement("li");
+        var a=document.createElement("a");
+        a.data=data[i].name;
+        a.target="_blank";
+        a.href="Sphere.html?"+encodeURI(data[i].Name);
+        a.innerHTML=data[i].Name
+        li.appendChild(a);
+        nav.appendChild(li);
+    }
+}
+function navEvent(){
+    try{
+        document.getElementsByClassName("check")[0].classList.remove("check");
+    }catch(e){
+
+    }
+    this.classList.add("check");
+    getImg(this.data)
+}
+</script>
+<!--<script src="js/three.min.js"></script>-->
+<!--重力感应-->
+<!--<script src="js/orienter.js"></script>-->
+<!--动画效果-->
+<!--<script src="js/tween.js"></script>-->
+<!--性能插件stats实现性能监听-->
+<!--<script src="https://cdn.bootcss.com/stats.js/r16/Stats.min.js"></script>-->
+<!-- 鼠标控制 （OrbitControls.js） -->
+<!--<script src="js/OrbitControls.js"></script>-->
+<!-- 控制陀螺仪开关 （DeviceOrientationControls.js） -->
+<!--<script src="js/DeviceOrientationControls.js"></script>-->
+</body>
+</html>

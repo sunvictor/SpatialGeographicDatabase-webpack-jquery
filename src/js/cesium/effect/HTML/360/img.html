@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title></title>
+<meta charset="utf-8">
+<style>
+html,body{height: 100%;margin:0px;padding: 0px;}
+.imgB{}
+img{display: block;float: left;}
+.nav{position: fixed;top: 0px;left: 4px;}
+.nav a{margin: 6px;display: block; width: auto;cursor: pointer;}
+.nav a.check{color: #f00;}
+.nav a:hover{color: #f00;}
+</style>
+</head>
+<body>
+<div class="nav" id="nav">
+</div>
+<div id="imgB" class="imgB"></div>
+<div id="canvasB" class="canvasB"></div>
+<script type="text/javascript" src="json.js"></script>
+</body>
+<script type="text/javascript">
+navObj();
+function navObj(){
+	var data=json.content[0].Photos;
+	var nav=document.getElementById("nav");
+	for (var i = 0; i < data.length; i++) {
+		var a=document.createElement("a");
+		a.data=data[i];
+		a.innerHTML=data[i].Name
+		a.onclick=navEvent;
+		nav.appendChild(a);
+	}
+	//console.log(data);
+}
+function navEvent(){
+	try{
+		document.getElementsByClassName("check")[0].classList.remove("check");
+	}catch(e){
+
+	}
+	this.classList.add("check");
+	getImg(this.data)
+}
+
+function getImg(data){
+	var ylng=4,xlng=8; 
+	var imgB=document.getElementById("imgB");
+	imgB.innerHTML="";
+	imgB.style.width=xlng*512+"px";
+	imgB.style.height=ylng*512+"px";
+	imgB.style.display="none";
+
+	var canvas = document.createElement('canvas');
+	var ctx = canvas.getContext('2d');
+	canvas.width = xlng*512;
+	canvas.height= ylng*512;
+	for(var y=0;y<ylng;y++){
+		for (var x = 0; x < xlng; x++) {
+			var pos=y+"_"+x;
+			var src="https://mapsv1.bdimg.com/?qt=pdata&sid="+data.PID+"&pos="+pos+"&z=4&auth=PZCxD5LCM1Xyy3Oa7WGe3W0Pb8QBJxD%40uxHNLzxBNVHtxjhNwzWWv1GgvPUDZYOYIZuVt1cv3uVtGccZcuVtPWv3Guxt58Jv7uUvhgMZSguxzBEHLNRTVtcEWe1GDdw8E62qvUudGD%3DC%40ZPuVteuVtegvcguxHNLzxBLTVtnrRR1aDrZZWuV&udt=20191128";
+			var img=document.createElement("img");
+			img.src=src;
+			let json={}
+	         	json.x=512*x;
+	         	json.y=512*y;
+	         	img.data=json;
+			//imgB.appendChild(img);
+			img.onload=function(){
+				ctx.drawImage(this,this.data.x,this.data.y,512,512);
+			}
+		}
+	}
+	var canvasB=document.getElementById("canvasB")
+	canvasB.innerHTML="";
+	canvasB.appendChild(canvas);
+}
+</script>
+</html>
