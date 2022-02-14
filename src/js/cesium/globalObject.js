@@ -17,6 +17,7 @@ import PanoramicView from "@/js/cesium/effect/PanoramicView";
 import DynamicWall from "./effect/DynamicWall";
 import PlottingScale from "./scene/PlottingScale";
 import HomeView from "./scene/HomeView";
+import DblClickRotate from "@/js/cesium/scene/DblClickRotate";
 
 let _viewer;
 export const go = {}; // 封装所有的类对象
@@ -50,6 +51,11 @@ function createObjs(viewer) {
     go.pc = new PanoramicView(viewer);
     go.plottingScale = new PlottingScale(viewer);
     go.hv = new HomeView(viewer);
+    go.dblc = new DblClickRotate(viewer);
+}
+
+function publicEvents(viewer){
+
 }
 
 export function getViewer() {

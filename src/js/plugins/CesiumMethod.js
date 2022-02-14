@@ -11,7 +11,8 @@ class CesiumMethod {
         let cartographic = Cesium.Cartographic.fromCartesian(cartesian)
         let lon = Cesium.Math.toDegrees(cartographic.longitude)
         let lat = Cesium.Math.toDegrees(cartographic.latitude)
-        return [lon, lat]
+        let height = cartographic.height
+        return [lon, lat, height]
     }
 
     /**
@@ -83,7 +84,34 @@ class CesiumMethod {
             console.log(error);
         });
     }
+
+    /* 获取camera高度  */
+    getCameraHeight() {
+        if (viewer) {
+            let scene = viewer.scene;
+            let ellipsoid = scene.globe.ellipsoid;
+            let height = ellipsoid.cartesianToCartographic(viewer.camera.position).height;
+            return height;
+        }
+        return null;
+    }
+
+    /* 获取camera中心点坐标 */
+    getCenterPosition() {
+        let result = viewer.camera.pickEllipsoid(new Cesium.Cartesian2(viewer.canvas.clientWidth / 2, viewer.canvas
+            .clientHeight / 2));
+        let curPosition = Cesium.Ellipsoid.WGS84.cartesianToCartographic(result);
+        let lon = curPosition.longitude * 180 / Math.PI;
+        let lat = curPosition.latitude * 180 / Math.PI;
+        let height = viewer.scene.globe.ellipsoid.cartesianToCartographic(viewer.camera.position).height;
+        return {
+            lon: lon,
+            lat: lat,
+            height: height
+        };
+    }
 }
 
-const cm = new CesiumMethod();
+const
+    cm = new CesiumMethod();
 export default cm;

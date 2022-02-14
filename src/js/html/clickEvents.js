@@ -4,6 +4,7 @@ import drawPoint from "../cesium/entity/plot/edit/GlobeUninterruptedBillboardDra
 import $ from "jquery";
 import RadarScan from "../cesium/effect/RadarScan";
 import CircleScan from "../cesium/effect/CircleScan";
+import Canvas2Image from "@/js/cesium/scene/Canvas2Image";
 
 $(".nav_btn").on('click', function () {
 
@@ -160,4 +161,19 @@ $("#plottingScale").on('click', function () {
 })
 $("#homeView").on('click', function () {
     go.hv.start();
+})
+$("#screenShot").on('click', function () {
+    let canvas = viewer.scene.canvas;
+
+    //只需要定义图片的宽度（高度计算得到）
+    let imageWidth = window.innerWidth;
+
+    //保存（下载）图片
+    Canvas2Image.saveAsImage(canvas, imageWidth, imageWidth * canvas.height / canvas.width, 'png');
+})
+$("#dblClickRotate").on('click', function () {
+    let enabled = $(this).data('enabled')
+    go.dblc.start(enabled);
+    $(this).data('enabled', !enabled)
+    go.bbi.bindImg("双击旋转", "dblClickRotate", !enabled)
 })

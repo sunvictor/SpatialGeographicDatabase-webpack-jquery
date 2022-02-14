@@ -1,3 +1,5 @@
+import $ from "jquery";
+
 export default class gykjAlert {
     options = null;
     viewModel = {};
@@ -10,7 +12,7 @@ export default class gykjAlert {
 
     initAlert(options) {
         let _this = this;
-        let alert = $("<div></div>");
+        let alert = $("<div class='gykj_alert'></div>");
         $(alert).css({
             "background-color": "rgba(57, 57, 57)",
             "position": "absolute",
@@ -40,6 +42,12 @@ export default class gykjAlert {
             alert.css({
                 left: x - 60 + "px",
             })
+        })
+        $(document.querySelector(".A")).off('click').on('click', function (e) {
+            let status = $(e.target).closest('.al_arrow').length; //在元素内点击返回1，不在返回0
+            if (!status) {
+                $('.gykj_alert').hide()
+            }
         })
     }
 }
