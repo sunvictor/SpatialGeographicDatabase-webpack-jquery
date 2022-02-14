@@ -14,6 +14,7 @@ import ModelControl from "@/js/cesium/model/ModelControl";
 import EarthRotation from "@/js/cesium/effect/EarthRotation";
 import DataSourceControl from "@/js/cesium/entity/kml/DataSourceControl";
 import PanoramicView from "@/js/cesium/effect/PanoramicView";
+import DynamicWall from "./effect/DynamicWall";
 let _viewer;
 export const go = {}; // 封装所有的类对象
 
@@ -38,6 +39,7 @@ function createObjs(viewer) {
     go.terrain = new TerrainControl(viewer);
     go.weather = new Weather(viewer);
     go.fl = new Floodlight(viewer);
+    go.dw = new DynamicWall(viewer);
     go.heatmap = new HeatMap(viewer);
     go.model = new ModelControl(viewer);
     go.er = new EarthRotation(viewer);

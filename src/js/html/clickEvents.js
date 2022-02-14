@@ -2,6 +2,8 @@ import {go} from "../cesium/globalObject"
 import drawPoint from "../cesium/entity/plot/edit/GlobeUninterruptedBillboardDrawer"
 // const $ = require("jQuery");
 import $ from "jquery";
+import RadarScan from "../cesium/effect/RadarScan";
+import CircleScan from "../cesium/effect/CircleScan";
 
 $(".nav_btn").on('click', function () {
 
@@ -99,4 +101,44 @@ $("#wireFrame").on('click', function () {
     go.bbi.bindImg("地形三角网", "wireFrame", !enabled) // 切换是否选中图片
     viewer.cesiumInspector.viewModel.wireframe = !enabled;
     $(this).data('enabled', !enabled)
+})
+$("#radar").on('click', function () {
+    let enabled = $(this).data('enabled');
+    if (!enabled) {
+        let center = Cesium.Cartesian3.fromDegrees(106.39194994, 29.84123831, 0);
+        let color = new Cesium.Color(1, 0.0, 0.0, 1);
+        let radar = new RadarScan(viewer);
+        $(this).data('data', radar);
+        radar.start(center, 1500, color, 3000);
+    } else {
+        let radar = $(this).data('data');
+        radar.clear();
+    }
+    $(this).data("enabled", !enabled)
+    go.bbi.bindImg("雷达", "radar", !enabled)
+})
+$("#proliferation").on('click', function () {
+    let enabled = $(this).data('enabled');
+    if (!enabled) {
+        let center = Cesium.Cartesian3.fromDegrees(106.39194994, 29.84123831, 0);
+        let color = new Cesium.Color(0, 1.0, 0.0, 1);
+        var circle = new CircleScan(viewer);
+        $(this).data('data', circle);
+        circle.start(center, 1500, color, 3000);
+    } else {
+        let circle = $(this).data('data');
+        circle.clear();
+    }
+    $(this).data("enabled", !enabled)
+    go.bbi.bindImg("扩散", "proliferation", !enabled)
+})
+$("#wall").on('click', function () {
+    let enabled = $(this).data('enabled');
+    if (!enabled) {
+        go.dw.start();
+    } else {
+        go.dw.clear();
+    }
+    $(this).data("enabled", !enabled)
+    go.bbi.bindImg("动态墙", "wall", !enabled)
 })

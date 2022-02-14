@@ -70,6 +70,19 @@ class CesiumMethod {
         let area = turf.area(polygon);
         return area;
     }
+
+    getTerrainHeight(positions, callback) {
+        let terrain = viewer.scene.terrainProvider;
+        let promise = Cesium.sampleTerrainMostDetailed(terrain, positions);
+        // if (terrainType == "old") {
+        //     promise = Cesium.sampleTerrain(terrain, 17, positions);
+        // }
+        Cesium.when(promise, function (updatedPositions) {
+            callback(updatedPositions);
+        }).otherwise(function (error) {
+            console.log(error);
+        });
+    }
 }
 
 const cm = new CesiumMethod();
