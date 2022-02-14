@@ -78,6 +78,9 @@ export default class DataSourceControl {
         if (options.type == "kml") {
             data = Cesium.KmlDataSource.load(op.url, op);
         }
+        if (options.type == "geojson") {
+            data = Cesium.GeoJsonDataSource.load(op.url, op);
+        }
         if (!data) {
             return;
         }
