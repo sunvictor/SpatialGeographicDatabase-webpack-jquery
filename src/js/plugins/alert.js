@@ -33,6 +33,7 @@ export default class gykjAlert {
     }
 
     setPosition(btn, alert) {
+        console.log(btn)
         btn.off('click').on('click', function (e) {
             let x = e.pageX || (e.clientX + scrollX);
             alert.css('display') === "none" ? alert.show() : alert.hide();

@@ -142,3 +142,22 @@ $("#wall").on('click', function () {
     $(this).data("enabled", !enabled)
     go.bbi.bindImg("动态墙", "wall", !enabled)
 })
+$("#navigator").on('click', function () {
+    let enabled = $(this).data('enabled')
+    go.bbi.bindImg("指北针", "navigator", !enabled)
+    _earth.camera.navigator.showCompass = !enabled
+    $(this).data("enabled", !enabled)
+})
+$("#plottingScale").on('click', function () {
+    let enabled = $(this).data('enabled')
+    if (!enabled) {
+        $("#customerPlottingScale").show();
+    } else {
+        $("#customerPlottingScale").hide();
+    }
+    go.bbi.bindImg("指北针", "plottingScale", !enabled)
+    $(this).data("enabled", !enabled)
+})
+$("#homeView").on('click', function () {
+    go.hv.start();
+})

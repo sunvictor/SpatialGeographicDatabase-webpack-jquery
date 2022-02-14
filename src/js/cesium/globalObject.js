@@ -15,6 +15,9 @@ import EarthRotation from "@/js/cesium/effect/EarthRotation";
 import DataSourceControl from "@/js/cesium/entity/kml/DataSourceControl";
 import PanoramicView from "@/js/cesium/effect/PanoramicView";
 import DynamicWall from "./effect/DynamicWall";
+import PlottingScale from "./scene/PlottingScale";
+import HomeView from "./scene/HomeView";
+
 let _viewer;
 export const go = {}; // 封装所有的类对象
 
@@ -45,6 +48,8 @@ function createObjs(viewer) {
     go.er = new EarthRotation(viewer);
     go.ds = new DataSourceControl(viewer);
     go.pc = new PanoramicView(viewer);
+    go.plottingScale = new PlottingScale(viewer);
+    go.hv = new HomeView(viewer);
 }
 
 export function getViewer() {

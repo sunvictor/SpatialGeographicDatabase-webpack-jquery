@@ -31,6 +31,7 @@
                         <ul class="nav">
                             <li class="selected">功能</li>
                             <li>视图</li>
+                            <li>场景</li>
                             <li>天气</li>
                             <li>飞行移动</li>
                             <li>效果</li>
@@ -99,6 +100,23 @@
                                             <div><img class="icon" src="./img/navImg/fullScreen.png"></div>
                                             全屏
                                         </div>
+                                    </div>
+                                </div>
+                                <div class="list">
+                                    <div class="allFrame nav_btn" id="navigator">
+                                        <div><img class="icon" src="./img/icon/navigator.png">
+                                        </div>
+                                        指北针
+                                    </div>
+                                    <div class="allFrame nav_btn" id="plottingScale">
+                                        <div><img class="icon" src="./img/icon/plottingScale.png">
+                                        </div>
+                                        比例尺
+                                    </div>
+                                    <div class="allFrame nav_btn alert_arrow" id="homeView">
+                                        <div><img class="icon" src="./img/icon/home.png">
+                                        </div>
+                                        初始视图
                                     </div>
                                 </div>
                                 <div class="list">
@@ -239,6 +257,15 @@
             </div>
         </div>
         <div id="panelContent"></div>
+    </div>
+</div>
+<div id="customerPlottingScale" style="display: none;">
+    <div class="distance-legend" data-bind="visible: distanceLabel &amp;&amp; barWidth"
+         style="right: 18px; bottom: 57px;">
+        <div class="distance-legend-label" id="customerPlottingScaleText">1:1</div>
+        <div class="distance-legend-scale-bar"
+             data-bind="style: { width: barWidth + 'px', left: (5 + (125 - barWidth) / 2) + 'px' }"
+             style="width: 95px; left: 20px;"></div>
     </div>
 </div>
 </body>

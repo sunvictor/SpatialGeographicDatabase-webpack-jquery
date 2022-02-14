@@ -27,6 +27,9 @@ cocoMessage.config({
 // require('cesium/Widgets/widgets.css');
 if (typeof XE !== 'undefined') {
     XE.ready().then(function () {
+        const p1 = XE.HTML.loadJS('./js/plugins/viewerCesiumNavigationMixin.js');
+        return Promise.all([p1]);
+    }).then(() => {
         startUpEarth();
         skyBoxOnGround();
     })
