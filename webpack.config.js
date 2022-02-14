@@ -139,14 +139,16 @@ module.exports = {
                 // { from: path.join(cesiumSource, 'Widgets'), to: 'Widgets' },
                 {
                     from: './node_modules/cesium/Build/CesiumUnminified', // 调试时，将Cesium换成CesiumUnminified
-                    to: 'js/Cesium',
+                    to: 'js/source/Cesium',
                     toType: 'dir'
                 },
-                {from: './node_modules/earthsdk/dist/XbsjCesium', to: 'js/earthsdk/XbsjCesium', toType: 'dir'},
-                {from: './node_modules/earthsdk/dist/XbsjEarth', to: 'js/earthsdk/XbsjEarth', toType: 'dir'},
+                {from: './node_modules/earthsdk/dist/XbsjCesium', to: 'js/source/earthsdk/XbsjCesium', toType: 'dir'},
+                {from: './node_modules/earthsdk/dist/XbsjEarth', to: 'js/source/earthsdk/XbsjEarth', toType: 'dir'},
                 {from: './node_modules/bootstrap/dist/css', to: 'css/boostrap/dist/css', toType: 'dir'},
                 // {from: './src/css', to: 'css/css', toType: 'dir'},
                 {from: './src/img', to: 'img', toType: 'dir'},
+                {from: './src/js/plugins', to: 'js/plugins', toType: 'dir'},
+                {from: './src/js/cesium', to: 'js/cesium', toType: 'dir'},
                 // {from: './src/js/scripts/jquery', to: 'js/jquery', toType: 'dir'},
                 // {from: './node_modules/jquery', to: 'js/jquery', toType: 'dir'},
             ]
