@@ -126,6 +126,7 @@ export default class MeasureTools {
         if (_this.pointEntity) {
             _this.viewer.entities.remove(_this.pointEntity);
         }
+        console.log(1)
         _this.distance = 0;
         // _this.tempEntityCollection = [];
         _this.viewer.screenSpaceEventHandler.removeInputAction(Cesium.ScreenSpaceEventType.LEFT_CLICK);
@@ -133,17 +134,18 @@ export default class MeasureTools {
         _this.viewer.screenSpaceEventHandler.removeInputAction(Cesium.ScreenSpaceEventType.RIGHT_CLICK);
     }
 
-    clearTempEntity(){
+    clearTempEntity() {
         let _this = this;
         for (let i = 0; i < _this.tempEntityCollection.length; i++) {
             _this.viewer.entities.remove(_this.tempEntityCollection[i]);
         }
         _this.tempEntityCollection = [];
     }
-    closeOtherFunc(nowFunc){
+
+    closeOtherFunc(nowFunc) {
         let _this = this;
         for (const viewModelKey in this.viewModel) {
-            if (viewModelKey !== nowFunc){
+            if (viewModelKey !== nowFunc) {
                 this.viewModel[viewModelKey] = false;
             }
         }
@@ -651,8 +653,8 @@ export default class MeasureTools {
         let polygon = null;
         let handler = _this.viewer.screenSpaceEventHandler;
         let AllEnities = [];
+        let tempAreaLabel = null;
         handler.setInputAction(function (movement) {
-
             //新增部分
             let position1;
             let cartographic;
@@ -666,10 +668,6 @@ export default class MeasureTools {
                 let height = _this.viewer.scene.globe.getHeight(cartographic);
                 let point = Cesium.Cartesian3.fromDegrees(cartographic.longitude / Math.PI * 180, cartographic.latitude / Math.PI * 180, height);
                 if (isDraw) {
-                    // tooltip.style.left = movement.endPosition.x + 10 + "px";
-                    // tooltip.style.top = movement.endPosition.y + 20 + "px";
-                    // tooltip.style.display = "block";
-
                     if (polygonPath.length < 2) {
                         return;
                     }
@@ -678,6 +676,18 @@ export default class MeasureTools {
                         polygon = new CreatePolygon(polygonPath, Cesium);
                         AllEnities.push(polygon);
                     } else {
+                        if (tempAreaLabel) {
+                            _this.viewer.entities.remove(tempAreaLabel)
+                        }
+                        if (polygonPath.length >= 4) {
+                            let coordinates = cm.cartesiansToCoordinates(polygonPath);
+                            let first = cm.cartesianToCoordinate(polygonPath[0]);
+                            coordinates.push(first)
+                            tempAreaLabel = createAreaLabel(coordinates)
+                            AllEnities.push(tempAreaLabel);
+                            _this.entityCollection.push(tempAreaLabel);
+                            _this.tempEntityCollection.push(tempAreaLabel);
+                        }
                         polygon.path.pop();
                         polygon.path.push(point);
                         AllEnities.push(polygon);
@@ -705,20 +715,6 @@ export default class MeasureTools {
                 let point = Cesium.Cartesian3.fromDegrees(cartographic.longitude / Math.PI * 180, cartographic.latitude / Math.PI * 180, height);
                 if (isDraw) {
                     polygonPath.push(point);
-                    // let temp = _this.viewer.entities.add({
-                    //     position: point,
-                    //     point: {
-                    //         show: true,
-                    //         color: Cesium.Color.SKYBLUE,
-                    //         pixelSize: 3,
-                    //         outlineColor: Cesium.Color.YELLOW,
-                    //         outlineWidth: 1,
-                    //         eyeOffset: new Cesium.ConstantProperty(new Cesium.Cartesian3(0, 0, 0)),
-                    //         heightReference: Cesium.HeightReference.CLAMP_TO_GROUND, //绝对贴地
-                    //         clampToGround: true,
-                    //         disableDepthTestDistance: Number.POSITIVE_INFINITY, //元素在正上方
-                    //     },
-                    // }, false);
                     let temp = _this.addPoint(point)
                     // let temp = _this.addPoint(point);
                     AllEnities.push(temp);
@@ -730,8 +726,6 @@ export default class MeasureTools {
         }, Cesium.ScreenSpaceEventType.LEFT_CLICK);
         handler.setInputAction(function () {
             handler.removeInputAction(Cesium.ScreenSpaceEventType.LEFT_CLICK);
-            // handler.removeInputAction(Cesium.ScreenSpaceEventType.LEFT_DOUBLE_CLICK);
-
             if (polygonPath.length >= 2) {
                 let coords = [];
                 for (let i = 0; i < polygon.path.length; i++) {
@@ -742,47 +736,13 @@ export default class MeasureTools {
                     coords.push([lon, lat])
                 }
                 coords.push(coords[0])
-                let area = cm.calcPolygonArea(coords).toFixed(2);
-                let label = String(countAreaInCartesian3(polygon.path));
-                area = area.substr(0, area.indexOf(".", 0));
-                let text;
-                if (area.length < 6)
-                    text = area + "平方米";
-                else {
-                    area = String(area / 1000000);
-                    area = area.substr(0, area.indexOf(".", 0) + 3);
-                    text = area + "平方公里"
-                }
-                let res = cm.countPolygonCenter(polygon.path);
-                let textArea = text;
-                // let lastpoint = _this.viewer.entities.add({
-                //     name: '多边形面积',
-                //     // position: polygon.path[polygon.path.length - 1],
-                //     position: res.cart,
-                //     // point: {
-                //     //     pixelSize: 5,
-                //     //     color: Cesium.Color.RED,
-                //     //     outlineColor: Cesium.Color.WHITE,
-                //     //     outlineWidth: 2,
-                //     //     heightReference: Cesium.HeightReference.CLAMP_TO_GROUND
-                //     // },
-                //     label: {
-                //         text: textArea,
-                //         font: '18px sans-serif',
-                //         fillColor: Cesium.Color.GOLD,
-                //         style: Cesium.LabelStyle.FILL_AND_OUTLINE,
-                //         outlineWidth: 2,
-                //         verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
-                //         pixelOffset: new Cesium.Cartesian2(20, -20)
-                //     }
-                // });
-                let lastpoint = _this.addLabel(res.cart, textArea);
+                let lastpoint = createAreaLabel(coords);
                 AllEnities.push(lastpoint);
                 _this.entityCollection.push(lastpoint);
                 _this.tempEntityCollection.push(lastpoint);
 
             }
-
+            _this.viewer.entities.remove(tempAreaLabel)
             _this.viewer.trackedEntity = undefined;
             isDraw = false;
             // tooltip.style.display = 'none';
@@ -790,6 +750,25 @@ export default class MeasureTools {
             _this.viewModel.measureAreaEnabled = false;
 
         }, Cesium.ScreenSpaceEventType.RIGHT_CLICK);
+
+        let createAreaLabel = function (coords) {
+            let area = cm.calcPolygonArea(coords).toFixed(2);
+            console.log(coords)
+            let label = String(countAreaInCartesian3(polygon.path));
+            area = area.substr(0, area.indexOf(".", 0));
+            let text;
+            if (area.length < 6)
+                text = area + "平方米";
+            else {
+                area = String(area / 1000000);
+                area = area.substr(0, area.indexOf(".", 0) + 3);
+                text = area + "平方公里"
+            }
+            let res = cm.countPolygonCenter(polygon.path);
+            let textArea = text;
+            let lastpoint = _this.addLabel(res.cart, textArea);
+            return lastpoint;
+        }
 
         let CreatePolygon = (function () {
             function _(positions, cesium) {
