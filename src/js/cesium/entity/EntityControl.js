@@ -117,6 +117,12 @@ export default class entityControl {
         if (!Cesium.defined(entity)) {
             return false;
         }
+        if (Array.isArray(entity)) {
+            for (let i = 0; i < entity.length; i++) {
+                _this.remove(entity[i])
+            }
+            return;
+        }
         let isRemove;
         if (entity instanceof Cesium.Entity) {
             isRemove = _this.viewer.entities.remove(entity);
@@ -128,6 +134,8 @@ export default class entityControl {
             isRemove = _this.viewer.dataSources.remove(entity)
         } else if (entity instanceof Cesium.GroundPrimitive) {
             isRemove = _this.viewer.scene.primitives.remove(entity)
+        } else if (entity instanceof Cesium.PostProcessStage) {
+            isRemove = _this.viewer.scene.postProcessStages.remove(entity)
         }
         if (isRemove) {
             if (entity.nodeProp) {
@@ -186,7 +194,13 @@ export default class entityControl {
             }
         }
         newNode = tree.addNodes(parentNode, newNode);
-        data.nodeProp = newNode[0] // 将treeNode数据放入entity中
+        if (Array.isArray(data)) {
+            for (let i = 0; i < data.length; i++) {
+                data[i].nodeProp = newNode[0]
+            }
+        } else {
+            data.nodeProp = newNode[0] // 将treeNode数据放入entity中
+        }
         // tree.refresh()
         // }
         return newNode[0];
@@ -197,7 +211,13 @@ export default class entityControl {
         if (!entity) {
             return;
         }
-        entity.name = treeNode.name
+        if (Array.isArray(entity)) {
+            for (let i = 0; i < entity.length; i++) {
+                entity[i].name = treeNode.name
+            }
+        } else {
+            entity.name = treeNode.name
+        }
     }
 
 
@@ -309,7 +329,25 @@ export default class entityControl {
         if (!entity) {
             return;
         }
-        entity.show = chkStatus.checked
+        if (Array.isArray(entity)) {
+            for (let i = 0; i < entity.length; i++) {
+                if (typeof entity[i].show == "undefined") {
+                    if (typeof entity[i].enabled == "boolean") {
+                        entity[i].enabled = chkStatus.checked;
+                    }
+                } else {
+                    entity[i].show = chkStatus.checked
+                }
+            }
+            return;
+        }
+        if (typeof entity.show == "undefined") {
+            if (typeof entity.enabled == "boolean") {
+                entity.enabled = chkStatus.checked;
+            }
+        } else {
+            entity.show = chkStatus.checked
+        }
     }
 
     /**

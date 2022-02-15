@@ -1,6 +1,16 @@
 import cm from "../../plugins/CesiumMethod";
+import {go} from "@/js/cesium/globalObject";
+import gykjAlert from "@/js/plugins/alert";
 
+let _btnIdName = "radar"
 export default class RadarScan {
+    viewModel = {
+        enabled: false,
+        radius: 20,
+        color: "",
+        duration: 3000,
+    }
+
     constructor(viewer) {
         this.init(viewer)
     }
@@ -16,83 +26,86 @@ export default class RadarScan {
      * @version 2.0
      */
     init(viewer) {
-        var _this = this;
+        let _this = this;
         _this.viewer = viewer;
-        _this.radarStage = null;
-        _this.entity = null;
         _this.centerPointImage = '../../img/plot/circle_center.png';
+        let options = {
+            btn: $("#" + _btnIdName).next(),
+            content: `<div id='radarScan_config'>
+    <div><span>半径</span><input type='range' min="1" max="1000" step="0.1" data-bind="value: radius, valueUpdate: 'input'"></div>
+    <div><span>颜色</span><input type='text' data-bind="value: color, valueUpdate: 'input'"></div>
+    <div><span>速度</span><input type='range' min="1000" max="10000" step="1" data-bind="value: duration, valueUpdate: 'input'"></div>
+    </div>`
+        }
+        let lightAlert = new gykjAlert(options)
+        _this.bindModel();
     }
 
     /**
-     * 清除
-
-     * @version 2.0
+     * 属性绑定
      */
-    clear() {
-        var _this = this;
-        if (!_this.radarStage) {
-            layer.msg('<span style="color:red">主人！你还没有加载雷达哟', {
-                icon: 2,
-                time: 2000 //2秒关闭（如果不配置，默认是3秒）
-            });
-        }
-        if (_this.radarStage) {
-            _this.viewer.scene.postProcessStages.remove(_this.radarStage);
-            _this.radarStage = null;
-        }
-        if (_this.entity) {
-            _this.viewer.entities.remove(_this.entity);
-            _this.radarStage = null;
-        }
+    bindModel() {
+        let _this = this;
+        Cesium.knockout.track(_this.viewModel);
+        let toolbar = document.getElementById("radarScan_config"); // 按钮的dom元素
+        Cesium.knockout.applyBindings(_this.viewModel, toolbar);
+        Cesium.knockout.getObservable(_this.viewModel, 'enabled').subscribe(
+            function (newValue) {
+                if (newValue) {
+                    _this.start();
+                }
+                go.bbi.bindImg("雷达", "radar", !newValue)
+            }
+        );
     }
 
     /**
      * 中心点
-
      * @version 2.0
      */
-    start(center, radius, color, time) {
-        var _this = this;
-        _this.center = center;
-        _this.radius = radius;
-        _this.color = color;
-        _this.duration = time;
-        if (!_this.center) {
-            console.error('请先初始化');
-        }
+    start() {
+        let _this = this;
+        let color;
+        if (!_this.viewModel.color) color = new Cesium.Color(1, 0.0, 0.0, 1);
+        let radius = Number(_this.viewModel.radius)
+        let duration = Number(_this.viewModel.duration)
+        go.plot.trackUninterruptedBillboard(function (positions) {
+            for (let i = 0; i < positions.length; i++) {
+                let center = positions[i];
+                let cartographic = Cesium.Cartographic.fromCartesian(center);
+                cm.getTerrainHeight([cartographic], (cartographics) => {
+                    cartographic.height = cartographics[0].height;
+                    center = Cesium.Cartographic.toCartesian(cartographic);
+                    let point = _this.viewer.entities.add({
+                        name: 'radar_point',
+                        position: center,
+                        billboard: {
+                            image: _this.centerPointImage,
+                            heightReference: Cesium.HeightReference.CLAMP_TO_GROUND, //绝对贴地
+                            clampToGround: true,
+                            disableDepthTestDistance: Number.POSITIVE_INFINITY //元素在正上方
+                        }
+                    });
+                    let cartographicCenter = Cesium.Cartographic.fromCartesian(center);
+                    let radarStage = _this.addRadarScan(
+                        _this.viewer,
+                        cartographicCenter,
+                        radius,
+                        color,
+                        duration
+                    );
+                    window.s = radarStage;
+                    let newNode = {
+                        name: "雷达",
+                        checked: true
+                    }
+                    let node = go.ec.addNode(-1, newNode, [radarStage, point])
+                });
+            }
+        }, function (positions) {
+            console.log(positions)
+        })
 
-        let cartographic = Cesium.Cartographic.fromCartesian(_this.center);
-        cm.getTerrainHeight([cartographic], (cartographics) => {
-            cartographic.height = cartographics[0].height;
-            _this.center = Cesium.Cartographic.toCartesian(cartographic);
-            _this.entity = _this.viewer.entities.add({
-                name: 'radar_point',
-                position: _this.center,
-                billboard: {
-                    image: _this.centerPointImage,
-                    heightReference: Cesium.HeightReference.CLAMP_TO_GROUND, //绝对贴地
-                    clampToGround: true,
-                    disableDepthTestDistance: Number.POSITIVE_INFINITY //元素在正上方
-                }
-            });
-            cartographic.height = cartographic.height + _this.radius * 3
-            _this.viewer.camera.flyTo({
-                destination: Cesium.Cartographic.toCartesian(cartographic),
-                orientation: {
-                    heading: Cesium.Math.toRadians(0), // 方向
-                    pitch: Cesium.Math.toRadians(-90), // 倾斜角度
-                    roll: 0
-                }
-            });
-            var cartographicCenter = Cesium.Cartographic.fromCartesian(_this.center);
-            _this.radarStage = _this.addRadarScan(
-                _this.viewer,
-                cartographicCenter,
-                _this.radius,
-                _this.color,
-                _this.duration
-            );
-        });
     }
 
     /**
@@ -101,52 +114,52 @@ export default class RadarScan {
      * @version 2.0
      */
     addRadarScan(viewer, cartographicCenter, radius, scanColor, duration) {
-        var _this = this;
-        var _Cartesian3Center = Cesium.Cartographic.toCartesian(cartographicCenter);
-        var _Cartesian4Center = new Cesium.Cartesian4(
+        let _this = this;
+        let _Cartesian3Center = Cesium.Cartographic.toCartesian(cartographicCenter);
+        let _Cartesian4Center = new Cesium.Cartesian4(
             _Cartesian3Center.x,
             _Cartesian3Center.y,
             _Cartesian3Center.z,
             1
         );
 
-        var _CartographicCenter1 = new Cesium.Cartographic(
+        let _CartographicCenter1 = new Cesium.Cartographic(
             cartographicCenter.longitude,
             cartographicCenter.latitude,
             cartographicCenter.height + 1
         );
-        var _Cartesian3Center1 = Cesium.Cartographic.toCartesian(_CartographicCenter1);
-        var _Cartesian4Center1 = new Cesium.Cartesian4(
+        let _Cartesian3Center1 = Cesium.Cartographic.toCartesian(_CartographicCenter1);
+        let _Cartesian4Center1 = new Cesium.Cartesian4(
             _Cartesian3Center1.x,
             _Cartesian3Center1.y,
             _Cartesian3Center1.z,
             1
         );
 
-        var _CartographicCenter2 = new Cesium.Cartographic(
+        let _CartographicCenter2 = new Cesium.Cartographic(
             cartographicCenter.longitude + Cesium.Math.toRadians(0.001),
             cartographicCenter.latitude,
             cartographicCenter.height
         );
-        var _Cartesian3Center2 = Cesium.Cartographic.toCartesian(_CartographicCenter2);
-        var _Cartesian4Center2 = new Cesium.Cartesian4(
+        let _Cartesian3Center2 = Cesium.Cartographic.toCartesian(_CartographicCenter2);
+        let _Cartesian4Center2 = new Cesium.Cartesian4(
             _Cartesian3Center2.x,
             _Cartesian3Center2.y,
             _Cartesian3Center2.z,
             1
         );
-        var _RotateQ = new Cesium.Quaternion();
-        var _RotateM = new Cesium.Matrix3();
+        let _RotateQ = new Cesium.Quaternion();
+        let _RotateM = new Cesium.Matrix3();
 
-        var _time = new Date().getTime();
+        let _time = new Date().getTime();
 
-        var _scratchCartesian4Center = new Cesium.Cartesian4();
-        var _scratchCartesian4Center1 = new Cesium.Cartesian4();
-        var _scratchCartesian4Center2 = new Cesium.Cartesian4();
-        var _scratchCartesian3Normal = new Cesium.Cartesian3();
-        var _scratchCartesian3Normal1 = new Cesium.Cartesian3();
+        let _scratchCartesian4Center = new Cesium.Cartesian4();
+        let _scratchCartesian4Center1 = new Cesium.Cartesian4();
+        let _scratchCartesian4Center2 = new Cesium.Cartesian4();
+        let _scratchCartesian3Normal = new Cesium.Cartesian3();
+        let _scratchCartesian3Normal1 = new Cesium.Cartesian3();
 
-        var ScanPostStage = new Cesium.PostProcessStage({
+        let ScanPostStage = new Cesium.PostProcessStage({
             fragmentShader: _this.shader(),
             uniforms: {
                 u_scanCenterEC() {
@@ -157,12 +170,12 @@ export default class RadarScan {
                     );
                 },
                 u_scanPlaneNormalEC() {
-                    var temp = Cesium.Matrix4.multiplyByVector(
+                    let temp = Cesium.Matrix4.multiplyByVector(
                         viewer.camera._viewMatrix,
                         _Cartesian4Center,
                         _scratchCartesian4Center
                     );
-                    var temp1 = Cesium.Matrix4.multiplyByVector(
+                    let temp1 = Cesium.Matrix4.multiplyByVector(
                         viewer.camera._viewMatrix,
                         _Cartesian4Center1,
                         _scratchCartesian4Center1
@@ -176,17 +189,17 @@ export default class RadarScan {
                 },
                 u_radius: radius,
                 u_scanLineNormalEC() {
-                    var temp = Cesium.Matrix4.multiplyByVector(
+                    let temp = Cesium.Matrix4.multiplyByVector(
                         viewer.camera._viewMatrix,
                         _Cartesian4Center,
                         _scratchCartesian4Center
                     );
-                    var temp1 = Cesium.Matrix4.multiplyByVector(
+                    let temp1 = Cesium.Matrix4.multiplyByVector(
                         viewer.camera._viewMatrix,
                         _Cartesian4Center1,
                         _scratchCartesian4Center1
                     );
-                    var temp2 = Cesium.Matrix4.multiplyByVector(
+                    let temp2 = Cesium.Matrix4.multiplyByVector(
                         viewer.camera._viewMatrix,
                         _Cartesian4Center2,
                         _scratchCartesian4Center2
@@ -202,7 +215,7 @@ export default class RadarScan {
                     _scratchCartesian3Normal1.y = temp2.y - temp.y;
                     _scratchCartesian3Normal1.z = temp2.z - temp.z;
 
-                    var tempTime = ((new Date().getTime() - _time) % duration) / duration;
+                    let tempTime = ((new Date().getTime() - _time) % duration) / duration;
                     Cesium.Quaternion.fromAxisAngle(
                         _scratchCartesian3Normal,
                         tempTime * Cesium.Math.PI * 2,

@@ -20,6 +20,7 @@ import HomeView from "./scene/HomeView";
 import DblClickRotate from "@/js/cesium/scene/DblClickRotate";
 import Water from "./entity/kml/water/Water";
 import KeepView from "@/js/plugins/KeepView";
+import RadarScan from "@/js/cesium/effect/RadarScan";
 
 let _viewer;
 export const go = {}; // 封装所有的类对象
@@ -60,6 +61,7 @@ function createObjs(viewer) {
     go.hv = new HomeView(viewer);
     go.dblc = new DblClickRotate(viewer);
     go.water = new Water(viewer);
+    go.radar = new RadarScan(viewer);
 }
 
 function publicEvents(viewer){

@@ -104,19 +104,7 @@ $("#wireFrame").on('click', function () {
     $(this).data('enabled', !enabled)
 })
 $("#radar").on('click', function () {
-    let enabled = $(this).data('enabled');
-    if (!enabled) {
-        let center = Cesium.Cartesian3.fromDegrees(106.39194994, 29.84123831, 0);
-        let color = new Cesium.Color(1, 0.0, 0.0, 1);
-        let radar = new RadarScan(viewer);
-        $(this).data('data', radar);
-        radar.start(center, 1500, color, 3000);
-    } else {
-        let radar = $(this).data('data');
-        radar.clear();
-    }
-    $(this).data("enabled", !enabled)
-    go.bbi.bindImg("雷达", "radar", !enabled)
+    go.radar.viewModel.enabled = !go.radar.viewModel.enabled
 })
 $("#proliferation").on('click', function () {
     let enabled = $(this).data('enabled');
