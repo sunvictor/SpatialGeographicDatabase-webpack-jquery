@@ -1,3 +1,5 @@
+import {go} from "../../../globalObject";
+
 export default class Water {
     viewer = null;
     scene = null;
@@ -98,6 +100,11 @@ export default class Water {
         let _this = this;
         _this.AllRiverArray = [];
         this.loadXMLDoc(url, isHeight, classificationType);
+        let newNode = {
+            name: _this.AllRiver.name ? _this.AllRiver.name : "未命名水面",
+            checked: _this.AllRiver.show
+        }
+        let node = go.ec.addNode(-1, newNode, _this.AllRiver)
         return _this.AllRiver;
     }
     startEvent(xmls, isHeight, classificationType) {
@@ -151,7 +158,7 @@ export default class Water {
             fabric: {
                 type: 'Water',
                 uniforms: {
-                    normalMap: 'images/water2.jpg',
+                    normalMap: '../../../../../img/water/water2.jpg',
                     frequency: 80.0, //控制波数的数字
                     animationSpeed: 0.02, //控制水的动画速度的数字
                     amplitude: 2.5, //控制水波幅度的数字
@@ -163,64 +170,64 @@ export default class Water {
         });
  
         _this.AllRiver.appearance.material = River_Material;
-        _this.AllRiver.appearance.fragmentShaderSource = 'letying vec3 v_positionMC;\n' +
-            'letying vec3 v_positionEC;\n' +
-            'letying vec2 v_st;\n' +
-            'void main()\n' +
-            '{\n' +
-            'czm_materialInput materialInput;\n' +
-            'vec3 normalEC = normalize(czm_normal3D * czm_geodeticSurfaceNormal(v_positionMC, vec3(0.0), vec3(1.0)));\n' +
-            '#ifdef FACE_FORWARD\n' +
-            'normalEC = faceforward(normalEC, vec3(0.0, 0.0, 1.0), -normalEC);\n' +
-            '#endif\n' +
-            'materialInput.s = v_st.s;\n' +
-            'materialInput.st = v_st;\n' +
-            'materialInput.str = vec3(v_st, 0.0);\n' +
-            'materialInput.normalEC = normalEC;\n' +
-            'materialInput.tangentToEyeMatrix = czm_eastNorthUpToEyeCoordinates(v_positionMC, materialInput.normalEC);\n' +
-            'vec3 positionToEyeEC = -v_positionEC;\n' +
-            'materialInput.positionToEyeEC = positionToEyeEC;\n' +
-            'czm_material material = czm_getMaterial(materialInput);\n' +
-            '#ifdef FLAT\n' +
-            'gl_FragColor = vec4(material.diffuse + material.emission, material.alpha);\n' +
-            '#else\n' +
-            'gl_FragColor = czm_phong(normalize(positionToEyeEC), material, czm_lightDirectionEC);\n' +
-            'gl_FragColor.a=0.85;\n' +
-            '#endif\n' +
-            '}\n'
+        // _this.AllRiver.appearance.fragmentShaderSource = 'letying vec3 v_positionMC;\n' +
+        //     'letying vec3 v_positionEC;\n' +
+        //     'letying vec2 v_st;\n' +
+        //     'void main()\n' +
+        //     '{\n' +
+        //     'czm_materialInput materialInput;\n' +
+        //     'vec3 normalEC = normalize(czm_normal3D * czm_geodeticSurfaceNormal(v_positionMC, vec3(0.0), vec3(1.0)));\n' +
+        //     '#ifdef FACE_FORWARD\n' +
+        //     'normalEC = faceforward(normalEC, vec3(0.0, 0.0, 1.0), -normalEC);\n' +
+        //     '#endif\n' +
+        //     'materialInput.s = v_st.s;\n' +
+        //     'materialInput.st = v_st;\n' +
+        //     'materialInput.str = vec3(v_st, 0.0);\n' +
+        //     'materialInput.normalEC = normalEC;\n' +
+        //     'materialInput.tangentToEyeMatrix = czm_eastNorthUpToEyeCoordinates(v_positionMC, materialInput.normalEC);\n' +
+        //     'vec3 positionToEyeEC = -v_positionEC;\n' +
+        //     'materialInput.positionToEyeEC = positionToEyeEC;\n' +
+        //     'czm_material material = czm_getMaterial(materialInput);\n' +
+        //     '#ifdef FLAT\n' +
+        //     'gl_FragColor = vec4(material.diffuse + material.emission, material.alpha);\n' +
+        //     '#else\n' +
+        //     'gl_FragColor = czm_phong(normalize(positionToEyeEC), material, czm_lightDirectionEC);\n' +
+        //     'gl_FragColor.a=0.85;\n' +
+        //     '#endif\n' +
+        //     '}\n'
         _this.scene.primitives.add(_this.AllRiver); //添加到场景
         _this.AllRiverArray.push(_this.AllRiver);
 
-        window.sceneJson = [];
-        for (let i = 0; i < _this.cartoPositions.length; i++) {
-            let pieceOfWater = {
-                "czmObject": {
-                    "xbsjType": "Water",
-                    "ground": false,
-                    "positions": _this.cartoPositions[i],
-                    // "blendColor": [1, 1, 1, 0.7],
-                    "height": 195,
-                    "outline": {
-                        show: false,
-                    },
-                    "blendColor": [0.5, 0.5, 0.5, 0.6]
-                }
-            }
-            sceneJson.push(pieceOfWater)
-        }
- 
-        let array5 = [];
-        for (let i = 0; i < waterPositions.length; i++) {
-            let a = [];
-            a.push(waterPositions[i], waterPositions[i + 1]);
-            array5.push(a);
-            i++;
-        }
-        let finalArray = [];
-        for (let k = 0; k < array5.length; k++) {
-            let aa = Cesium.Cartographic.fromDegrees(array5[k][0], array5[k][1]);
-            finalArray.push(aa.longitude, aa.latitude)
-        }
+        // window.sceneJson = [];
+        // for (let i = 0; i < _this.cartoPositions.length; i++) {
+        //     let pieceOfWater = {
+        //         "czmObject": {
+        //             "xbsjType": "Water",
+        //             "ground": false,
+        //             "positions": _this.cartoPositions[i],
+        //             // "blendColor": [1, 1, 1, 0.7],
+        //             "height": 195,
+        //             "outline": {
+        //                 show: false,
+        //             },
+        //             "blendColor": [0.5, 0.5, 0.5, 0.6]
+        //         }
+        //     }
+        //     sceneJson.push(pieceOfWater)
+        // }
+        //
+        // let array5 = [];
+        // for (let i = 0; i < waterPositions.length; i++) {
+        //     let a = [];
+        //     a.push(waterPositions[i], waterPositions[i + 1]);
+        //     array5.push(a);
+        //     i++;
+        // }
+        // let finalArray = [];
+        // for (let k = 0; k < array5.length; k++) {
+        //     let aa = Cesium.Cartographic.fromDegrees(array5[k][0], array5[k][1]);
+        //     finalArray.push(aa.longitude, aa.latitude)
+        // }
 
     }
 }

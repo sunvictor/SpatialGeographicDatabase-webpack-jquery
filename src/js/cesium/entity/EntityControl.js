@@ -126,6 +126,8 @@ export default class entityControl {
             isRemove = _this.viewer.dataSources.remove(entity)
         } else if (entity instanceof Cesium.GeoJsonDataSource) {
             isRemove = _this.viewer.dataSources.remove(entity)
+        } else if (entity instanceof Cesium.GroundPrimitive) {
+            isRemove = _this.viewer.scene.primitives.remove(entity)
         }
         if (isRemove) {
             if (entity.nodeProp) {

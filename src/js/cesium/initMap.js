@@ -120,6 +120,7 @@ function initScene(viewer) {
         url: "https://cesium-1301474191.cos.ap-nanjing.myqcloud.com/map%20(2).kml",
         type: "kml"
     })
+    go.water.start("../../data/kml/water.kml", true)
 }
 
 function defaultCOnfig(viewer) {

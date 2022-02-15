@@ -18,6 +18,7 @@ import DynamicWall from "./effect/DynamicWall";
 import PlottingScale from "./scene/PlottingScale";
 import HomeView from "./scene/HomeView";
 import DblClickRotate from "@/js/cesium/scene/DblClickRotate";
+import Water from "./entity/kml/water/Water";
 
 let _viewer;
 export const go = {}; // 封装所有的类对象
@@ -52,6 +53,7 @@ function createObjs(viewer) {
     go.plottingScale = new PlottingScale(viewer);
     go.hv = new HomeView(viewer);
     go.dblc = new DblClickRotate(viewer);
+    go.water = new Water(viewer);
 }
 
 function publicEvents(viewer){

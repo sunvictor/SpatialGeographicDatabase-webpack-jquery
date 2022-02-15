@@ -149,6 +149,7 @@ module.exports = {
                 {from: './src/img', to: 'img', toType: 'dir'},
                 {from: './src/js/plugins', to: 'js/plugins', toType: 'dir'},
                 {from: './src/js/cesium', to: 'js/cesium', toType: 'dir'},
+                {from: './src/data', to: 'data', toType: 'dir'},
                 // {from: './src/js/scripts/jquery', to: 'js/jquery', toType: 'dir'},
                 // {from: './node_modules/jquery', to: 'js/jquery', toType: 'dir'},
             ]

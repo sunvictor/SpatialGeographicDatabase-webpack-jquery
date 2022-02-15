@@ -35,6 +35,9 @@ export default class DataSourceControl {
                         <td><span>数据源地址</span></td>
                         <td><input type="text" id="dataSourceUrl"></td>
                     </tr>
+                    <tr>
+                        <td><span>水面</span><input id="dataSourceWater" type="checkbox"></td>
+                    </tr>
                     </table> 
                     <button id="addDataSourceBtn">确定</button>
                     </div>`
@@ -76,7 +79,12 @@ export default class DataSourceControl {
         pm.setOptions(op, options)
         let data;
         if (options.type == "kml") {
-            data = Cesium.KmlDataSource.load(op.url, op);
+            if (options.isWater) {
+                let water = go.water.start(url, true);
+                return;
+            } else {
+                data = Cesium.KmlDataSource.load(op.url, op);
+            }
         }
         if (options.type == "geojson") {
             data = Cesium.GeoJsonDataSource.load(op.url, op);
@@ -99,11 +107,13 @@ export default class DataSourceControl {
         $("#addDataSourceBtn").off('click').on('click', function () {
             let name = $("#dataSourceName").val();
             let url = $("#dataSourceUrl").val();
-            let type = $('#dataSourceType option:selected').val()
+            let type = $('#dataSourceType option:selected').val();
+            let isWater = $("#dataSourceWater").prop("checked");
             _this.add({
                 name: name,
                 url: url,
-                type: type
+                type: type,
+                isWater: isWater
             })
         })
     }
