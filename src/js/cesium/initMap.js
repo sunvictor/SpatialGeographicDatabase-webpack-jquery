@@ -11,7 +11,7 @@ const mapConfig = {
     geocoder: false,
     infoBox: false,
     selectionIndicator: false,
-    sceneModePicker: false,
+    sceneModePicker: true,
     // sceneMode: Cesium.SceneMode.SCENE3D, //使用earthsdk切换3d视角要加上这句
     scene3DOnly: false,
     shouldAnimate: true,
@@ -132,6 +132,7 @@ function defaultCOnfig(viewer) {
         viewer.infoBox.frame.removeAttribute("sandbox");
         viewer.infoBox.frame.src = "about:blank";
     }
+    viewer.sceneMode = Cesium.SceneMode.SCENE3D
     // 开启深度检测
     viewer.scene.globe.depthTestAgainstTerrain = true;
     // 自动调整分辨率
@@ -174,7 +175,7 @@ export function startUpEarth() {
     const earth = new XE.Earth("cesiumContainer", mapConfig);
     window._earth = earth;
     commonCofig(earth.czm.viewer);
-    viewer.sceneMode = Cesium.SceneMode.SCENE3D;
+    earth.czm.viewer.sceneMode = Cesium.SceneMode.SCENE3D;
 }
 
 export function startUpCesium() {

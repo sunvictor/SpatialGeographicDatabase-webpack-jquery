@@ -19,13 +19,19 @@ import PlottingScale from "./scene/PlottingScale";
 import HomeView from "./scene/HomeView";
 import DblClickRotate from "@/js/cesium/scene/DblClickRotate";
 import Water from "./entity/kml/water/Water";
+import KeepView from "@/js/plugins/KeepView";
 
 let _viewer;
 export const go = {}; // 封装所有的类对象
 
 export function globals(viewer) {
     _viewer = viewer;
+    loadPlugins(viewer);
     createObjs(viewer);
+}
+
+function loadPlugins(viewer) {
+    new KeepView(viewer);
 }
 
 /**
