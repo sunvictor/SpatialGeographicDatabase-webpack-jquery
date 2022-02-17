@@ -6,7 +6,7 @@ let _btnIdName = "radar"
 export default class RadarScan {
     viewModel = {
         enabled: false,
-        radius: 20,
+        radius: 200,
         color: "",
         duration: 3000,
     }
