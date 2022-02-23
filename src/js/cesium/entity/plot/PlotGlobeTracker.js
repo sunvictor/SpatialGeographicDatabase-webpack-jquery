@@ -1,18 +1,22 @@
 import billboardGraphics from "./BillboardGraphics";
 import polylineGraphics from "./PolylineGraphics";
 import $ from 'jquery'
+import pointGraphics from "@/js/cesium/entity/plot/PointGraphics";
 
 export default class plotGlobeTracker {
     viewer = null;
     ctrArr = [];
     billboardDrawer = null;
+    singleBillboardDrawer = null;
     polylineDrawer = null;
 
     constructor(viewer) {
         let _this = this;
         _this.viewer = viewer;
         _this.billboardDrawer = new billboardGraphics(viewer)
+        _this.singleBillboardDrawer = new pointGraphics(viewer)
         _this.ctrArr.push(_this.billboardDrawer);
+        _this.ctrArr.push(_this.singleBillboardDrawer);
     }
 
     clear() {
@@ -53,6 +57,16 @@ export default class plotGlobeTracker {
         }
         _this.clearOthers(_this.billboardDrawer.plotType)
         _this.billboardDrawer.start(okCallback, cancelCallback);
+    }
+    singleBillboard(okCallback, cancelCallback) {
+        let _this = this;
+        _this.clear();
+        if (_this.singleBillboardDrawer == null) {
+            _this.singleBillboardDrawer = new billboardGraphics(_this.viewer);
+            _this.ctrArr.push(_this.singleBillboardDrawer);
+        }
+        _this.clearOthers(_this.singleBillboardDrawer.plotType)
+        _this.singleBillboardDrawer.start(okCallback, cancelCallback);
     }
 
     trackPolyline(okHandler, cancelHandler) {

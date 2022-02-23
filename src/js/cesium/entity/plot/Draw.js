@@ -34,6 +34,22 @@ export default class drawShape {
                 console.log(positions)
             })
         })
+        $("#drawSingleBillboard").on('click', function () {
+            _this.draw.flag = 0;
+            if (go.plot.singleBillboardDrawer.viewModel.enabled) {
+                go.plot.singleBillboardDrawer.viewModel.enabled = false;
+                return;
+            }
+            go.plot.singleBillboard(function (positions) {
+                for (let i = 0; i < positions.length; i++) {
+                    let objId = (new Date()).getTime() + i;
+                    _this.draw.shapeDic[objId] = positions[i];
+                    go.plot.singleBillboardDrawer.showBillboard(objId, positions[i]);
+                }
+            }, function (positions) {
+                console.log(positions)
+            })
+        })
         $("#drawPolyline").on('click', function () {
             _this.draw.flag = 0;
             go.plot.trackPolyline(function (positions, lonlats, params) {
