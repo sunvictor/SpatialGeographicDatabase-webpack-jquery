@@ -41,11 +41,9 @@ export default class drawShape {
                 return;
             }
             go.plot.singleBillboard(function (positions) {
-                for (let i = 0; i < positions.length; i++) {
-                    let objId = (new Date()).getTime() + i;
-                    _this.draw.shapeDic[objId] = positions[i];
-                    go.plot.singleBillboardDrawer.showBillboard(objId, positions[i]);
-                }
+                let objId = (new Date()).getTime();
+                _this.draw.shapeDic[objId] = positions;
+                go.plot.singleBillboardDrawer.showBillboard(objId, positions);
             }, function (positions) {
                 console.log(positions)
             })
@@ -55,7 +53,17 @@ export default class drawShape {
             go.plot.trackPolyline(function (positions, lonlats, params) {
                 let objId = (new Date()).getTime();
                 _this.draw.shapeDic[objId] = positions;
-                go.plot.polylineDrawer.showPolyline(objId, positions, params,false);
+                go.plot.polylineDrawer.showPolyline(objId, positions, params, false);
+            }, function (positions) {
+                console.log(positions)
+            })
+        })
+        $("#drawPolygon").on('click', function () {
+            _this.draw.flag = 0;
+            go.plot.trackPolygon(function (positions, params) {
+                let objId = (new Date()).getTime();
+                _this.draw.shapeDic[objId] = positions;
+                go.plot.polygonDrawer.showPolygon(objId, positions, params);
             }, function (positions) {
                 console.log(positions)
             })

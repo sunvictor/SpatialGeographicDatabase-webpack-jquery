@@ -3,7 +3,7 @@ import {go} from "../../globalObject";
 import entityProvider from "../EntityProvider";
 
 
-let _btnName = "点";
+let _btnName = "连续点";
 let _btnIdName = "drawBillboard";
 export default class billboardGraphics {
     viewModel = {

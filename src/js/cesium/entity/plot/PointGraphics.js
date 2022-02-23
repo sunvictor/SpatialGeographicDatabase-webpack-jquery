@@ -17,8 +17,8 @@ export default class pointGraphics {
     constructor(viewer) {
         let _this = this;
         _this.viewer = viewer;
-        _this.bindModel();
         _this.singlePointDrawer = new GlobePointDrawer(_this.viewer);
+        _this.bindModel();
     }
 
     clear() {
