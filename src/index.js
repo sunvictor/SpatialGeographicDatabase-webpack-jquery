@@ -15,6 +15,8 @@ import "./css/ztree/css/rightClickStyle.css"
 import "./js/plugins/honeySwitch"
 import "./css/plugins/honeySwitch.css"
 import "./css/panel.css"
+import "./css/plotDraw.css"
+import "layer-src/src/theme/default/layer.css";
 import {initMainHtml} from "./js/html/mainHtml";
 import {startUpEarth, startUpCesium} from "./js/cesium/initMap";
 import skyBoxOnGround from "./js/cesium/weather/SkyBoxOnGround";

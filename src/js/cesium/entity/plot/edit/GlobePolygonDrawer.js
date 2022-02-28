@@ -1,3 +1,5 @@
+import layer from "layer-src"
+
 export default class GlobePolygonDrawer {
     viewer = null;
     scene = null;
@@ -557,57 +559,26 @@ export default class GlobePolygonDrawer {
         var wTop = 300;
         // var wLeft = parseInt((width - 145) / 2);
         var wLeft = 600;
-        // _this.toolBarIndex = layer.open({
-        //     title: false,
-        //     type: 1,
-        //     fixed: true,
-        //     resize: false,
-        //     shade: 0,
-        //     content: $("#shapeEditContainer"),
-        //     offset: [wTop + "px", wLeft + "px"],
-        //     move: "#shapeEditRTCorner",
-        //     area: ['400px','300px'],
-        //     skin: 'layui-draw-alert',
-        // });
-        // var cssSel = "#layui-layer" + _this.toolBarIndex + " .layui-layer-close2";
-        // $(cssSel).hide();
+        _this.toolBarIndex = layer.open({
+            title: false,
+            type: 1,
+            fixed: true,
+            resize: false,
+            shade: 0,
+            content: $("#shapeEditContainer"),
+            offset: [wTop + "px", wLeft + "px"],
+            move: "#shapeEditRTCorner",
+            area: ['400px','300px'],
+            skin: 'layui-draw-alert',
+        });
+        var cssSel = "#layui-layer" + _this.toolBarIndex + " .layui-layer-close2";
+        $(cssSel).hide();
     }
 
     _createToolBar() {
         var _this = this;
         var objs = $("#shapeEditContainer");
         objs.remove();
-        setTimeout(function () {
-            let isConfirm = confirm("是否创建图形");
-            if (isConfirm) {
-                if (_this.okHandler) {
-                    var positions = [];
-                    for (var i = 0; i < _this.tempPositions.length; i += 2) {
-                        var p = _this.tempPositions[i];
-                        positions.push(p);
-                    }
-                    _this.params.extrudedHeight = _this.extrudedHeight
-                    _this.params.color = _this.shapeColor;
-                    _this.params.ground = _this.ground;
-                    _this.params.name = _this.shapeName;
-                    _this.params.outline = _this.outline;
-                    _this.params.outlineColor = _this.outlineColor;
-                    _this.params.outlineWidth = _this.outlineWidth;
-                    _this.positions = positions;
-                    _this.okHandler(positions, _this.params);
-                    _this.clear();
-                    _this.viewer.entities.remove(_this.entity);
-                    // _this.resetParams();
-                }
-            } else {
-                _this.clear();
-                _this.viewer.entities.remove(_this.entity);
-                layer.close(_this.toolBarIndex);
-                if (_this.cancelHandler) {
-                    _this.cancelHandler();
-                }
-            }
-        }, 2000)
         // var html = '<div id="shapeEditContainer" style="padding: 10px 10px;">' +
         //     '    <button name="btnOK" class="layui-btn layui-btn-xs layui-btn-normal"> 确定 </button>' +
         //     '    <button name="btnCancel" class="layui-btn layui-btn-xs layui-btn-danger"> 取消 </button>' +
@@ -727,42 +698,42 @@ export default class GlobePolygonDrawer {
         //     </div>
         //   </form>`
 
-        // $("body").append(html);
-        // _this.initPanelData();
-        // _this.setAttribute();
-        // var btnOK = $("#shapeEditContainer button[name='btnOK']");
-        // var btnCancel = $("#shapeEditContainer button[name='btnCancel']");
-        // btnOK.unbind("click").bind("click", function () {
-        //     layer.close(_this.toolBarIndex);
-        //     if (_this.okHandler) {
-        //         var positions = [];
-        //         for (var i = 0; i < _this.tempPositions.length; i += 2) {
-        //             var p = _this.tempPositions[i];
-        //             positions.push(p);
-        //         }
-        //         _this.params.extrudedHeight = _this.extrudedHeight
-        //         _this.params.color = _this.shapeColor;
-        //         _this.params.ground = _this.ground;
-        //         _this.params.name = _this.shapeName;
-        //         _this.params.outline = _this.outline;
-        //         _this.params.outlineColor = _this.outlineColor;
-        //         _this.params.outlineWidth = _this.outlineWidth;
-        //         _this.positions = positions;
-        //         _this.okHandler(positions, _this.params);
-        //         _this.clear();
-        //         _this.viewer.entities.remove(_this.entity);
-        //         _this.resetParams();
-        //     }
-        // });
-        // btnCancel.unbind("click").bind("click", function () {
-        //     _this.clear();
-        //     _this.viewer.entities.remove(_this.entity);
-        //     layer.close(_this.toolBarIndex);
-        //     if (_this.cancelHandler) {
-        //         _this.cancelHandler();
-        //     }
-        //     _this.resetParams();
-        // });
+        $("body").append(html);
+        _this.initPanelData();
+        _this.setAttribute();
+        var btnOK = $("#shapeEditContainer button[name='btnOK']");
+        var btnCancel = $("#shapeEditContainer button[name='btnCancel']");
+        btnOK.unbind("click").bind("click", function () {
+            layer.close(_this.toolBarIndex);
+            if (_this.okHandler) {
+                var positions = [];
+                for (var i = 0; i < _this.tempPositions.length; i += 2) {
+                    var p = _this.tempPositions[i];
+                    positions.push(p);
+                }
+                _this.params.extrudedHeight = _this.extrudedHeight
+                _this.params.color = _this.shapeColor;
+                _this.params.ground = _this.ground;
+                _this.params.name = _this.shapeName;
+                _this.params.outline = _this.outline;
+                _this.params.outlineColor = _this.outlineColor;
+                _this.params.outlineWidth = _this.outlineWidth;
+                _this.positions = positions;
+                _this.okHandler(positions, _this.params);
+                _this.clear();
+                _this.viewer.entities.remove(_this.entity);
+                _this.resetParams();
+            }
+        });
+        btnCancel.unbind("click").bind("click", function () {
+            _this.clear();
+            _this.viewer.entities.remove(_this.entity);
+            layer.close(_this.toolBarIndex);
+            if (_this.cancelHandler) {
+                _this.cancelHandler();
+            }
+            _this.resetParams();
+        });
     }
 
     _isSimpleXYZ(p1, p2) {

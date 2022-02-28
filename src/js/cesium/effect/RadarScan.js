@@ -1,7 +1,6 @@
 import cm from "../../plugins/CesiumMethod";
 import {go} from "@/js/cesium/globalObject";
 import gykjAlert from "@/js/plugins/alert";
-
 let _btnIdName = "radar"
 export default class RadarScan {
     viewModel = {
@@ -13,6 +12,7 @@ export default class RadarScan {
 
     constructor(viewer) {
         this.init(viewer)
+        console.log(layer)
     }
 
     /**
@@ -69,39 +69,37 @@ export default class RadarScan {
         if (!_this.viewModel.color) color = new Cesium.Color(1, 0.0, 0.0, 1);
         let radius = Number(_this.viewModel.radius)
         let duration = Number(_this.viewModel.duration)
-        go.plot.trackUninterruptedBillboard(function (positions) {
-            for (let i = 0; i < positions.length; i++) {
-                let center = positions[i];
-                let cartographic = Cesium.Cartographic.fromCartesian(center);
-                cm.getTerrainHeight([cartographic], (cartographics) => {
-                    cartographic.height = cartographics[0].height;
-                    center = Cesium.Cartographic.toCartesian(cartographic);
-                    let point = _this.viewer.entities.add({
-                        name: 'radar_point',
-                        position: center,
-                        billboard: {
-                            image: _this.centerPointImage,
-                            heightReference: Cesium.HeightReference.CLAMP_TO_GROUND, //绝对贴地
-                            clampToGround: true,
-                            disableDepthTestDistance: Number.POSITIVE_INFINITY //元素在正上方
-                        }
-                    });
-                    let cartographicCenter = Cesium.Cartographic.fromCartesian(center);
-                    let radarStage = _this.addRadarScan(
-                        _this.viewer,
-                        cartographicCenter,
-                        radius,
-                        color,
-                        duration
-                    );
-                    window.s = radarStage;
-                    let newNode = {
-                        name: "雷达",
-                        checked: true
+        go.plot.singleBillboard(function (position) {
+            let center = position;
+            let cartographic = Cesium.Cartographic.fromCartesian(center);
+            cm.getTerrainHeight([cartographic], (cartographics) => {
+                cartographic.height = cartographics[0].height;
+                center = Cesium.Cartographic.toCartesian(cartographic);
+                let point = _this.viewer.entities.add({
+                    name: 'radar_point',
+                    position: center,
+                    billboard: {
+                        image: _this.centerPointImage,
+                        heightReference: Cesium.HeightReference.CLAMP_TO_GROUND, //绝对贴地
+                        clampToGround: true,
+                        disableDepthTestDistance: Number.POSITIVE_INFINITY //元素在正上方
                     }
-                    let node = go.ec.addNode(-1, newNode, [radarStage, point])
                 });
-            }
+                let cartographicCenter = Cesium.Cartographic.fromCartesian(center);
+                let radarStage = _this.addRadarScan(
+                    _this.viewer,
+                    cartographicCenter,
+                    radius,
+                    color,
+                    duration
+                );
+                _this.viewModel.enabled = false;
+                let newNode = {
+                    name: "雷达",
+                    checked: true
+                }
+                let node = go.ec.addNode(-1, newNode, [radarStage, point])
+            });
         }, function (positions) {
             console.log(positions)
         })

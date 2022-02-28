@@ -1,0 +1,13 @@
+.layui-draw-alert {
+    background-color: rgba(57, 57, 57, 0.8) !important;
+}
+
+#shapeEditRTCorner {
+    cursor: move;
+    height: 40px;
+    line-height: 40px;
+    font-size: 16px;
+    width: 400px !important;
+    text-indent: 20px;
+    border-bottom: 5px solid rgba(34, 34, 34, 0.9);
+}
