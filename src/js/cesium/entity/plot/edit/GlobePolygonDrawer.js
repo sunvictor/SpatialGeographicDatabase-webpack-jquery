@@ -568,7 +568,7 @@ export default class GlobePolygonDrawer {
             content: $("#shapeEditContainer"),
             offset: [wTop + "px", wLeft + "px"],
             move: "#shapeEditRTCorner",
-            area: ['400px','300px'],
+            area: ['400px', '300px'],
             skin: 'layui-draw-alert',
         });
         var cssSel = "#layui-layer" + _this.toolBarIndex + " .layui-layer-close2";
@@ -704,7 +704,9 @@ export default class GlobePolygonDrawer {
         var btnOK = $("#shapeEditContainer button[name='btnOK']");
         var btnCancel = $("#shapeEditContainer button[name='btnCancel']");
         btnOK.unbind("click").bind("click", function () {
-            layer.close(_this.toolBarIndex);
+            layer.close(_this.toolBarIndex, function () {
+                $("#shapeEditContainer").remove();
+            });
             if (_this.okHandler) {
                 var positions = [];
                 for (var i = 0; i < _this.tempPositions.length; i += 2) {
@@ -728,7 +730,9 @@ export default class GlobePolygonDrawer {
         btnCancel.unbind("click").bind("click", function () {
             _this.clear();
             _this.viewer.entities.remove(_this.entity);
-            layer.close(_this.toolBarIndex);
+            layer.close(_this.toolBarIndex, function () {
+                $("#shapeEditContainer").remove();
+            });
             if (_this.cancelHandler) {
                 _this.cancelHandler();
             }

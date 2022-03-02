@@ -68,6 +68,16 @@ export default class drawShape {
                 console.log(positions)
             })
         })
+        $("#drawRectangle").on('click', function () {
+            _this.draw.flag = 0;
+            go.plot.trackRectangle(function (positions, params) {
+                var objId = (new Date()).getTime();
+                _this.draw.shapeDic[objId] = positions;
+                go.plot.rectangleDrawer.showRectangle(objId, positions, params);
+            }, function (positions) {
+                console.log(positions)
+            });
+        })
     }
 
     clearEntityById(objId) {

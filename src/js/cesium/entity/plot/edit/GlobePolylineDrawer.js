@@ -30,6 +30,7 @@ export default class GlobePolylineDrawer {
     shapeName = '折线';
     floatingPoint = null;
     isPanelOpen = false;
+
     constructor() {
         this.init.apply(this, arguments);
     }
@@ -469,58 +470,84 @@ export default class GlobePolylineDrawer {
 
     _showToolBar() {
         var _this = this;
-        this._createToolBar();
+        _this._createToolBar();
         var width = $(window).width();
         var wTop = 300;
         // var wLeft = parseInt((width - 145) / 2);
         var wLeft = 600;
+        _this.toolBarIndex = layer.open({
+            title: false,
+            type: 1,
+            fixed: true,
+            resize: false,
+            shade: 0,
+            content: $("#shapeEditContainer"),
+            offset: [wTop + "px", wLeft + "px"],
+            move: "#shapeEditRTCorner",
+            area: ['400px', '300px'],
+            skin: 'layui-draw-alert',
+        });
+        var cssSel = "#layui-layer" + _this.toolBarIndex + " .layui-layer-close2";
+        $(cssSel).hide();
     }
 
     _createToolBar() {
         var _this = this;
         var objs = $("#shapeEditContainer");
         objs.remove();
+        // var html = '<div id="shapeEditContainer" style="padding: 10px 10px;">'
+        //          + '    <button name="btnOK" class="layui-btn layui-btn-xs layui-btn-normal"> 确定 </button>'
+        //          + '    <button name="btnCancel" class="layui-btn layui-btn-xs layui-btn-danger"> 取消 </button>'
+        //          + '    <div id="shapeEditRTCorner" style="width: 16px; position: absolute; right: 0px; top: 0px; bottom: 0px">'
+        //          + '    </div>'
+        //          + '</div>';
+//         var html = `<div id="shapeEditContainer" style="color:black; height:300px;width:350px">
+//         <div id="shapeEditRTCorner">折线</div>
+//         <hr>
+//         <div>
+//             <label>名称:</label><input id="polylineName" type="text" value="折线"/>
+//             </div>
+//             <div>
+//           <!--  <label>贴地</label>
+//             <input id="clamp" type="checkbox" name="clamp" checked> -->
+//             <div>
+//             <label>颜色</label>
+//             <span class="polyline-shapecolor-paigusu" style="width:25px;height:25px;background:rgba(228,235,41,1.0);display:inline-block;margin:0;"></span>
+//             </div>
+//            <div><label>宽度</label><input id="polylineWidth" type="range" min="1" max="100" step="1"/></div>
+//         <div style="position: absolute;bottom: 10px;right: 10px;" class="layerBtn">
+//         <button name="btnOK" class="layui-btn layui-btn-xs layui-btn-normal"> 确定 </button>
+//         <button name="btnCancel" class="layui-btn layui-btn-xs layui-btn-danger"> 取消 </button>
+//         </div>
+//         </div>
+// </div>
+// `
         var html = `<div id="shapeEditContainer" >
-                        <div id="shapeEditRTCorner">${_this.shapeName}</div>
-                        <div>
-                            <label>贴地:</label><span class="switch-on"
-                            id="entity_polyline_attr_clampToGround"></span>
-                        </div>
-                        <div>
-                            <label>中心坐标:</label><input style="background: rgba(30,32,45,0.9);margin-left: 3%; color: #ffffff;font-size: 14px;width: 300px;height: 25px;text-indent: 10px;outline:none; border:none;"
-                             id="centerPosition" type="text"/>
-                        </div>
-                        <div>
-                            <div>
-                                <label style="position: relative; top: 38%;">颜色：</label>
-                                <span class="polyline-shapecolor-paigusu" 
-                                style="width:25px;height:25px;background:rgba(228,235,41,1.0);display:inline-block;">
-                                </span>
-                            </div>
-                        <div><label>宽度：</label>
-                        <input data-bind="value: width" style="width: 200px; margin-left: 1%;position: absolute;" 
-                        id="polylineWidth" type="range" min="1" max="100" step="1"/>
-                        </div>
-                         <div style="position: absolute;bottom: 10px;right: 10px;" class="layerBtn">
-                            <button name="btnOK" class="layui-btn layui-btn-xs layui-btn-normal"> 确定 </button>
-                            <button name="btnCancel" class="layui-btn layui-btn-xs layui-btn-danger"> 取消 </button>
-                         </div>
-                        </div>
-                    </div>`
-        let polylineAttrPanel = new gykjPanel({
-            title: "折线",
-            show: true,
-            width: 600,
-            height: 370,
-            right: 100,
-            content: html,
-            callback: {
-                closePanel: function () {
-                    cancel();
-                }
-            }
-        })
-        _this.isPanelOpen = true;
+<div id="shapeEditRTCorner">折线</div>
+
+<div style="margin-left: 10%; margin-top: 5%;">
+    <label>名称:</label><input style="background: rgba(30,32,45,0.9);    margin-left: 3%; color: #ffffff;    font-size: 14px;
+    width: 200px;
+    height: 25px;
+    text-indent: 10px;outline:none; border:none;" id="polylineName" type="text" value="折线"/>
+    </div>
+    <div style="margin-top: 5%;">
+  <!--  <label style="font-size: 14px;
+  margin-left: 10%;">贴地</label>
+    <input id="clamp" type="checkbox" name="clamp" checked> -->
+    <div style="margin-left: 10%;">
+    <label style="    position: relative; top: 38%;">颜色：</label>
+    <span class="polyline-shapecolor-paigusu" style="width:25px;height:25px;background:rgba(228,235,41,1.0);display:inline-block;"></span>
+    </div>
+   <div style="margin-left: 10%; margin-top: 5%;"><label>宽度：</label><input style="  width: 200px; margin-left: 1%;position: absolute;" id="polylineWidth" type="range" min="1" max="100" step="1"/></div>
+<div style="position: absolute;bottom: 10px;right: 10px;" class="layerBtn">
+<button name="btnOK" class="layui-btn layui-btn-xs layui-btn-normal"> 确定 </button>
+<button name="btnCancel" class="layui-btn layui-btn-xs layui-btn-danger"> 取消 </button>
+</div>
+</div>
+</div>
+`
+        $("body").append(html);
         _this.initPanelData();
         _this.setAttribute();
         var btnOK = $("#shapeEditContainer button[name='btnOK']");
@@ -540,28 +567,25 @@ export default class GlobePolylineDrawer {
                 _this.params.name = _this.shapeName;
                 _this.okHandler(positions, lonLats, _this.params);
                 _this.clear();
-                polylineAttrPanel.destroy();
-                _this.isPanelOpen = false;
+                layer.close(_this.toolBarIndex, function () {
+                    $("#shapeEditContainer").remove();
+                });
                 _this.resetParams();
             } else {
                 _this.clear();
-                polylineAttrPanel.destroy();
-                _this.isPanelOpen = false;
+                layer.close(_this.toolBarIndex);
                 _this.resetParams();
             }
         });
         btnCancel.unbind("click").bind("click", function () {
-           cancel();
-        });
-        function cancel() {
             _this.clear();
-            polylineAttrPanel.destroy();
-            _this.isPanelOpen = false;
+            layer.close(_this.toolBarIndex, function () {
+                $("#shapeEditContainer").remove();
+            });
             if (_this.cancelHandler) {
                 _this.cancelHandler();
             }
-        }
-        return objs;
+        });
     }
 
     _getPositionsWithSid() {

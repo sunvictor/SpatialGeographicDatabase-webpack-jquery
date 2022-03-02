@@ -3,6 +3,7 @@ import polylineGraphics from "./PolylineGraphics";
 import $ from 'jquery'
 import pointGraphics from "@/js/cesium/entity/plot/PointGraphics";
 import polygonGraphics from "@/js/cesium/entity/plot/PolygonGraphics";
+import rectangleGraphics from "@/js/cesium/entity/plot/RectangleGraphics";
 
 export default class plotGlobeTracker {
     viewer = null;
@@ -11,6 +12,7 @@ export default class plotGlobeTracker {
     singleBillboardDrawer = null;
     polylineDrawer = null;
     polygonDrawer = null;
+    rectangleDrawer = null;
 
     constructor(viewer) {
         let _this = this;
@@ -90,5 +92,15 @@ export default class plotGlobeTracker {
         }
         _this.clearOthers(_this.polygonDrawer.plotType)
         _this.polygonDrawer.start(okHandler, cancelHandler);
+    }
+    trackRectangle(okHandler, cancelHandler) {
+        let _this = this;
+        _this.clear();
+        if (_this.rectangleDrawer == null) {
+            _this.rectangleDrawer = new rectangleGraphics(_this.viewer);
+            _this.ctrArr.push(_this.rectangleDrawer);
+        }
+        _this.clearOthers(_this.rectangleDrawer.plotType)
+        _this.rectangleDrawer.start(okHandler, cancelHandler);
     }
 }
