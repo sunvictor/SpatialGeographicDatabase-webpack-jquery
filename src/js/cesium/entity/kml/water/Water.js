@@ -1,4 +1,5 @@
 import {go} from "../../../globalObject";
+import cm from "@/js/plugins/CesiumMethod";
 
 export default class Water {
     viewer = null;
@@ -30,6 +31,7 @@ export default class Water {
         frequency: 80.0,//波动频率
         amplitude: 2.5, //振幅频率
         specularIntensity: 0.5, // 镜面反射强度
+        drawWaterEnabled: false
     }
 
     constructor(viewer) {
@@ -40,6 +42,7 @@ export default class Water {
         _this.canvas = viewer.scene.canvas;
         _this.camera = viewer.scene.camera;
         _this.ellipsoid = viewer.scene.globe.ellipsoid;
+        _this.bindModel();
     }
 
     clear() {
@@ -51,6 +54,7 @@ export default class Water {
         _this.xmlArray = [];
         _this.x1 = [];
     }
+
     loadXMLDoc(xmlFile, isHeight, classificationType) {
         let that = this;
         $.ajaxSettings.async = false;
@@ -59,6 +63,7 @@ export default class Water {
         })
         $.ajaxSettings.async = true;
     }
+
     createPrimitive(polygonInstances, classificationType) {
         let _this = this;
         _this.AllRiver = new Cesium.GroundPrimitive({
@@ -73,6 +78,7 @@ export default class Water {
             }),
         });
     }
+
     createGeometry(points, isHeight) {
         let _this = this;
         let newPoints = [];
@@ -96,6 +102,38 @@ export default class Water {
         })
         return geometry;
     }
+
+    drawWater(newValue) {
+        let _this = this;
+        if (!newValue) return;
+        _this.clear();
+        go.plot.trackPolygon(function (position) {
+            console.log(position)
+            position.push(position[position.length - 1]);
+            let geometry = new Cesium.GeometryInstance({
+                geometry: new Cesium.PolygonGeometry({
+                    polygonHierarchy: new Cesium.PolygonHierarchy(position),
+                    extrudedHeight: 260,
+                    // height: 220,
+                    vertexFormat: Cesium.EllipsoidSurfaceAppearance.VERTEX_FORMAT,
+                    //vertexFormat: Cesium.VertexFormat.POSITION_AND_NORMAL,
+                    clampToGround: true //开启贴地
+                    //perPositionHeight : true
+                }),
+            })
+            _this.polygonInstances.push(geometry);
+            _this.createWater(Cesium.ClassificationType.TERRAIN);
+            let newNode = {
+                name: _this.AllRiver.name ? _this.AllRiver.name : "未命名水面",
+                checked: _this.AllRiver.show
+            }
+            let node = go.ec.addNode(-1, newNode, _this.AllRiver);
+            _this.viewModel.drawWaterEnabled = false;
+        }, function (positions) {
+            console.log(positions)
+        })
+    }
+
     start(url, isHeight, classificationType) {
         let _this = this;
         _this.AllRiverArray = [];
@@ -107,6 +145,7 @@ export default class Water {
         let node = go.ec.addNode(-1, newNode, _this.AllRiver)
         return _this.AllRiver;
     }
+
     startEvent(xmls, isHeight, classificationType) {
         let _this = this;
         _this.clear();
@@ -152,6 +191,11 @@ export default class Water {
             }
             _this.cartoPositions.push(a)
         }
+        _this.createWater(classificationType);
+    }
+
+    createWater(classificationType) {
+        let _this = this;
         _this.createPrimitive(_this.polygonInstances, classificationType);
         // 设置水材质
         let River_Material = new Cesium.Material({
@@ -168,66 +212,26 @@ export default class Water {
                 }
             }
         });
- 
+
         _this.AllRiver.appearance.material = River_Material;
-        // _this.AllRiver.appearance.fragmentShaderSource = 'letying vec3 v_positionMC;\n' +
-        //     'letying vec3 v_positionEC;\n' +
-        //     'letying vec2 v_st;\n' +
-        //     'void main()\n' +
-        //     '{\n' +
-        //     'czm_materialInput materialInput;\n' +
-        //     'vec3 normalEC = normalize(czm_normal3D * czm_geodeticSurfaceNormal(v_positionMC, vec3(0.0), vec3(1.0)));\n' +
-        //     '#ifdef FACE_FORWARD\n' +
-        //     'normalEC = faceforward(normalEC, vec3(0.0, 0.0, 1.0), -normalEC);\n' +
-        //     '#endif\n' +
-        //     'materialInput.s = v_st.s;\n' +
-        //     'materialInput.st = v_st;\n' +
-        //     'materialInput.str = vec3(v_st, 0.0);\n' +
-        //     'materialInput.normalEC = normalEC;\n' +
-        //     'materialInput.tangentToEyeMatrix = czm_eastNorthUpToEyeCoordinates(v_positionMC, materialInput.normalEC);\n' +
-        //     'vec3 positionToEyeEC = -v_positionEC;\n' +
-        //     'materialInput.positionToEyeEC = positionToEyeEC;\n' +
-        //     'czm_material material = czm_getMaterial(materialInput);\n' +
-        //     '#ifdef FLAT\n' +
-        //     'gl_FragColor = vec4(material.diffuse + material.emission, material.alpha);\n' +
-        //     '#else\n' +
-        //     'gl_FragColor = czm_phong(normalize(positionToEyeEC), material, czm_lightDirectionEC);\n' +
-        //     'gl_FragColor.a=0.85;\n' +
-        //     '#endif\n' +
-        //     '}\n'
         _this.scene.primitives.add(_this.AllRiver); //添加到场景
         _this.AllRiverArray.push(_this.AllRiver);
+    }
 
-        // window.sceneJson = [];
-        // for (let i = 0; i < _this.cartoPositions.length; i++) {
-        //     let pieceOfWater = {
-        //         "czmObject": {
-        //             "xbsjType": "Water",
-        //             "ground": false,
-        //             "positions": _this.cartoPositions[i],
-        //             // "blendColor": [1, 1, 1, 0.7],
-        //             "height": 195,
-        //             "outline": {
-        //                 show: false,
-        //             },
-        //             "blendColor": [0.5, 0.5, 0.5, 0.6]
-        //         }
-        //     }
-        //     sceneJson.push(pieceOfWater)
-        // }
-        //
-        // let array5 = [];
-        // for (let i = 0; i < waterPositions.length; i++) {
-        //     let a = [];
-        //     a.push(waterPositions[i], waterPositions[i + 1]);
-        //     array5.push(a);
-        //     i++;
-        // }
-        // let finalArray = [];
-        // for (let k = 0; k < array5.length; k++) {
-        //     let aa = Cesium.Cartographic.fromDegrees(array5[k][0], array5[k][1]);
-        //     finalArray.push(aa.longitude, aa.latitude)
-        // }
-
+    /**
+     * 属性绑定
+     */
+    bindModel() {
+        let _this = this;
+        Cesium.knockout.track(_this.viewModel);
+        let toolbar = document.getElementById("drawWater"); // 按钮的dom元素
+        Cesium.knockout.applyBindings(_this.viewModel, toolbar);
+        Cesium.knockout.getObservable(_this.viewModel, 'drawWaterEnabled').subscribe(
+            function (newValue) {
+                go.bbi.bindImg("水域", "drawWater", newValue) // 切换是否选中图片
+                // _this.dataSourcePanel.show = newValue; // 控制面板显示隐藏
+                _this.drawWater(newValue);
+            }
+        );
     }
 }

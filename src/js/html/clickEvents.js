@@ -106,6 +106,9 @@ $("#wireFrame").on('click', function () {
 $("#radar").on('click', function () {
     go.radar.viewModel.enabled = !go.radar.viewModel.enabled
 })
+$("#drawWater").on('click', function () {
+    go.water.viewModel.drawWaterEnabled = !go.water.viewModel.drawWaterEnabled;
+})
 $("#proliferation").on('click', function () {
     let enabled = $(this).data('enabled');
     if (!enabled) {

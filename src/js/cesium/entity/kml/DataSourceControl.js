@@ -80,7 +80,7 @@ export default class DataSourceControl {
         let data;
         if (options.type == "kml") {
             if (options.isWater) {
-                let water = go.water.start(url, true);
+                let water = go.water.start(op.url, true);
                 return;
             } else {
                 data = Cesium.KmlDataSource.load(op.url, op);
