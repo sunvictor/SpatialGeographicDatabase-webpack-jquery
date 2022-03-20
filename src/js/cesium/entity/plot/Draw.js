@@ -71,23 +71,32 @@ export default class drawShape {
         $("#drawRectangle").on('click', function () {
             _this.draw.flag = 0;
             go.plot.trackRectangle(function (positions, params) {
-                var objId = (new Date()).getTime();
+                let objId = (new Date()).getTime();
                 _this.draw.shapeDic[objId] = positions;
                 go.plot.rectangleDrawer.showRectangle(objId, positions, params);
             }, function (positions) {
                 console.log(positions)
             });
         })
+        $("#drawCircle").on('click', function () {
+            _this.draw.flag = 0;
+            go.plot.trackCircle(function (positions, params) {
+                let objId = (new Date()).getTime();
+                _this.draw.shapeDic[objId] = positions;
+                go.plot.circleDrawer.showCircle(objId, positions, params);
+            });
+        })
+
     }
 
     clearEntityById(objId) {
-        var _this = this;
-        var entityList = _this.viewer.entities.values;
+        let _this = this;
+        let entityList = _this.viewer.entities.values;
         if (entityList == null || entityList.length < 1) {
             return;
         }
-        for (var i = 0; i < entityList.length; i++) {
-            var entity = entityList[i];
+        for (let i = 0; i < entityList.length; i++) {
+            let entity = entityList[i];
             if (entity.layerId === _this.draw.layerId && entity.objId === objId) {
                 _this.viewer.entities.remove(entity);
                 i--;

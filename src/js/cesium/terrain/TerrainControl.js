@@ -105,7 +105,10 @@ export default class TerrainControl {
     addToPanel(terrain) {
         let _this = this;
         let terrainsDom = $("#" + _tc_terrains_id);
-        let terrainBtn = $("<button name='terrain'>" + terrain.name + "</button>")
+        let terrainBtn = $("<button name='terrain'>" + terrain.name + "</button>");
+        if (terrain.customProp) {
+            terrainBtn.attr('title', terrain.customProp.url);
+        }
         terrainBtn.data("terrain", terrain)
         terrainsDom.append(terrainBtn)
         $("[name='terrain']").off('click').on('click', function () {
@@ -148,7 +151,7 @@ export default class TerrainControl {
             let terrainRequestVertexNormals = $("#terrainTable [name='terrain_requestVertexNormals']").prop("checked");
             let terrainRequestWaterMask = $("#terrainTable [name='terrain_requestWaterMask']").prop("checked");
             let isLoad = $("#terrainTable [name='isLoad']").prop("checked");
-            if (!terrainName === "" || terrainUrl === ""){
+            if (!terrainName === "" || terrainUrl === "") {
                 cocoMessage.error("请输入参数");
                 return;
             }

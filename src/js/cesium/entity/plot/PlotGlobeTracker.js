@@ -4,6 +4,7 @@ import $ from 'jquery'
 import pointGraphics from "@/js/cesium/entity/plot/PointGraphics";
 import polygonGraphics from "@/js/cesium/entity/plot/PolygonGraphics";
 import rectangleGraphics from "@/js/cesium/entity/plot/RectangleGraphics";
+import circleGraphics from "@/js/cesium/entity/plot/CircleGraphics";
 
 export default class plotGlobeTracker {
     viewer = null;
@@ -13,6 +14,7 @@ export default class plotGlobeTracker {
     polylineDrawer = null;
     polygonDrawer = null;
     rectangleDrawer = null;
+    circleDrawer = null;
 
     constructor(viewer) {
         let _this = this;
@@ -102,5 +104,15 @@ export default class plotGlobeTracker {
         }
         _this.clearOthers(_this.rectangleDrawer.plotType)
         _this.rectangleDrawer.start(okHandler, cancelHandler);
+    }
+    trackCircle(okHandler, cancelHandler) {
+        let _this = this;
+        _this.clear();
+        if (_this.circleDrawer == null) {
+            _this.circleDrawer = new circleGraphics(_this.viewer);
+            _this.ctrArr.push(_this.circleDrawer);
+        }
+        _this.clearOthers(_this.circleDrawer.plotType)
+        _this.circleDrawer.start(okHandler, cancelHandler);
     }
 }

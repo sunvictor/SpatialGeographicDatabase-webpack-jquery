@@ -1,5 +1,5 @@
 import {go} from "../../globalObject";
-import GlobeRectangleDrawer from "./edit/GlobeRectangleDrawer";
+import GlobeCircleDrawer from "@/js/cesium/entity/plot/edit/GlobeCircleDrawer";
 import gykjPanel from "../../../plugins/panel";
 import $ from "jquery";
 import {honeySwitch} from "../../../plugins/honeySwitch";
@@ -7,32 +7,32 @@ import cm from "../../../plugins/CesiumMethod";
 import entityProvider from "../EntityProvider";
 
 
-let _btnName = "矩形";
-let _btnIdName = "drawRectangle";
-export default class rectangleGraphics {
+let _btnName = "圆形";
+let _btnIdName = "drawCircle";
+export default class circleGraphics {
     viewModel = {
         enabled: false
     }
-    rectangleDrawer = null;
-    plotType = "rectangle";
+    circleDrawer = null;
+    plotType = "circle";
     layerId = "globeDrawerDemoLayer"
 
     constructor(viewer) {
         let _this = this;
         _this.viewer = viewer;
         _this.bindModel();
-        _this.rectangleDrawer = new GlobeRectangleDrawer(_this.viewer);
+        _this.circleDrawer = new GlobeCircleDrawer(_this.viewer);
     }
 
     clear() {
         let _this = this;
-        _this.rectangleDrawer.clear()
+        _this.circleDrawer.clear()
     }
 
     start(okCallback, cancelCallback) {
         let _this = this;
         _this.viewModel.enabled = true;
-        _this.rectangleDrawer.start(function (positions, lonLats, params) {
+        _this.circleDrawer.start(function (positions, lonLats, params) {
             okCallback(positions, lonLats, params);
             _this.viewModel.enabled = false;
         }, function () {
@@ -41,46 +41,80 @@ export default class rectangleGraphics {
         });
     }
 
-    showRectangle(objId, positions, params) {
+    showCircle(objId, positions, params) {
         let _this = this;
+        let distance = 0;
+        for (let i = 0; i < positions.length - 1; i++) {
+            let point1cartographic = Cesium.Cartographic.fromCartesian(positions[i]);
+            let point2cartographic = Cesium.Cartographic.fromCartesian(positions[i + 1]);
+            /**根据经纬度计算出距离**/
+            let geodesic = new Cesium.EllipsoidGeodesic();
+            geodesic.setEndPoints(point1cartographic, point2cartographic);
+            let s = geodesic.surfaceDistance;
+            //返回两点之间的距离
+            //			s = Math.sqrt(Math.pow(s, 2) + Math.pow(point2cartographic.height - point1cartographic.height, 2));	
+            s = Math.abs(point2cartographic.height - point1cartographic.height);
+            distance = distance + s;
+        }
+
         // let color = $("#paigusu").data("color");
+        // let material = object.tracker.changeColor.getColor(params.color);
         let material = Cesium.Color.fromCssColorString(params.color);
-        let outlineMaterial = new Cesium.PolylineDashMaterialProperty({
-            dashLength: 16,
-            color: Cesium.Color.fromCssColorString(params.outlineColor)
+        let outlineMaterial = new Cesium.PolylineGlowMaterialProperty({
+            // dashLength: 16,
+            color: Cesium.Color.fromCssColorString(params.outlineColor),
         });
-        let rect = Cesium.Rectangle.fromCartesianArray(positions);
-        let arr = [rect.west, rect.north, rect.east, rect.north, rect.east, rect.south, rect.west, rect.south, rect.west,
-            rect.north
-        ];
-        let outlinePositions = Cesium.Cartesian3.fromRadiansArray(arr);
+        let radiusMaterial = new Cesium.PolylineGlowMaterialProperty({
+            dashLength: 16,
+            color: Cesium.Color.fromCssColorString(params.outlineColor),
+        });
+        let pnts = _this.circleDrawer._computeCirclePolygon(positions);
+        let dis = _this.circleDrawer._computeCircleRadius3D(positions);
+        // dis = (dis / 1000).toFixed(3);
+        let value = typeof positions.getValue === 'function' ? positions.getValue(0) : positions;
+        let text = dis + "km";
+        let r = Math.sqrt(Math.pow(value[0].x - value[value.length - 1].x, 2) + Math.pow(value[0].y - value[value.length - 1].y, 2));
+        // let r = Math.sqrt(Math.pow(value[0].x - value[value.length - 1].x, 2) + Math.pow(value[0].y - value[value.length - 1].y, 2));
+
         let bData = {
-            rectanglePosition: positions,
-            layerId: _this.layerId,
+            name: params.name,
+            circlePosition: positions,
+            // layerId: draw.layerId,
             objId: objId,
-            shapeType: "Rectangle",
+            shapeType: "Circle",
+            position: positions[0],
+            ellipse: {
+                semiMajorAxis: dis ? dis : dis + 1,
+                semiMinorAxis: dis ? dis : dis + 1,
+                material: material,
+                outline: true
+            }
+        };
+
+        let outlineBdata = {
+            // layerId: draw.layerId,
+            objId: objId,
+            shapeType: "CircleOutline",
             polyline: {
                 show: params.outline,
-                positions: outlinePositions,
+                positions: pnts,
                 clampToGround: true,
                 width: params.outlineWidth,
                 material: outlineMaterial
-            },
-            rectangle: {
-                coordinates: rect,
-                material: material
             }
         };
         bData.customProp = params;
-        let entity = go.ec.add(bData);
+        let entity = _this.viewer.entities.add(bData);
         // draw.shape.push(entity)
-        return entity;
+        outlineBdata.customProp = params;
+        let outlineEntity = viewer.entities.add(outlineBdata);
+        // draw.shape.push(outlineEntity)
     }
 
 
     editShape(treeNode, entity) {
         let _this = this;
-        if (_this.rectangleDrawer.isPanelOpen) {
+        if (_this.circleDrawer.isPanelOpen) {
             return;
         }
         go.draw.flag = 1;
@@ -93,9 +127,9 @@ export default class rectangleGraphics {
         go.draw.clearEntityById(objId);
 
         //进入编辑状态
-        _this.rectangleDrawer.showModifyRectangle(oldPositions, oldParams, function (positions, params) {
+        _this.circleDrawer.showModifyCircle(oldPositions, oldParams, function (positions, params) {
             go.draw.draw.shapeDic[objId] = positions;
-            let entity = _this.showRectangle(objId, positions, params);
+            let entity = _this.showCircle(objId, positions, params);
             entity.nodeProp = treeNode;
             go.ec.treeData[deletedEntity.nodeProp.gIndex] = entity;
             treeNode.customProp.entityPanel.closePanel();
@@ -107,7 +141,7 @@ export default class rectangleGraphics {
             }
             treeNode.customProp.entityPanel = new entityProvider(_this.viewer).showAttrPanel(node, entity, panelOptions);
         }, function () {
-            let entity = _this.showRectangle(objId, oldPositions, oldParams);
+            let entity = _this.showCircle(objId, oldPositions, oldParams);
             entity.nodeProp = treeNode;
             go.ec.treeData[deletedEntity.nodeProp.gIndex] = entity;
             treeNode.customProp.entityPanel.closePanel();
