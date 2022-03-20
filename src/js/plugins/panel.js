@@ -128,7 +128,9 @@ const gykjPanel = (function () {
             panelDiv.appendChild(title);
             title.classList.add('panel-title');
             _this.move(title);
-            _this.panelZIndex(title);
+            if (String(options.zIndexEnabled) !== "false") {
+                _this.panelZIndex(title);
+            }
             const titleH3 = document.createElement('h3');
             titleH3.classList.add('panel-title-h3');
             titleH3.innerText = options.title ? options.title : "";

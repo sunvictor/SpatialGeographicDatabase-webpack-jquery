@@ -57,15 +57,15 @@ export default class imageryProvider {
         let html = "<table>";
         for (let i = 0; i < _this.attrDict.length; i++) {
             const element = _this.attrDict[i]
-            if (element == "show") {
+            if (element === "show") {
                 let className = imageryLayer[element] ? "switch-on" : "switch-off"
                 html += `<tr><td>${element}</td><td><span data-bind="value: show" class="${className}" id="imagery_attr_${treeNode.gid}_show"></span></td></tr>`
-            } else if (element == "alpha") {
+            } else if (element === "alpha") {
                 html += `<tr><td>${element}</td><td>
                     <input type="range" min="0.0" max="1.0" step="0.05" data-bind="value: alpha, valueUpdate: 'input'">
                     <input type="text" size="5" data-bind="value: alpha">
                     </td></tr>`
-            } else if (element == "splitDirection") {
+            } else if (element === "splitDirection") {
                 html += `<tr><td>${element}</td><td>
                     <select data-bind="options:splitDirections,optionsText:'Key',optionsValue:'Value',selectedOptions:selectedSelectedOptions"></select>
                        </td></tr>`
@@ -77,6 +77,9 @@ export default class imageryProvider {
             }
             _this.attrModel[element] = imageryLayer[element];
         }
+        html += `<tr><td>地址</td><td>
+                    <input style="width: 100%;" type="text" value="${imageryLayer.customProp.url}" readonly>
+                       </td></tr>`
         html += `</table>`
         $(div).append(html)
         _this.imageryLayerAttrPanel = new gykjPanel({

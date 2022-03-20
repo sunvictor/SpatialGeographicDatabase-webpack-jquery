@@ -95,6 +95,7 @@ export default class PanoramicView {
         this.panel = new gykjPanel({
             title: "全景360",
             show: true,
+            zIndexEnabled: false,
             width: 1000,
             height: 600,
             type: 2,
