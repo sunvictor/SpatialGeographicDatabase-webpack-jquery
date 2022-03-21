@@ -5,6 +5,7 @@ import pointGraphics from "@/js/cesium/entity/plot/PointGraphics";
 import polygonGraphics from "@/js/cesium/entity/plot/PolygonGraphics";
 import rectangleGraphics from "@/js/cesium/entity/plot/RectangleGraphics";
 import circleGraphics from "@/js/cesium/entity/plot/CircleGraphics";
+import bufferLineGraphics from "@/js/cesium/entity/plot/BufferLineGraphics";
 
 export default class plotGlobeTracker {
     viewer = null;
@@ -15,6 +16,7 @@ export default class plotGlobeTracker {
     polygonDrawer = null;
     rectangleDrawer = null;
     circleDrawer = null;
+    bufferLineDrawer = null;
 
     constructor(viewer) {
         let _this = this;
@@ -114,5 +116,15 @@ export default class plotGlobeTracker {
         }
         _this.clearOthers(_this.circleDrawer.plotType)
         _this.circleDrawer.start(okHandler, cancelHandler);
+    }
+    trackBufferLine(okHandler, cancelHandler) {
+        let _this = this;
+        _this.clear();
+        if (_this.bufferLineDrawer == null) {
+            _this.bufferLineDrawer = new bufferLineGraphics(_this.viewer);
+            _this.ctrArr.push(_this.bufferLineDrawer);
+        }
+        _this.clearOthers(_this.bufferLineDrawer.plotType)
+        _this.bufferLineDrawer.start(okHandler, cancelHandler);
     }
 }
