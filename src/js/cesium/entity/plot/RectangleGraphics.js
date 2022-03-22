@@ -132,6 +132,7 @@ export default class rectangleGraphics {
         Cesium.knockout.getObservable(_this.viewModel, 'enabled').subscribe(
             function (newValue) {
                 go.bbi.bindImg(_btnName, _btnIdName, newValue) // 切换是否选中图片
+                _this.clear();
                 // _this.entityPanel.show = newValue; // 控制面板显示隐藏
             }
         );

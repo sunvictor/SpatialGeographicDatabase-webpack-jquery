@@ -1,3 +1,5 @@
+import * as turf from '@turf/turf'
+
 export default class GlobeBufferLineDrawer {
     viewer = null;
     scene = null;
@@ -13,8 +15,8 @@ export default class GlobeBufferLineDrawer {
     modifyHandler = null;
     okHandler = null;
     cancelHandler = null;
-    dragIcon = "./images/circle_gray.png";
-    dragIconLight = "./images/circle_red.png";
+    dragIcon = "../../../../img/plot/tempMidPoint.png";
+    dragIconLight = "../../../../img/plot/editPoint.png";
     material = null;
     lineMaterial = null;
     fill = true;
@@ -55,7 +57,9 @@ export default class GlobeBufferLineDrawer {
             _this.modifyHandler = null;
         }
         if (_this.toolBarIndex != null) {
-            layer.close(_this.toolBarIndex);
+            layer.close(_this.toolBarIndex, function () {
+                $("#shapeEditContainer").remove();
+            });
         }
         _this._clearMarkers(_this.layerId);
         // _this.tooltip.setVisible(false);
@@ -99,10 +103,10 @@ export default class GlobeBufferLineDrawer {
         _this.positions = [];
         let floatingPoint = null;
 
-        let definedColor = $("#paigusu").data("color2");
-        if (definedColor) {
-            _this.shapeColor = "rgba(" + definedColor + ")"; // 设置自定义的绘图颜色
-        }
+        // let definedColor = $("#paigusu").data("color2");
+        // if (definedColor) {
+        //     _this.shapeColor = "rgba(" + definedColor + ")"; // 设置自定义的绘图颜色
+        // }
         _this.drawHandler = new Cesium.ScreenSpaceEventHandler(_this.canvas);
 
         _this.drawHandler.setInputAction(function (event) {
@@ -605,7 +609,9 @@ export default class GlobeBufferLineDrawer {
         let btnCancel = $("#shapeEditContainer button[name='btnCancel']");
         btnOK.unbind("click").bind("click", function () {
             _this.clear();
-            layer.close(_this.toolBarIndex);
+            layer.close(_this.toolBarIndex, function () {
+                $("#shapeEditContainer").remove();
+            });
             if (_this.okHandler) {
                 let positions = [];
                 for (let i = 0; i < _this.tempPositions.length; i += 2) {
@@ -624,7 +630,9 @@ export default class GlobeBufferLineDrawer {
         });
         btnCancel.unbind("click").bind("click", function () {
             _this.clear();
-            layer.close(_this.toolBarIndex);
+            layer.close(_this.toolBarIndex, function () {
+                $("#shapeEditContainer").remove();
+            });
             if (_this.cancelHandler) {
                 _this.cancelHandler();
                 _this.resetParams();
@@ -734,21 +742,21 @@ export default class GlobeBufferLineDrawer {
     setAttribute(){
         let _this = this;
         // 设置图形颜色
-        $(".bufferline-shapecolor-paigusu").paigusu({
-            color: "228,235,41,0.6", //初始色  支持两种配置方案
-        }, function (event, obj) {
-            // console.log(event);
-            // console.log(obj);
-            $(event).data('color', "rgba(" + obj.rgba + ")"); // 用于changeColor.js使用，格式 rgba(25,38,220,0.1);
-            $(event).data('color2', obj.rgba); // 用于paigusu.min.js使用，获取当前颜色 格式 25,38,220,1
-            $(event).css('background', "rgba(" + obj.rgb + ")"); // 设置页面盒子的背景颜色
-            // color = "rgba("+obj.rgba+")";
-            _this.shapeColor = "rgba(" + obj.rgba + ")";
-            _this.entity.polygon.material = new Cesium.ColorMaterialProperty(new Cesium.CallbackProperty(function () {
-                _this.material = Cesium.Color.fromCssColorString("rgba(" + obj.rgba + ")");
-                return _this.material;
-            }, false));
-        });
+        // $(".bufferline-shapecolor-paigusu").paigusu({
+        //     color: "228,235,41,0.6", //初始色  支持两种配置方案
+        // }, function (event, obj) {
+        //     // console.log(event);
+        //     // console.log(obj);
+        //     $(event).data('color', "rgba(" + obj.rgba + ")"); // 用于changeColor.js使用，格式 rgba(25,38,220,0.1);
+        //     $(event).data('color2', obj.rgba); // 用于paigusu.min.js使用，获取当前颜色 格式 25,38,220,1
+        //     $(event).css('background', "rgba(" + obj.rgb + ")"); // 设置页面盒子的背景颜色
+        //     // color = "rgba("+obj.rgba+")";
+        //     _this.shapeColor = "rgba(" + obj.rgba + ")";
+        //     _this.entity.polygon.material = new Cesium.ColorMaterialProperty(new Cesium.CallbackProperty(function () {
+        //         _this.material = Cesium.Color.fromCssColorString("rgba(" + obj.rgba + ")");
+        //         return _this.material;
+        //     }, false));
+        // });
 
         // 修改图形名称
         $('#bufferlineName').bind('input propertychange', function () {

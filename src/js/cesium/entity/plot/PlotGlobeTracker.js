@@ -23,8 +23,18 @@ export default class plotGlobeTracker {
         _this.viewer = viewer;
         _this.billboardDrawer = new billboardGraphics(viewer)
         _this.singleBillboardDrawer = new pointGraphics(viewer)
+        _this.polylineDrawer = new polylineGraphics(viewer)
+        _this.polygonDrawer = new polygonGraphics(viewer)
+        _this.rectangleDrawer = new rectangleGraphics(viewer)
+        _this.circleDrawer = new circleGraphics(viewer)
+        _this.bufferLineDrawer = new bufferLineGraphics(viewer)
         _this.ctrArr.push(_this.billboardDrawer);
         _this.ctrArr.push(_this.singleBillboardDrawer);
+        _this.ctrArr.push(_this.polylineDrawer);
+        _this.ctrArr.push(_this.polygonDrawer);
+        _this.ctrArr.push(_this.rectangleDrawer);
+        _this.ctrArr.push(_this.circleDrawer);
+        _this.ctrArr.push(_this.bufferLineDrawer);
     }
 
     clear() {

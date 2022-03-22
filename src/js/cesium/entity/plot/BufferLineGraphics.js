@@ -55,7 +55,7 @@ export default class bufferLineGraphics {
         let r = radius / Number(params.speed);
         // let buffer;
         let bData = {
-            layerId: draw.layerId,
+            // layerId: draw.layerId,
             objId: objId,
             shapeType: "BufferLine",
             polygon: new Cesium.PolygonGraphics({
@@ -75,13 +75,13 @@ export default class bufferLineGraphics {
                 if (r >= radius) {
                     r = radius / Number(params.speed);
                 }
-                buffer = _thi.computeBufferLine(positions, r);
+                buffer = _this.bufferLineDrawer.computeBufferLine(positions, r);
                 return new Cesium.PolygonHierarchy(buffer);
             }, false);
             bData.polygon.hierarchy = animateHierarchy;
         }
         bData.customProp = params;
-        let entity = _this.viewer.entities.add(bData);
+        let entity = go.ec.add(bData);
         // draw.shape.push(entity);
         return entity;
     }
@@ -151,6 +151,7 @@ export default class bufferLineGraphics {
         Cesium.knockout.getObservable(_this.viewModel, 'enabled').subscribe(
             function (newValue) {
                 go.bbi.bindImg(_btnName, _btnIdName, newValue) // 切换是否选中图片
+                _this.clear();
                 // _this.entityPanel.show = newValue; // 控制面板显示隐藏
             }
         );

@@ -1,4 +1,4 @@
-import PolylineTrailLinkMaterialProperty from "../../plugins/mixin/PolylineTrailLinkMaterialProperty"
+// import PolylineTrailLinkMaterialProperty from "../../plugins/mixin/PolylineTrailLinkMaterialProperty"
 export default class DynamicWall {
     constructor(viewer) {
         this.viewer = viewer;

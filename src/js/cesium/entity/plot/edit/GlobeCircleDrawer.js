@@ -54,7 +54,9 @@ export default class GlobeCircleDrawer {
             _this.modifyHandler = null;
         }
         if (_this.toolBarIndex != null) {
-            layer.close(_this.toolBarIndex);
+            layer.close(_this.toolBarIndex, function () {
+                $("#shapeEditContainer").remove();
+            });
         }
         _this._clearMarkers(_this.layerId);
         // _this.tooltip.setVisible(false);

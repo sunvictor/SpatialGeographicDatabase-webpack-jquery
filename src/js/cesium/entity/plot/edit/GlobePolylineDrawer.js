@@ -573,7 +573,9 @@ export default class GlobePolylineDrawer {
                 _this.resetParams();
             } else {
                 _this.clear();
-                layer.close(_this.toolBarIndex);
+                layer.close(_this.toolBarIndex, function () {
+                    $("#shapeEditContainer").remove();
+                });
                 _this.resetParams();
             }
         });

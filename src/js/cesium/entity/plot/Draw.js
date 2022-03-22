@@ -50,6 +50,10 @@ export default class drawShape {
         })
         $("#drawPolyline").on('click', function () {
             _this.draw.flag = 0;
+            if (go.plot.polylineDrawer.viewModel.enabled) {
+                go.plot.polylineDrawer.viewModel.enabled = false;
+                return;
+            }
             go.plot.trackPolyline(function (positions, lonlats, params) {
                 let objId = (new Date()).getTime();
                 _this.draw.shapeDic[objId] = positions;
@@ -60,6 +64,10 @@ export default class drawShape {
         })
         $("#drawPolygon").on('click', function () {
             _this.draw.flag = 0;
+            if (go.plot.polygonDrawer.viewModel.enabled) {
+                go.plot.polygonDrawer.viewModel.enabled = false;
+                return;
+            }
             go.plot.trackPolygon(function (positions, params) {
                 let objId = (new Date()).getTime();
                 _this.draw.shapeDic[objId] = positions;
@@ -70,6 +78,10 @@ export default class drawShape {
         })
         $("#drawRectangle").on('click', function () {
             _this.draw.flag = 0;
+            if (go.plot.rectangleDrawer.viewModel.enabled) {
+                go.plot.rectangleDrawer.viewModel.enabled = false;
+                return;
+            }
             go.plot.trackRectangle(function (positions, params) {
                 let objId = (new Date()).getTime();
                 _this.draw.shapeDic[objId] = positions;
@@ -80,10 +92,29 @@ export default class drawShape {
         })
         $("#drawCircle").on('click', function () {
             _this.draw.flag = 0;
+            if (go.plot.circleDrawer.viewModel.enabled) {
+                go.plot.circleDrawer.viewModel.enabled = false;
+                return;
+            }
             go.plot.trackCircle(function (positions, params) {
                 let objId = (new Date()).getTime();
                 _this.draw.shapeDic[objId] = positions;
                 go.plot.circleDrawer.showCircle(objId, positions, params);
+            });
+        })
+        $("#drawBufferLine").on('click', function () {
+            _this.draw.flag = 0;
+            if (go.plot.bufferLineDrawer.viewModel.enabled) {
+                go.plot.bufferLineDrawer.viewModel.enabled = false;
+                return;
+            }
+            go.plot.trackBufferLine(function (positions, radius, params) {
+                let objId = (new Date()).getTime();
+                _this.draw.shapeDic[objId] = {
+                    positions: positions,
+                    radius: radius
+                };
+                go.plot.bufferLineDrawer.showBufferLine(objId, positions, radius, params);
             });
         })
 
