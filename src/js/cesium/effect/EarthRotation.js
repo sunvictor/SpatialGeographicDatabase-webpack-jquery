@@ -19,6 +19,7 @@ export default class EarthRotation {
     <div><span>速度</span></div>
     <div><input type='range' min="70" max="1000" step="0.01" data-bind="value: multiplier, valueUpdate: 'input'"></div></div>`
         }
+        console.log(2)
         let lightAlert = new gykjAlert(options)
         this.bindModel();
     }

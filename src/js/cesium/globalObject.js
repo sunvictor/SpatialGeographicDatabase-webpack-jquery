@@ -21,6 +21,7 @@ import DblClickRotate from "@/js/cesium/scene/DblClickRotate";
 import Water from "./entity/kml/water/Water";
 import KeepView from "@/js/plugins/KeepView";
 import RadarScan from "@/js/cesium/effect/RadarScan";
+import CircleScan from "@/js/cesium/effect/CircleScan";
 
 let _viewer;
 export const go = {}; // 封装所有的类对象
@@ -62,6 +63,7 @@ function createObjs(viewer) {
     go.dblc = new DblClickRotate(viewer);
     go.water = new Water(viewer);
     go.radar = new RadarScan(viewer);
+    go.proliferation = new CircleScan(viewer);
 }
 
 function publicEvents(viewer){

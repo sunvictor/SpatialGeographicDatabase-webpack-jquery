@@ -110,19 +110,20 @@ $("#drawWater").on('click', function () {
     go.water.viewModel.drawWaterEnabled = !go.water.viewModel.drawWaterEnabled;
 })
 $("#proliferation").on('click', function () {
-    let enabled = $(this).data('enabled');
-    if (!enabled) {
-        let center = Cesium.Cartesian3.fromDegrees(106.39194994, 29.84123831, 0);
-        let color = new Cesium.Color(0, 1.0, 0.0, 1);
-        var circle = new CircleScan(viewer);
-        $(this).data('data', circle);
-        circle.start(center, 1500, color, 3000);
-    } else {
-        let circle = $(this).data('data');
-        circle.clear();
-    }
-    $(this).data("enabled", !enabled)
-    go.bbi.bindImg("扩散", "proliferation", !enabled)
+    // let enabled = $(this).data('enabled');
+    // if (!enabled) {
+    //     let center = Cesium.Cartesian3.fromDegrees(106.39194994, 29.84123831, 0);
+    //     let color = new Cesium.Color(0, 1.0, 0.0, 1);
+    //     var circle = new CircleScan(viewer);
+    //     $(this).data('data', circle);
+    //     circle.start(center, 1500, color, 3000);
+    // } else {
+    //     let circle = $(this).data('data');
+    //     circle.clear();
+    // }
+    // $(this).data("enabled", !enabled)
+    // go.bbi.bindImg("扩散", "proliferation", !enabled)
+    go.proliferation.viewModel.enabled = !go.proliferation.viewModel.enabled;
 })
 $("#wall").on('click', function () {
     let enabled = $(this).data('enabled');
@@ -167,4 +168,11 @@ $("#dblClickRotate").on('click', function () {
     go.dblc.start(enabled);
     $(this).data('enabled', !enabled)
     go.bbi.bindImg("双击旋转", "dblClickRotate", !enabled)
+})
+$("#depthTest").on('click', function () {
+    let enabled = $(this).data('enabled')
+    console.log(enabled)
+    viewer.scene.globe.depthTestAgainstTerrain = !enabled;
+    $(this).data('enabled', !enabled)
+    go.bbi.bindImg("深度检测", "depthTest", !enabled)
 })

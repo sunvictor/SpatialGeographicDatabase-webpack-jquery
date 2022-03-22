@@ -32,11 +32,12 @@ export default class RadarScan {
         let options = {
             btn: $("#" + _btnIdName).next(),
             content: `<div id='radarScan_config'>
-    <div><span>半径</span><input type='range' min="1" max="1000" step="0.1" data-bind="value: radius, valueUpdate: 'input'"></div>
+<!--    <div><span>半径</span><input type='range' min="1" max="1000" step="0.1" data-bind="value: radius, valueUpdate: 'input'"></div>-->
     <div><span>颜色</span><input type='text' data-bind="value: color, valueUpdate: 'input'"></div>
     <div><span>速度</span><input type='range' min="1000" max="10000" step="1" data-bind="value: duration, valueUpdate: 'input'"></div>
     </div>`
         }
+        console.log(4)
         let lightAlert = new gykjAlert(options)
         _this.bindModel();
     }
@@ -69,8 +70,9 @@ export default class RadarScan {
         if (!_this.viewModel.color) color = new Cesium.Color(1, 0.0, 0.0, 1);
         let radius = Number(_this.viewModel.radius)
         let duration = Number(_this.viewModel.duration)
-        go.plot.singleBillboard(function (position) {
-            let center = position;
+        go.plot.trackCircle(function (positions, params) {
+            let dis = go.plot.circleDrawer.circleDrawer._computeCircleRadius3D(positions);
+            let center = positions[0];
             let cartographic = Cesium.Cartographic.fromCartesian(center);
             cm.getTerrainHeight([cartographic], (cartographics) => {
                 cartographic.height = cartographics[0].height;
@@ -89,7 +91,8 @@ export default class RadarScan {
                 let radarStage = _this.addRadarScan(
                     _this.viewer,
                     cartographicCenter,
-                    radius,
+                    // radius,
+                    dis,
                     color,
                     duration
                 );
@@ -100,9 +103,41 @@ export default class RadarScan {
                 }
                 let node = go.ec.addNode(-1, newNode, [radarStage, point])
             });
-        }, function (positions) {
-            console.log(positions)
-        })
+        });
+        // go.plot.singleBillboard(function (position) {
+        //     let center = position;
+        //     let cartographic = Cesium.Cartographic.fromCartesian(center);
+        //     cm.getTerrainHeight([cartographic], (cartographics) => {
+        //         cartographic.height = cartographics[0].height;
+        //         center = Cesium.Cartographic.toCartesian(cartographic);
+        //         let point = _this.viewer.entities.add({
+        //             name: 'radar_point',
+        //             position: center,
+        //             billboard: {
+        //                 image: _this.centerPointImage,
+        //                 heightReference: Cesium.HeightReference.CLAMP_TO_GROUND, //绝对贴地
+        //                 clampToGround: true,
+        //                 disableDepthTestDistance: Number.POSITIVE_INFINITY //元素在正上方
+        //             }
+        //         });
+        //         let cartographicCenter = Cesium.Cartographic.fromCartesian(center);
+        //         let radarStage = _this.addRadarScan(
+        //             _this.viewer,
+        //             cartographicCenter,
+        //             radius,
+        //             color,
+        //             duration
+        //         );
+        //         _this.viewModel.enabled = false;
+        //         let newNode = {
+        //             name: "雷达",
+        //             checked: true
+        //         }
+        //         let node = go.ec.addNode(-1, newNode, [radarStage, point])
+        //     });
+        // }, function (positions) {
+        //     console.log(positions)
+        // })
 
     }
 

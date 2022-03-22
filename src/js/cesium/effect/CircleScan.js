@@ -1,5 +1,7 @@
 import cm from "../../plugins/CesiumMethod";
-
+import {go} from "@/js/cesium/globalObject";
+import gykjAlert from "@/js/plugins/alert";
+let _btnIdName = "proliferation"
 export default class CircleScan {
     viewer = null;
     center = null;
@@ -8,6 +10,12 @@ export default class CircleScan {
     circleStage = null;
     entity = null;
     centerPointImage = '../../img/plot/circle_center.png';
+    viewModel = {
+        enabled: false,
+        radius: 200,
+        color: "",
+        duration: 3000,
+    }
 
     constructor(viewer) {
         this.init(viewer)
@@ -27,6 +35,17 @@ export default class CircleScan {
         let _this = this;
         _this.viewer = viewer;
         _this.circleStage = null;
+        let options = {
+            btn: $("#" + _btnIdName).next(),
+            content: `<div id='radarScan_config'>
+<!--    <div><span>半径</span><input type='range' min="1" max="1000" step="0.1" data-bind="value: radius, valueUpdate: 'input'"></div>-->
+    <div><span>颜色</span><input type='text' data-bind="value: color, valueUpdate: 'input'"></div>
+    <div><span>速度</span><input type='range' min="1000" max="10000" step="1" data-bind="value: duration, valueUpdate: 'input'"></div>
+    </div>`
+        }
+        console.log(1)
+        let lightAlert = new gykjAlert(options);
+        _this.bindModel();
     }
 
     /**
@@ -54,47 +73,40 @@ export default class CircleScan {
 
      * @version 2.0
      */
-    start(center, maxRadius, color, time) {
+    start() {
         let _this = this;
-        _this.center = center;
-        _this.maxRadius = maxRadius;
-        _this.color = color;
-        _this.duration = time;
-        if (!_this.center) {
-            console.error('请先初始化');
-        }
-
-        let cartographic = Cesium.Cartographic.fromCartesian(_this.center);
-        cm.getTerrainHeight([cartographic], (cartographics) => {
-            cartographic.height = cartographics[0].height;
-            _this.center = Cesium.Cartographic.toCartesian(cartographic);
-            _this.entity = _this.viewer.entities.add({
-                name: 'radar_point',
-                position: _this.center,
-                billboard: {
-                    image: _this.centerPointImage,
-                    heightReference: Cesium.HeightReference.CLAMP_TO_GROUND, //绝对贴地
-                    clampToGround: true,
-                    disableDepthTestDistance: Number.POSITIVE_INFINITY //元素在正上方
+        if (!_this.viewModel.color) _this.viewModel.color = new Cesium.Color(0, 1.0, 0.0, 1);
+        go.plot.trackCircle(function (positions, params) {
+            let dis = go.plot.circleDrawer.circleDrawer._computeCircleRadius3D(positions);
+            let center = positions[0];
+            let cartographic = Cesium.Cartographic.fromCartesian(center);
+            cm.getTerrainHeight([cartographic], (cartographics) => {
+                cartographic.height = cartographics[0].height;
+                _this.entity = _this.viewer.entities.add({
+                    name: '扫描圆',
+                    position: center,
+                    billboard: {
+                        image: _this.centerPointImage,
+                        heightReference: Cesium.HeightReference.CLAMP_TO_GROUND, //绝对贴地
+                        clampToGround: true,
+                        disableDepthTestDistance: Number.POSITIVE_INFINITY //元素在正上方
+                    }
+                });
+                let cartographicCenter = Cesium.Cartographic.fromCartesian(center);
+                _this.circleStage = _this.addCircleScan(
+                    _this.viewer,
+                    cartographicCenter,
+                    dis,
+                    _this.viewModel.color,
+                    _this.viewModel.duration
+                );
+                _this.viewModel.enabled = false;
+                let newNode = {
+                    name: "扩散圆",
+                    checked: true
                 }
+                let node = go.ec.addNode(-1, newNode, [_this.circleStage, _this.entity])
             });
-            cartographic.height = cartographic.height + _this.maxRadius * 3
-            _this.viewer.camera.flyTo({
-                destination: Cesium.Cartographic.toCartesian(cartographic),
-                orientation: {
-                    heading: Cesium.Math.toRadians(0), // 方向
-                    pitch: Cesium.Math.toRadians(-90), // 倾斜角度
-                    roll: 0
-                }
-            });
-            let cartographicCenter = Cesium.Cartographic.fromCartesian(_this.center);
-            _this.circleStage = _this.addCircleScan(
-                _this.viewer,
-                cartographicCenter,
-                _this.maxRadius,
-                _this.color,
-                _this.duration
-            );
         });
     }
 
@@ -221,5 +233,23 @@ export default class CircleScan {
                                 gl_FragColor = mix(gl_FragColor,u_scanColor,f);\n\
                             }\n\
                 } \n ';
+    }
+
+    /**
+     * 属性绑定
+     */
+    bindModel() {
+        let _this = this;
+        Cesium.knockout.track(_this.viewModel);
+        let toolbar = document.getElementById(_btnIdName ); // 按钮的dom元素
+        Cesium.knockout.applyBindings(_this.viewModel, toolbar);
+        Cesium.knockout.getObservable(_this.viewModel, 'enabled').subscribe(
+            function (newValue) {
+                if (newValue) {
+                    _this.start();
+                }
+                go.bbi.bindImg("扩散", "proliferation", !newValue)
+            }
+        );
     }
 }

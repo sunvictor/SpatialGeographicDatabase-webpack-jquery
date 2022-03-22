@@ -1,3 +1,4 @@
+import PolylineTrailLinkMaterialProperty from "../../plugins/mixin/PolylineTrailLinkMaterialProperty"
 export default class DynamicWall {
     constructor(viewer) {
         this.viewer = viewer;
@@ -85,7 +86,7 @@ export default class DynamicWall {
             106.38755538589486,29.81123279155282,430,
             106.38622904310917,29.809933384145932,430,
         ]);
-        this.initMaterial();
+        // this.initMaterial();
         this.initMaterial2();
     }
     initMaterial() {
@@ -239,7 +240,7 @@ export default class DynamicWall {
         });
     }
     start() {
-        var _this = this;
+        let _this = this;
         Cesium.Material.PolylineTrailLinkImage = '../../img/effect/wall/colors1.png';
         Cesium.Material.PolylineTrailLinkSource =
             'czm_material czm_getMaterial(czm_materialInput materialInput)\n\
@@ -280,7 +281,7 @@ export default class DynamicWall {
             name: 'wall',
             wall: {
                 positions: _this.positions2,
-                material: new Cesium.PolylineTrailLinkMaterialProperty2(Cesium.Color.BLUE, 2000)
+                material: new Cesium.PolylineTrailLinkMaterialProperty(Cesium.Color.RED, 2000)
             }
         });
         viewer.camera.setView({
