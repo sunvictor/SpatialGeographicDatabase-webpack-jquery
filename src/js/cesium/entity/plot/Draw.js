@@ -117,6 +117,34 @@ export default class drawShape {
                 go.plot.bufferLineDrawer.showBufferLine(objId, positions, radius, params);
             });
         })
+        $("#drawAttackArrow").on('click', function () {
+            _this.draw.flag = 0;
+            if (go.plot.attackArrowDrawer.viewModel.enabled) {
+                go.plot.attackArrowDrawer.viewModel.enabled = false;
+                return;
+            }
+            go.plot.trackAttackArrow(function (positions, radius, params) {
+                let objId = (new Date()).getTime();
+                _this.draw.shapeDic[objId] = {
+                    positions: positions,
+                    radius: radius
+                };
+                go.plot.attackArrowDrawer.showAttackArrow(objId, positions, params);
+            });
+        })
+
+        $("#drawStraightArrow").on('click', function () {
+            _this.draw.flag = 0;
+            if (go.plot.straightArrowDrawer.viewModel.enabled) {
+                go.plot.straightArrowDrawer.viewModel.enabled = false;
+                return;
+            }
+            go.plot.trackStraightArrow(function (positions, params) {
+                let objId = (new Date()).getTime();
+                _this.draw.shapeDic[objId] = positions;
+                go.plot.straightArrowDrawer.showStraightArrow(objId, positions, params);
+            });
+        })
 
     }
 

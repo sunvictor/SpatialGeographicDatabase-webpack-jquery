@@ -1,5 +1,5 @@
 import {go} from "../../globalObject";
-import GlobeRectangleDrawer from "./edit/GlobeRectangleDrawer";
+import PlotAttackArrowDrawer from "./edit/PlotAttackArrowDrawer";
 import gykjPanel from "../../../plugins/panel";
 import $ from "jquery";
 import {honeySwitch} from "../../../plugins/honeySwitch";
@@ -7,32 +7,32 @@ import cm from "../../../plugins/CesiumMethod";
 import entityProvider from "../EntityProvider";
 
 
-let _btnName = "矩形";
-let _btnIdName = "drawRectangle";
-export default class rectangleGraphics {
+let _btnName = "攻击箭头";
+let _btnIdName = "drawAttackArrow";
+export default class attackArrowGraphics {
     viewModel = {
         enabled: false
     }
-    rectangleDrawer = null;
-    plotType = "rectangle";
+    attackArrowDrawer = null;
+    plotType = "attackArrow";
     layerId = "globeDrawerDemoLayer"
 
     constructor(viewer) {
         let _this = this;
         _this.viewer = viewer;
         _this.bindModel();
-        _this.rectangleDrawer = new GlobeRectangleDrawer(_this.viewer);
+        _this.attackArrowDrawer = new PlotAttackArrowDrawer(_this.viewer);
     }
 
     clear() {
         let _this = this;
-        _this.rectangleDrawer.clear()
+        _this.attackArrowDrawer.clear()
     }
 
     start(okCallback, cancelCallback) {
         let _this = this;
         _this.viewModel.enabled = true;
-        _this.rectangleDrawer.start(function (positions, lonLats, params) {
+        _this.attackArrowDrawer.start(function (positions, lonLats, params) {
             okCallback(positions, lonLats, params);
             _this.viewModel.enabled = false;
         }, function () {
@@ -41,51 +41,47 @@ export default class rectangleGraphics {
         });
     }
 
-    showRectangle(objId, positions, params) {
+    showAttackArrow(objId, positions, params) {
         let _this = this;
-        // let color = $("#paigusu").data("color");
         let material = Cesium.Color.fromCssColorString(params.color);
         let outlineMaterial = new Cesium.PolylineDashMaterialProperty({
             dashLength: 16,
             color: Cesium.Color.fromCssColorString(params.outlineColor)
         });
-        let rect = Cesium.Rectangle.fromCartesianArray(positions);
-        let arr = [rect.west, rect.north, rect.east, rect.north, rect.east, rect.south, rect.west, rect.south, rect.west,
-            rect.north
-        ];
-        let outlinePositions = Cesium.Cartesian3.fromRadiansArray(arr);
+        let outlinePositions = [].concat(positions);
+        outlinePositions.push(positions[0]);
         let bData = {
-            rectanglePosition: positions,
+            name: params.name,
             layerId: _this.layerId,
             objId: objId,
-            shapeType: "Rectangle",
+            shapeType: "AttackArrow",
             polyline: {
                 show: params.outline,
                 positions: outlinePositions,
                 clampToGround: true,
-                width: params.outlineWidth,
+                width: 2,
                 material: outlineMaterial
             },
-            rectangle: {
-                coordinates: rect,
+            polygon: new Cesium.PolygonGraphics({
+                hierarchy: positions,
+                asynchronous: false,
                 material: material
-            }
+            })
         };
         bData.customProp = params;
         let entity = go.ec.add(bData);
-        // draw.shape.push(entity)
         return entity;
     }
 
 
     editShape(treeNode, entity) {
         let _this = this;
-        if (_this.rectangleDrawer.isPanelOpen) {
+        if (_this.attackArrowDrawer.isPanelOpen) {
             return;
         }
         go.draw.flag = 1;
         let objId = entity.objId;
-        let oldPositions = go.draw.draw.shapeDic[objId];
+        let old = go.draw.draw.shapeDic[objId];
         //先移除entity
         let deletedEntity = go.draw.getParams(objId);
         let node;
@@ -100,9 +96,12 @@ export default class rectangleGraphics {
         go.draw.clearEntityById(objId);
 
         //进入编辑状态
-        _this.rectangleDrawer.showModifyRectangle(oldPositions, oldParams, function (positions, params) {
-            go.draw.draw.shapeDic[objId] = positions;
-            let entity = _this.showRectangle(objId, positions, params);
+        _this.attackArrowDrawer.showModifyAttackArrow(old.custom, oldParams, function (positions, custom, params) {
+            go.draw.draw.shapeDic[objId] = {
+                custom: custom,
+                positions: positions
+            };
+            let entity = _this.showAttackArrow(objId, positions, params);
             entity.nodeProp = treeNode;
             go.ec.treeData[deletedEntity.nodeProp.gIndex] = entity;
             treeNode.customProp.entityPanel.closePanel();
@@ -114,7 +113,7 @@ export default class rectangleGraphics {
             }
             treeNode.customProp.entityPanel = new entityProvider(_this.viewer).showAttrPanel(node, entity, panelOptions);
         }, function () {
-            let entity = _this.showRectangle(objId, oldPositions, oldParams);
+            let entity = _this.showAttackArrow(objId, old.positions, oldParams);
             entity.nodeProp = treeNode;
             go.ec.treeData[deletedEntity.nodeProp.gIndex] = entity;
             treeNode.customProp.entityPanel.closePanel();

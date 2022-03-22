@@ -42,7 +42,6 @@ export default class entityProvider {
             callback: {
                 closePanel: function () {
                     treeNode.customProp.isAttrPanelOpen = false;
-                    console.log("hhh")
                 }
             }
         }

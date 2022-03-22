@@ -6,6 +6,8 @@ import polygonGraphics from "@/js/cesium/entity/plot/PolygonGraphics";
 import rectangleGraphics from "@/js/cesium/entity/plot/RectangleGraphics";
 import circleGraphics from "@/js/cesium/entity/plot/CircleGraphics";
 import bufferLineGraphics from "@/js/cesium/entity/plot/BufferLineGraphics";
+import attackArrowGraphics from "@/js/cesium/entity/plot/AttackArrowGraphics";
+import straightArrowGraphics from "@/js/cesium/entity/plot/StraightArrowGraphics";
 
 export default class plotGlobeTracker {
     viewer = null;
@@ -17,6 +19,8 @@ export default class plotGlobeTracker {
     rectangleDrawer = null;
     circleDrawer = null;
     bufferLineDrawer = null;
+    attackArrowDrawer = null;
+    straightArrowDrawer = null;
 
     constructor(viewer) {
         let _this = this;
@@ -28,6 +32,8 @@ export default class plotGlobeTracker {
         _this.rectangleDrawer = new rectangleGraphics(viewer)
         _this.circleDrawer = new circleGraphics(viewer)
         _this.bufferLineDrawer = new bufferLineGraphics(viewer)
+        _this.attackArrowDrawer = new attackArrowGraphics(viewer)
+        _this.straightArrowDrawer = new straightArrowGraphics(viewer)
         _this.ctrArr.push(_this.billboardDrawer);
         _this.ctrArr.push(_this.singleBillboardDrawer);
         _this.ctrArr.push(_this.polylineDrawer);
@@ -35,6 +41,8 @@ export default class plotGlobeTracker {
         _this.ctrArr.push(_this.rectangleDrawer);
         _this.ctrArr.push(_this.circleDrawer);
         _this.ctrArr.push(_this.bufferLineDrawer);
+        _this.ctrArr.push(_this.attackArrowDrawer);
+        _this.ctrArr.push(_this.straightArrowDrawer);
     }
 
     clear() {
@@ -136,5 +144,25 @@ export default class plotGlobeTracker {
         }
         _this.clearOthers(_this.bufferLineDrawer.plotType)
         _this.bufferLineDrawer.start(okHandler, cancelHandler);
+    }
+    trackAttackArrow(okHandler, cancelHandler) {
+        let _this = this;
+        _this.clear();
+        if (_this.attackArrowDrawer == null) {
+            _this.attackArrowDrawer = new attackArrowGraphics(_this.viewer);
+            _this.ctrArr.push(_this.attackArrowDrawer);
+        }
+        _this.clearOthers(_this.attackArrowDrawer.plotType)
+        _this.attackArrowDrawer.start(okHandler, cancelHandler);
+    }
+    trackStraightArrow(okHandler, cancelHandler) {
+        let _this = this;
+        _this.clear();
+        if (_this.straightArrowDrawer == null) {
+            _this.straightArrowDrawer = new straightArrowGraphics(_this.viewer);
+            _this.ctrArr.push(_this.straightArrowDrawer);
+        }
+        _this.clearOthers(_this.straightArrowDrawer.plotType)
+        _this.straightArrowDrawer.start(okHandler, cancelHandler);
     }
 }

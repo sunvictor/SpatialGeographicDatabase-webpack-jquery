@@ -122,6 +122,13 @@ export default class circleGraphics {
         let oldPositions = go.draw.draw.shapeDic[objId];
         //先移除entity
         let deletedEntity = go.draw.getParams(objId);
+        let node;
+        try {
+            node = go.ec.ztree.getNodeByTId(deletedEntity.nodeProp.tId); // 根据tid获取当前对象的node节点
+        } catch (e) {
+            console.log(e)
+            return;
+        }
         let oldParams = deletedEntity.customProp;
         // console.log(oldParams);
         go.draw.clearEntityById(objId);
