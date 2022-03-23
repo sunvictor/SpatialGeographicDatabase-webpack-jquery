@@ -33,6 +33,21 @@ const mapConfig = {
 
 function initScene(viewer) {
     // const lm = new layerMap(viewer);
+    let oldSatellite = go.lm.add({
+        name: "旧卫星图",
+        url: "http://222.178.182.14:9010/wmts",
+        type: "origin",
+        providerType: "WMTS",
+        providerProp: {
+            tilingScheme: new Cesium.GeographicTilingScheme(),
+            format: "image/jpeg",
+            style: "default",
+            layer: "img",
+            tileMatrixSetID: "c",
+            tileMatrixLabels: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20'],
+            maximumLevel: 20,
+        }
+    })
     let newSatellite = go.lm.add({
         name: "新卫星图",
         url: "http://183.230.114.154:9010/Satellite/{z}/{x}/{y}.png",
@@ -64,7 +79,7 @@ function initScene(viewer) {
         name: "中国14级（测试）",
         show: false,
         url: "https://lab.earthsdk.com/terrain/577fd5b0ac1f11e99dbd8fd044883638",
-        terrainProp:{
+        terrainProp: {
             requestWaterMask: true,
             requestVertexNormals: true,
         }

@@ -171,7 +171,6 @@ $("#dblClickRotate").on('click', function () {
 })
 $("#depthTest").on('click', function () {
     let enabled = $(this).data('enabled')
-    console.log(enabled)
     viewer.scene.globe.depthTestAgainstTerrain = !enabled;
     $(this).data('enabled', !enabled)
     go.bbi.bindImg("深度检测", "depthTest", !enabled)

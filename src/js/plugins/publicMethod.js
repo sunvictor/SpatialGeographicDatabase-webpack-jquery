@@ -45,7 +45,6 @@ publicMethod.prototype.compareObj = function(obj, newObj) {
     }
     for (let key in obj) {
         if (Array.isArray(obj[key])) {
-            console.log(key, obj[key])
             flag = compareArr(obj[key], newObj[key])
             if (!flag) {
                 break;

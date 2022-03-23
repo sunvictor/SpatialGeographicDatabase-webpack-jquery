@@ -592,7 +592,7 @@ export default class GlobeBufferLineDrawer {
    <!-- <label>边框颜色</label>
     <span class="bufferline-border-paigusu" style="width:25px;height:25px;background:rgba(38,57,167,1.0);display:inline-block;margin:0;"></span> -->
     
-    <div style="margin-left: 10%; margin-top: 5%;"><label>速度：</label><input style="  width: 200px; margin-left: 1.4%;position: absolute;" id="speed" type="range" min="1" max="10" step="1"/></div>
+    <div style="margin-left: 10%; margin-top: 5%;"><label>速度：</label><input style="  width: 200px; margin-left: 1.4%;position: absolute;" id="speed" type="range" min="1" max="10" step="0.1"/></div>
 <div style="position: absolute;bottom: 10px;right: 10px;" class="layerBtn">
 <button name="btnOK" class="layui-btn layui-btn-xs layui-btn-normal"> 确定 </button>
 <button name="btnCancel" class="layui-btn layui-btn-xs layui-btn-danger"> 取消 </button>

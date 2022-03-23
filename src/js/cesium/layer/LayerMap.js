@@ -1,6 +1,7 @@
 import pm from "../../plugins/publicMethod";
 import {go} from "@/js/cesium/globalObject";
 import cocoMessage from '@/js/plugins/coco-message'
+
 const LayerMap = (function () {
     class LayerMap {
         labCoordTypeDict = { // 图层坐标系转换字典
@@ -117,7 +118,12 @@ const LayerMap = (function () {
                 url: params.url,
             }
             pm.setOptions(json, params.providerProp);
-            let provider = new Cesium.UrlTemplateImageryProvider(json);
+            let provider;
+            if (typeof params.providerType !== "undefined" && params.providerType === "WMTS") {
+                provider = new Cesium.WebMapTileServiceImageryProvider(json);
+            } else {
+                provider = new Cesium.UrlTemplateImageryProvider(json);
+            }
             let map = _this.viewer.imageryLayers.addImageryProvider(provider);
             map.name = params.name;
             pm.setOptions(map, params.options);

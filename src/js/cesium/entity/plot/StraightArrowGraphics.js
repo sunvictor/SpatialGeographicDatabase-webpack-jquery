@@ -41,7 +41,7 @@ export default class straightArrowGraphics {
         });
     }
 
-    showStraightArrow(objId, positions, params) {
+    showStraightArrow(objId, positions, params, isEdit = false) {
         let _this = this;
         var material = Cesium.Color.fromCssColorString(params.color);
         var outlineMaterial = new Cesium.PolylineDashMaterialProperty({
@@ -69,7 +69,8 @@ export default class straightArrowGraphics {
             })
         };
         bData.customProp = params;
-        let entity = go.ec.add(bData);
+        let isAddNode = !isEdit // 是否新增node节点 如果是编辑状态,则不添加node节点
+        let entity = go.ec.add(bData, isAddNode);
         return entity;
     }
 

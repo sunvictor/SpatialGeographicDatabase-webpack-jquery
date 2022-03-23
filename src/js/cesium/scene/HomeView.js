@@ -27,7 +27,6 @@ export default class HomeView {
     <div><button id="resetHomeView">重置</button><button id="saveHomeView">保存当前视角</button></div>
     <div></div></div>`
         }
-        console.log(5)
         let lightAlert = new gykjAlert(options);
         this.bindModel();
         this.clickEvents();

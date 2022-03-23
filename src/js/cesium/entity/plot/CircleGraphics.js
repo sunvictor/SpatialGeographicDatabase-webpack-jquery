@@ -41,7 +41,7 @@ export default class circleGraphics {
         });
     }
 
-    showCircle(objId, positions, params) {
+    showCircle(objId, positions, params, isEdit = false) {
         let _this = this;
         let distance = 0;
         for (let i = 0; i < positions.length - 1; i++) {
@@ -104,10 +104,11 @@ export default class circleGraphics {
             }
         };
         bData.customProp = params;
-        let entity = _this.viewer.entities.add(bData);
+        let isAddNode = !isEdit // 是否新增node节点 如果是编辑状态,则不添加node节点
+        let entity = go.ec.add(bData, isAddNode);
         // draw.shape.push(entity)
         outlineBdata.customProp = params;
-        let outlineEntity = viewer.entities.add(outlineBdata);
+        let outlineEntity = go.ec.add(outlineBdata, isAddNode);
         // draw.shape.push(outlineEntity)
     }
 

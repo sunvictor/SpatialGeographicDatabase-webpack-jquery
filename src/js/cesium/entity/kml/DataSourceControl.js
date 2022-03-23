@@ -93,7 +93,6 @@ export default class DataSourceControl {
             return;
         }
         _this.viewer.dataSources.add(data).then(function (dataSource) {
-            console.log(dataSource)
             let newNode = {
                 name: op.name ? op.name : "未命名数据源",
                 checked: dataSource.show

@@ -164,7 +164,7 @@ P.PlotUtils = {}, P.PlotUtils.distance = function(t, o) {
 }, P.PlotUtils.getBezierPoints = function(t) {
     if (t.length <= 2) return t;
     for (var o = [], e = t.length - 1, r = 0; 1 >= r; r += .01) {
-        for (var n = y = 0, g = 0; e >= g; g++) {
+        for (var n =0, y = 0, g = 0; e >= g; g++) {
             var i = P.PlotUtils.getBinomialFactor(e, g),
                 s = Math.pow(r, g),
                 a = Math.pow(1 - r, e - g);

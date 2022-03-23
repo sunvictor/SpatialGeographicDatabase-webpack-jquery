@@ -41,7 +41,7 @@ export default class polygonGraphics {
         });
     }
 
-    showPolygon(objId, positions, params) {
+    showPolygon(objId, positions, params, isEdit = false) {
         let _this = this;
         let height = 300;
         let outlineMaterial = new Cesium.PolylineDashMaterialProperty({
@@ -89,7 +89,8 @@ export default class polygonGraphics {
             bData.polygon.closeBottom = true;
         }
         bData.customProp = params;
-        let entity = go.ec.add(bData);
+        let isAddNode = !isEdit // 是否新增node节点 如果是编辑状态,则不添加node节点
+        let entity = go.ec.add(bData, isAddNode);
         // draw.shape.push(entity)
         return entity;
     }
@@ -117,7 +118,7 @@ export default class polygonGraphics {
         go.draw.clearEntityById(objId);
         let prevNode = treeNode.getPreNode();
         //进入编辑状态
-        _this.polygonDrawer.showModifyPolygon(oldPositions, oldParams, function (positions, lonLats, params) {
+        _this.polygonDrawer.showModifyPolygon(oldPositions, oldParams, function (positions, params) {
             go.draw.draw.shapeDic[objId] = positions;
             // go.ec.removeNode(treeNode)
             // treeNode.customProp.entityPanel.closePanel();

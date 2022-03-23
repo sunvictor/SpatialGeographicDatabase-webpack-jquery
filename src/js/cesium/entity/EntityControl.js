@@ -108,6 +108,7 @@ export default class entityControl {
             node.customProp = {
                 isAttrPanelOpen: false
             }
+            entity.treeGindex = node.gIndex;
         }
         return entity;
     }

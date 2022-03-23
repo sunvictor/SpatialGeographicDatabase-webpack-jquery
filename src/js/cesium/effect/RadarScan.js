@@ -12,7 +12,6 @@ export default class RadarScan {
 
     constructor(viewer) {
         this.init(viewer)
-        console.log(layer)
     }
 
     /**
@@ -37,7 +36,6 @@ export default class RadarScan {
     <div><span>速度</span><input type='range' min="1000" max="10000" step="1" data-bind="value: duration, valueUpdate: 'input'"></div>
     </div>`
         }
-        console.log(4)
         let lightAlert = new gykjAlert(options)
         _this.bindModel();
     }

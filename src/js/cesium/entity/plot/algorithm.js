@@ -37,7 +37,9 @@ xp.algorithm = {},
         //获取已经点击的坐标数
         let t = inputPoint.length;
         if (!(2 > t)) {
-            if (2 == t) return inputPoint;
+            if (inputPoint.length === 2) {
+                return inputPoint;
+            }
             let o = this.points[0],    //第一个点
                 e = this.points[1],        //第二个点
                 r = this.points[2],        //第三个点

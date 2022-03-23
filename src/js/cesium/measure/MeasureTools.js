@@ -126,7 +126,6 @@ export default class MeasureTools {
         if (_this.pointEntity) {
             _this.viewer.entities.remove(_this.pointEntity);
         }
-        console.log(1)
         _this.distance = 0;
         // _this.tempEntityCollection = [];
         _this.viewer.screenSpaceEventHandler.removeInputAction(Cesium.ScreenSpaceEventType.LEFT_CLICK);

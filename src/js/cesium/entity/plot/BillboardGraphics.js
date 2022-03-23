@@ -60,8 +60,6 @@ export default class billboardGraphics {
     editShape(treeNode, entity) {
         let _this = this;
         return;
-
-        console.log("RETURNERROR");
         if (_this.uninterruptedBillboardDrawer.isPanelOpen) {
             return;
         }

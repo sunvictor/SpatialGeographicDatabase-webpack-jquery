@@ -178,7 +178,6 @@ export default class LayerControl {
         let lowerLayerStr = `<span class="button edit" id="lowerLayerBtn_${treeNode.tId}"></span>`
         aObj.after(lowerLayerStr)
         aObj.after(upLayerStr)
-        console.log(aObj)
     }
 
     /**

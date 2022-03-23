@@ -43,7 +43,6 @@ export default class CircleScan {
     <div><span>速度</span><input type='range' min="1000" max="10000" step="1" data-bind="value: duration, valueUpdate: 'input'"></div>
     </div>`
         }
-        console.log(1)
         let lightAlert = new gykjAlert(options);
         _this.bindModel();
     }

@@ -41,7 +41,7 @@ export default class rectangleGraphics {
         });
     }
 
-    showRectangle(objId, positions, params) {
+    showRectangle(objId, positions, params, isEdit = false) {
         let _this = this;
         // let color = $("#paigusu").data("color");
         let material = Cesium.Color.fromCssColorString(params.color);
@@ -72,7 +72,8 @@ export default class rectangleGraphics {
             }
         };
         bData.customProp = params;
-        let entity = go.ec.add(bData);
+        let isAddNode = !isEdit // 是否新增node节点 如果是编辑状态,则不添加node节点
+        let entity = go.ec.add(bData, isAddNode);
         // draw.shape.push(entity)
         return entity;
     }

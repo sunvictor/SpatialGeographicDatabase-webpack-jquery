@@ -118,7 +118,6 @@ export default class Floodlight {
     <div><span>亮度</span></div>
     <div><input type='range' min="0" max="1" step="0.01" data-bind="value: delta, valueUpdate: 'input'"></div></div>`
         }
-        console.log(3)
         let lightAlert = new gykjAlert(options)
         _this.bindModel();
     }

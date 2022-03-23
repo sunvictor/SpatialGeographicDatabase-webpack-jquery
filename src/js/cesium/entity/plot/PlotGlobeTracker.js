@@ -8,6 +8,7 @@ import circleGraphics from "@/js/cesium/entity/plot/CircleGraphics";
 import bufferLineGraphics from "@/js/cesium/entity/plot/BufferLineGraphics";
 import attackArrowGraphics from "@/js/cesium/entity/plot/AttackArrowGraphics";
 import straightArrowGraphics from "@/js/cesium/entity/plot/StraightArrowGraphics";
+import pincerArrowGraphics from "@/js/cesium/entity/plot/PincerArrowGraphics";
 
 export default class plotGlobeTracker {
     viewer = null;
@@ -21,6 +22,7 @@ export default class plotGlobeTracker {
     bufferLineDrawer = null;
     attackArrowDrawer = null;
     straightArrowDrawer = null;
+    pincerArrowDrawer = null;
 
     constructor(viewer) {
         let _this = this;
@@ -34,6 +36,7 @@ export default class plotGlobeTracker {
         _this.bufferLineDrawer = new bufferLineGraphics(viewer)
         _this.attackArrowDrawer = new attackArrowGraphics(viewer)
         _this.straightArrowDrawer = new straightArrowGraphics(viewer)
+        _this.pincerArrowDrawer = new pincerArrowGraphics(viewer)
         _this.ctrArr.push(_this.billboardDrawer);
         _this.ctrArr.push(_this.singleBillboardDrawer);
         _this.ctrArr.push(_this.polylineDrawer);
@@ -43,6 +46,7 @@ export default class plotGlobeTracker {
         _this.ctrArr.push(_this.bufferLineDrawer);
         _this.ctrArr.push(_this.attackArrowDrawer);
         _this.ctrArr.push(_this.straightArrowDrawer);
+        _this.ctrArr.push(_this.pincerArrowDrawer);
     }
 
     clear() {
@@ -84,6 +88,7 @@ export default class plotGlobeTracker {
         _this.clearOthers(_this.billboardDrawer.plotType)
         _this.billboardDrawer.start(okCallback, cancelCallback);
     }
+
     singleBillboard(okCallback, cancelCallback) {
         let _this = this;
         _this.clear();
@@ -105,6 +110,7 @@ export default class plotGlobeTracker {
         _this.clearOthers(_this.polylineDrawer.plotType)
         _this.polylineDrawer.start(okHandler, cancelHandler);
     }
+
     trackPolygon(okHandler, cancelHandler) {
         let _this = this;
         _this.clear();
@@ -115,6 +121,7 @@ export default class plotGlobeTracker {
         _this.clearOthers(_this.polygonDrawer.plotType)
         _this.polygonDrawer.start(okHandler, cancelHandler);
     }
+
     trackRectangle(okHandler, cancelHandler) {
         let _this = this;
         _this.clear();
@@ -125,6 +132,7 @@ export default class plotGlobeTracker {
         _this.clearOthers(_this.rectangleDrawer.plotType)
         _this.rectangleDrawer.start(okHandler, cancelHandler);
     }
+
     trackCircle(okHandler, cancelHandler) {
         let _this = this;
         _this.clear();
@@ -135,6 +143,7 @@ export default class plotGlobeTracker {
         _this.clearOthers(_this.circleDrawer.plotType)
         _this.circleDrawer.start(okHandler, cancelHandler);
     }
+
     trackBufferLine(okHandler, cancelHandler) {
         let _this = this;
         _this.clear();
@@ -145,6 +154,7 @@ export default class plotGlobeTracker {
         _this.clearOthers(_this.bufferLineDrawer.plotType)
         _this.bufferLineDrawer.start(okHandler, cancelHandler);
     }
+
     trackAttackArrow(okHandler, cancelHandler) {
         let _this = this;
         _this.clear();
@@ -155,6 +165,7 @@ export default class plotGlobeTracker {
         _this.clearOthers(_this.attackArrowDrawer.plotType)
         _this.attackArrowDrawer.start(okHandler, cancelHandler);
     }
+
     trackStraightArrow(okHandler, cancelHandler) {
         let _this = this;
         _this.clear();
@@ -164,5 +175,16 @@ export default class plotGlobeTracker {
         }
         _this.clearOthers(_this.straightArrowDrawer.plotType)
         _this.straightArrowDrawer.start(okHandler, cancelHandler);
+    }
+
+    trackPincerArrow(okHandler, cancelHandler) {
+        let _this = this;
+        _this.clear();
+        if (_this.pincerArrowDrawer == null) {
+            _this.pincerArrowDrawer = new pincerArrowGraphics(_this.viewer);
+            _this.ctrArr.push(_this.pincerArrowDrawer);
+        }
+        _this.clearOthers(_this.pincerArrowDrawer.plotType)
+        _this.pincerArrowDrawer.start(okHandler, cancelHandler);
     }
 }

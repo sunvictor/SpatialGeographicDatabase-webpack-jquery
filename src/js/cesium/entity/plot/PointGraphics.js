@@ -43,7 +43,7 @@ export default class pointGraphics {
         let bData = {
             layerId: _this.layerId,
             objId: objId,
-            shapeType: "Billboard",
+            shapeType: "Point",
             position: position,
             billboard: {
                 image: _this.singlePointDrawer.image,
@@ -61,8 +61,6 @@ export default class pointGraphics {
     editShape(treeNode, entity) {
         let _this = this;
         return;
-
-        console.log("RETURNERROR");
         if (_this.singlePointDrawer .isPanelOpen) {
             return;
         }
